@@ -16,4 +16,8 @@ if True:
     today = today.strip()
     systotal = systotal.strip()
     systotal = float(systotal) * 1000
+    if 'k' in current:
+      current = float(current.strip().strip('k')) * 1000
+    if 'k' in today:
+      today = float(today.strip().strip('k')) * 1000
     print "OK|Solar_Current_Power=%s Solar_Today_Power=%s Solar_Sys_Total=%.1f" % (current,today,systotal)
