@@ -1,5 +1,5 @@
 ---
-- hosts: greenhouse
+- hosts: Greenhouse
   tasks:
   - name: restart greenhouse
     shell: sleep 2 && shutdown -r now "Ansible Tower triggered reboot"
