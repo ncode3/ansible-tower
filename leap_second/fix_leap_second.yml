@@ -15,14 +15,14 @@
   - name: configure timezone for os when rhel version less than 7
     lineinfile: src=/etc/sysconfig/clock regex='ZONE=.*' replace="ZONE={{ localtimezone }}"
     #when: ansible_distribution_major_version < 7 and ansible_distribution == "RedHat"
-    when: ansible_distribution_major_version < 7
+    when: ansible_distribution_major_version == "6"
   - name: run tzdata-update when rhel version less than 7
     shell: tzdata-update
 #    when: ansible_distribution_major_version < 7 and ansible_distribution == "RedHat"
-    when: ansible_distribution_major_version < 7
-  - name: configure timezone for os when rhel version 7 and Fedora
+    when: ansible_distribution_major_version == "6"
+  - name: configure timezone for os when rhel version 7 or Fedora
     command: timedatectl set-timezone {{ localtimezone }}
-    when: ansible_distribution_major_version == 7 or ansible_distribution == "Fedora"
+    when: ansible_distribution_major_version == "7" or ansible_distribution == "Fedora"
   - name: check the current date and time
     shell: date
     register: rightnow
