@@ -439,4 +439,3 @@ if [[ !($systemInfoLevel == 'onlyTAI' || $systemInfoLevel == 'incorrect') ]]; th
     echo
     echo 'If you would like to learn more on how to resolve Leap Second Issues in Red Hat Enterprise Linux, refer to <https://access.redhat.com/articles/15145>.'
 fi
-echo "SUGGESTION: YOU SUCK"
