@@ -1,14 +1,14 @@
 ---
-- hosts: 10.55.105.11
+- hosts: physical_servers
   tasks:
     - name: copying test script to host
-      copy: src=scripts/leap_second_issue_detector.sh dest=/var/run/tmp/leap_second_issue_detector.sh mode=0755
+      copy: src=leap_second_issue_detector.sh dest=/var/tmp/leap_second_issue_detector.sh mode=0755
     - name: running leap second issue detector
-      shell:  /var/run/tmp/leap_second_issue_detector.sh
+      shell:  /var/tmp/leap_second_issue_detector.sh
       register: result
     - name: forced failure when SUGGESTION detected
-      shell: echo {{ result.stdout }} && /bin/false
-      when: result.stdout.find('SUGGESTION')
+      shell: echo '{{ result.stdout }}' && /bin/false
+      when: "'SUGGESTION' in result.stdout"
     - name: announce our results for logging
-      shell: echo {{ result.stdout }}
+      debug: msg='{{ result.stdout }}'
 
