@@ -1,0 +1,30 @@
+---
+- name: make sure lsb rpm is installed, it helps for shell vars
+  yum:  name=redhat-lsb-core state=present
+- name: check the os ver
+  shell: echo "{{ ansible_lsb.id }} {{ ansible_lsb.major_release }}"
+  register: distro
+- name: output the os ver
+  debug: msg="{{ distro.stdout }}"
+- name: update tzdata rpm
+  yum: name=tzdata state=latest
+- name: configure timezone for os when rhel version less than 7
+  lineinfile: dest=/etc/sysconfig/clock regexp='ZONE=.*' line="ZONE={{ localtimezone }}"
+  #when: ansible_distribution_major_version < 7 and ansible_distribution == "RedHat"
+  when: ansible_distribution_major_version == "6"
+- name: run tzdata-update when rhel version less than 7
+  shell: tzdata-update
+#    when: ansible_distribution_major_version < 7 and ansible_distribution == "RedHat"
+  when: ansible_distribution_major_version == "6"
+- name: configure timezone for os when rhel version 7 or Fedora
+  command: timedatectl set-timezone {{ localtimezone }}
+  when: ansible_distribution_major_version == "7" or ansible_distribution == "Fedora"
+- name: make sure kernel rpm is up to date
+  yum:  name=kernel state=latest
+- name: check the current date and time
+  shell: date
+  register: rightnow
+- name: output the current time
+  debug: msg="{{ rightnow.stdout }}"
+- name: you should reboot
+  debug: msg="You should reboot this host {{ ansible_hostname }}"

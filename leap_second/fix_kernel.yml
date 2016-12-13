@@ -1,0 +1,6 @@
+---
+# this will only update the tzdata rpm and fix the config files
+- hosts: all
+  roles:
+  - fix_kernel_leap_second
+    	

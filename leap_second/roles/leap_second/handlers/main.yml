@@ -1,0 +1,10 @@
+---
+- name: update kernel
+  debug: msg="You should run the fix_kernel playbook on this host '{{ ansible_hostname }}"
+
+- name: update ntp
+  debug: msg="You should run the 'ansible-playbook fix_ntp playbook on this host '{{ ansible_hostname }}'"
+
+- name: forced failure
+  shell: /bin/false
+  

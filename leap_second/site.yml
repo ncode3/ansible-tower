@@ -1,0 +1,5 @@
+---
+# this playbook will test your infrastructure for leap second issues
+- hosts: all
+  roles:
+  - leap_second

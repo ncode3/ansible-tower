@@ -1,0 +1,3 @@
+---
+- name: you should reboot
+  debug: msg="You should reboot this host {{ ansible_hostname }}

@@ -1,0 +1,25 @@
+---
+- name: copying test script to host
+  copy: src=leap_second_issue_detector.sh dest=/var/tmp/leap_second_issue_detector.sh mode=0755
+
+- name: running leap second issue detector
+  shell:  /var/tmp/leap_second_issue_detector.sh
+  register: result
+
+- name: check if need to update kernel
+  shell: echo '{{ result.stdout }}'
+  when: "'SUGGESTIONS ON KERNEL' in result.stdout"
+  notify: update kernel
+
+- name: check if need to update ntp
+  shell: echo '{{ result.stdout }}'
+  when: "'SUGGESTIONS ON NTP' in result.stdout"
+  notify: update ntp
+
+- name: forced failure when SUGGESTION detected
+  shell: /bin/true
+  when: "'SUGGESTION' in result.stdout"
+  notify: forced failure
+
+- name: announce our results for logging
+  debug: msg='{{ result.stdout }}'
