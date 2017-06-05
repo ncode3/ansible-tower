@@ -1,0 +1,9 @@
+---
+- gather_facts: no
+- name: "turn power off for {{ target }}"
+  shell: ipmiutil reset -d -N {{ target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+  when: extra_vars['target'] is undefined
+
+- name: "turn power off for {{ extra_vars['target'] }}"
+  shell: ipmiutil reset -d -N {{ extra_vars['target'] }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+  when: extra_vars['target'] is defined
