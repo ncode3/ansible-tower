@@ -1,5 +1,5 @@
 ---
-- hosts: physical_servers
+- hosts: all
   tasks:
   - name: say hello
     shell: echo "hello everyone" && who am i
