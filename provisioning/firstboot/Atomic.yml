@@ -1,0 +1,10 @@
+---
+- vars:
+    packages: "bash-completion vim-enhanced net-snmp ntp ntpdate git wget"
+- name: Updating packages on system
+  shell: "rpm-ostree pkg-add {{ packages }}"
+  become: true
+
+- name: Rebooting system
+  shell: "reboot"
+  become: true
