@@ -1,5 +1,17 @@
 ---
 - gather_facts: no
+  vars:
+    package: ipmiutil
+- name: "check if {{ package }} is installed"
+  yum: list={{ package }}
+  register: is_installed
+
+- name: "install {{ package }} if not exist"
+  yum:
+    name: "{{ package }}"
+    state: latest
+  when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+
 - name: "turn power off for {{ target }}"
   shell: ipmiutil reset -d -N {{ target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
   when: extra_vars['target'] is undefined
