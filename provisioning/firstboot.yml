@@ -1,3 +1,5 @@
 ---
-tasks:
-  - include: "tasks/firstboot/{{ ansible_os_family }}.yml"
+- name: Firstboot configuration tasks
+  hosts: all
+  tasks:
+    - include: "firstboot/{{ ansible_os_family }}.yml"
