@@ -23,6 +23,10 @@
   with_items: "{{ disabled_svcs }}"
   become: true
 
+- name: "Check if we are registered"
+  shell: "subscription-manager status"
+  register: rhsm_reg
+
 - name: Register and subscribe to multiple pools.
   redhat_subscription:
     state: present
@@ -31,7 +35,7 @@
     pool: "{{ rh_subscription_pools }}"
   become: true
   register: rhsm_status
-  when: extra_vars is undefined
+  when: "extra_vars is undefined and 'Not supported by a valid subscription' in rhsm_reg.stdout"
 
 - name: Register and subscribe to multiple pools with Tower Variables
   redhat_subscription:
@@ -41,7 +45,7 @@
     pool: "{{ extra_vars['rh_subscription_pools'] }}"
   become: true
   register: rhsm_status
-  when: extra_vars['rh_satellite_pass'] is defined
+  when: "extra_vars is defined and 'Not supported by a valid subscription' in rhsm_reg.stdout"
 
 - name: Check if registration is successful
   shell: echo '{{ rhsm_status.stdout }}'
