@@ -1,0 +1,50 @@
+---
+# Creates a new instance with provisioning userdata using Cloud-Init
+- name: launch a compute instance
+  hosts: localhost
+  tasks:
+    - name: launch an instance
+      os_server:
+        name: RHEL Demo
+        state: present
+        image: "RHEL 7.3 Cloud"
+        flavor: "m1.small "
+        network: "Provisioning_102"
+        userdata: |
+          #cloud-config
+          # for reference:
+          # http://cloudinit.readthedocs.org/en/latest/topics/examples.html
+          # https://access.redhat.com/articles/rhel-atomic-cloud-init-faq
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud-user-pub-key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           - curl -k --data "host_config_key=dc7c0b52cd29cacceb8d3571257801ea" https://10.55.102.248:443/api/v1/job_templates/8/callback/
