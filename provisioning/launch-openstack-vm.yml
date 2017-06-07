@@ -9,7 +9,7 @@
         name: RHEL Demo
         state: present
         image: "RHEL 7.3 Cloud"
-        flavor: "m1.small "
+        flavor: "m1.small"
         network: "Provisioning_102"
         availability_zone: "nova"
         region_name: "RegionOne"
