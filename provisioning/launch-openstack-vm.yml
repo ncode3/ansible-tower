@@ -37,7 +37,7 @@
               lock-passwd: false
               sudo: ALL=(ALL) NOPASSWD:ALL
               ssh-authorized-keys:
-                - "{{ cloud-user-pub-key }}"
+                - "{{ cloud_user_pub_key }}"
             - name: root
               #ssh_pwauth: true
               lock-passwd: false
