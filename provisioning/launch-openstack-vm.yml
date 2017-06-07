@@ -13,11 +13,11 @@
         network: "Provisioning_102"
         availability_zone: "nova"
         region_name: "RegionOne"
-        auth_type: "password"
-        auth_url: "{{ vault_os_url }}"
-        username: "{{ vault_os_user }}"
-        password: "{{ vault_os_pass }}"
-        project_name: "Redhat Lab"
+        auth:
+          auth_url: "{{ vault_os_url }}"
+          username: "{{ vault_os_user }}"
+          password: "{{ vault_os_pass }}"
+          project_name: "Redhat Lab"
         key_name: "dtaylor-openstack"
         userdata: |
           #cloud-config
