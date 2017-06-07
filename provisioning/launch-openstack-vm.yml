@@ -14,7 +14,7 @@
         availability_zone: "nova"
         region_name: "RegionOne"
         auth_type: "password"
-        keypair: "dtaylor-openstack"
+        keyname: "dtaylor-openstack"
         userdata: |
           #cloud-config
           # for reference:
