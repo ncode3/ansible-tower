@@ -11,6 +11,10 @@
         image: "RHEL 7.3 Cloud"
         flavor: "m1.small "
         network: "Provisioning_102"
+        availability_zone: "nova"
+        region_name: "RegionOne"
+        auth_type: "password"
+        keypair: "dtaylor-openstack"
         userdata: |
           #cloud-config
           # for reference:
