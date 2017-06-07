@@ -1,18 +1,18 @@
 ---
-- vars:
-    packages: ['deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
-    enabled_svcs: ['sshd','network','rsyslog']
-    disabled_svcs: ['NetworkManager']
+vars:
+  packages: ['deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
+  enabled_svcs: ['sshd','network','rsyslog']
+  disabled_svcs: ['NetworkManager']
 # if you had a valuted file for your rh subscription info, you would put include it here
 #- include_vars: secrets.yml
 # or you can pass it along in tower UI
-    rh_subscription_pools: ['1234','5678']
-    rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms']
-    rh_disabled_repos: ['*']
-    rh_satellite_url: https://subscription.rhn.redhat.com
-    rh_satellite_org: None
-    rh_satellite_user: username
-    rh_satellite_pass: password
+  rh_subscription_pools: ['1234','5678']
+  rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms']
+  rh_disabled_repos: ['*']
+  rh_satellite_url: https://subscription.rhn.redhat.com
+  rh_satellite_org: None
+  rh_satellite_user: username
+  rh_satellite_pass: password
 
 - name: "Set up /etc/hosts file"
   shell: |
@@ -45,6 +45,12 @@
     password: "{{ rh_satellite_pass }}"
     pool_ids: "{{ rh_subscription_pools }}"
   become: true
+  register: rhsm_status
+
+- name: Check if registration is successful
+  shell: echo '{{ rhsm_status.stdout }}'
+  #when: "'SUGGESTIONS ON KERNEL' in rhsm_status.stdout"
+  #notify: fail hard
 
 - name: "Disabling all repos"
   shell: "subscription-manager repos --disable={{ item }}"
