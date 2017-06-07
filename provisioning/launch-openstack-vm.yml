@@ -13,11 +13,7 @@
         network: "Provisioning_102"
         availability_zone: "nova"
         region_name: "RegionOne"
-#        auth:
-#          auth_url: "{{ vault_os_url }}"
-#          username: "{{ vault_os_user }}"
-#          password: "{{ vault_os_pass }}"
-#          project_name: "{{ vault_os_project }}"
+        auto_ip: no
         key_name: "dtaylor-openstack"
         userdata: |
           #cloud-config
