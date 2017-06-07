@@ -55,7 +55,7 @@
   with_items: "{{ packages }}"
   become: true
 
-- name: "Custom configuration repo"
+- name: "Create custom configuration repo directory"
   file:
     path: /opt/git
     state: directory
