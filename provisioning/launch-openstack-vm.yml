@@ -51,3 +51,4 @@
           runcmd:
            - curl -k --data "host_config_key=dc7c0b52cd29cacceb8d3571257801ea" https://10.55.102.248:443/api/v1/job_templates/8/callback/
       become: True
+      sudo_user: root
