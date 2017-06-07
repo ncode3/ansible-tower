@@ -1,5 +1,6 @@
 ---
 # Creates a new instance with provisioning userdata using Cloud-Init
+- gather_facts: no
 - name: launch a compute instance
   hosts: localhost
   tasks:
