@@ -9,7 +9,7 @@ rh_satellite_org: None
 ## created with
 ## echo $plaintext_stuff | ansible-vault encrypt_string
 ## then enter the same passphrase as in ansible tower credentials
-cloud-user-pub-key: !vault |
+cloud_user_pub_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           61373063313333626531353262393966383664633237656232366163396234343831306533313734
           3738666135303365656566616139663538353937373764300a306534393265316434656362666461
