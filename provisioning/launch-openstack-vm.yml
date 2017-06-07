@@ -3,6 +3,12 @@
 - name: launch a compute instance
   hosts: localhost
   gather_facts: no
+  environment:
+#    OS_TENANT_NAME: "{{ vault_os_project }}"
+    OS_TENANT_ID: "{{ vault_os_projectid }}"
+    OS_USERNAME: "{{ vault_os_user }}"
+    OS_PASSWORD: "{{ vault_os_pass }}"
+    OS_AUTH_URL: "{{ vault_os_url }}"
   tasks:
     - name: launch an instance
       os_server:
@@ -53,9 +59,3 @@
           #    cloud-user:redhat123
           runcmd:
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
-      environment:
-#        OS_TENANT_NAME: "Redhat Lab"
-        OS_TENANT_ID: "{{ vault_os_projectid }}"
-        OS_USERNAME: "{{ vault_os_user }}"
-        OS_PASSWORD: "{{ vault_os_pass }}"
-        OS_AUTH_URL: "{{ vault_os_url }}"
