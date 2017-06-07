@@ -1,10 +1,18 @@
 ---
 - vars:
     tower_tarball_location: http://10.55.3.153/ansible-tower-setup-latest.tar.gz
-
+    tower_pkgs: ['python-boto','python-pip','python-heatclien','python-openstackclient','python2-shade']
 - include: firstboot.yml
 
-- unarchive:
+- name: "Install yum packages"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ packages }}"
+  become: true
+
+- name: "Grab tower tarball"
+  unarchive:
     src: "{{ tower_tarball_location }}"
     dest: /opt
     remote_src: True
