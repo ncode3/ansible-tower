@@ -31,7 +31,7 @@
     pool: "{{ rh_subscription_pools }}"
   become: true
   register: rhsm_status
-  when: extra_vars['rh_satellite_pass'] is undefined
+  when: extra_vars is undefined
 
 - name: Register and subscribe to multiple pools with Tower Variables
   redhat_subscription:
