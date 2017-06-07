@@ -59,7 +59,7 @@
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
       environment:
 #        OS_TENANT_NAME: "Redhat Lab"
-        OS_TENANT_ID: "29a1d715df4d4672a1710757d953f23c"
+        OS_TENANT_ID: "{{ vault_os_projectid }}"
         OS_USERNAME: "{{ vault_os_user }}"
         OS_PASSWORD: "{{ vault_os_pass }}"
         OS_AUTH_URL: "{{ vault_os_url }}"
