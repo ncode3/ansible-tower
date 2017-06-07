@@ -36,12 +36,11 @@
 #    pools: "{{ rh_subscription_pools }}"
   become: true
   register: rhsm_status
-  when: "'Not supported by a valid subscription' in rhsm_reg.stdout"
+  when: "'Overall Status: Current' not in rhsm_reg.stdout"
 
 - name: "Disabling all repos"
-  shell: "subscription-manager repos --disable=*"
-  #shell: "subscription-manager repos --disable={{ item }}"
-  #with_items: "{{ rh_disabled_repos }}"
+  shell: "subscription-manager repos --disable={{ item }}"
+  with_items: "{{ rh_disabled_repos }}"
   become: true
 
 - name: "Enabling needed repos"
