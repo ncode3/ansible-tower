@@ -2,7 +2,7 @@ packages: ['deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms']
-rh_disabled_repos: *
+rh_disabled_repos: "*"
 rh_satellite_url: https://subscription.rhn.redhat.com
 rh_satellite_org: None
 #rh_satellite_user: username
