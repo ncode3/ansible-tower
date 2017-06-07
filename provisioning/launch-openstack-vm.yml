@@ -48,5 +48,9 @@
           #    root:redhat123
           #    cloud-user:redhat123
           runcmd:
-           - curl -k --data "host_config_key=dc7c0b52cd29cacceb8d3571257801ea" https://10.55.102.248:443/api/v1/job_templates/8/callback/
-      environment: "{{ openstack_info }}"
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+      environment:
+        OS_TENANT_NAME: "Redhat Lab"
+        OS_USERNAME: "{{ vault_os_user }}"
+        OS_PASSWORD: "{{ vault_os_pass }}"
+        OS_AUTH_URL: "{{ vault_os_url }}"
