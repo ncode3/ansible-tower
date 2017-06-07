@@ -32,25 +32,25 @@
     state: present
     username: "{{ rh_satellite_user }}"
     password: "{{ rh_satellite_pass }}"
-    pool: "{{ rh_subscription_pools }}"
+    pool_ids: "{{ rh_subscription_pool_ids }}"
+#    pools: "{{ rh_subscription_pools }}"
   become: true
   register: rhsm_status
-  when: "extra_vars is undefined and 'Not supported by a valid subscription' in rhsm_reg.stdout"
+  when: "'Not supported by a valid subscription' in rhsm_reg.stdout"
 
-- name: Register and subscribe to multiple pools with Tower Variables
-  redhat_subscription:
-    state: present
-    username: "{{ extra_vars['rh_satellite_user'] }}"
-    password: "{{ extra_vars['rh_satellite_pass'] }}"
-    pool: "{{ extra_vars['rh_subscription_pools'] }}"
-  become: true
-  register: rhsm_status
-  when: "extra_vars is defined and 'Not supported by a valid subscription' in rhsm_reg.stdout"
+#- name: Register and subscribe to multiple pools with Tower Variables
+#  redhat_subscription:
+#    state: present
+#    username: "{{ extra_vars['rh_satellite_user'] }}"
+#    password: "{{ extra_vars['rh_satellite_pass'] }}"
+#  become: true
+#  register: rhsm_status
+#  when: "extra_vars is'Not supported by a valid subscription' in rhsm_reg.stdout"
 
-- name: Check if registration is successful
-  shell: echo '{{ rhsm_status.stdout }}'
-  #when: "'SUGGESTIONS ON KERNEL' in rhsm_status.stdout"
-  #notify: fail hard
+#- name: Check if registration is successful
+#  shell: echo '{{ rhsm_status.stdout }}'
+#  when: "'Current' in rhsm_status.stdout"
+#  notify: fail hard
 
 - name: "Disabling all repos"
   shell: "subscription-manager repos --disable={{ item }}"

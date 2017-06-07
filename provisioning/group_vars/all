@@ -7,4 +7,5 @@ rh_satellite_url: https://subscription.rhn.redhat.com
 rh_satellite_org: None
 rh_satellite_user: username
 rh_satellite_pass: password
-rh_subscription_pools: ['1234','5678']
+rh_subscription_pools: ^(Red Hat Enterprise Linux Developer Suite)$
+rh_subscription_pool_ids: ['1234','5678']
