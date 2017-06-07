@@ -6,9 +6,10 @@ rh_disabled_repos: ['*']
 rh_satellite_url: https://subscription.rhn.redhat.com
 rh_satellite_org: None
 ## vault info
-## created with
-## echo $plaintext_stuff | ansible-vault encrypt_string
+## create with !!!! NOTICE THE -n TO SUPPRESS THE NEWLINE !!! otherwise the newline is encrypted too ...
+## echo -n $plaintext_stuff | ansible-vault encrypt_string
 ## then enter the same passphrase as in ansible tower credentials
+##
 cloud_user_pub_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           61373063313333626531353262393966383664633237656232366163396234343831306533313734
