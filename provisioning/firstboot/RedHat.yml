@@ -38,20 +38,6 @@
   register: rhsm_status
   when: "'Not supported by a valid subscription' in rhsm_reg.stdout"
 
-#- name: Register and subscribe to multiple pools with Tower Variables
-#  redhat_subscription:
-#    state: present
-#    username: "{{ extra_vars['rh_satellite_user'] }}"
-#    password: "{{ extra_vars['rh_satellite_pass'] }}"
-#  become: true
-#  register: rhsm_status
-#  when: "extra_vars is'Not supported by a valid subscription' in rhsm_reg.stdout"
-
-#- name: Check if registration is successful
-#  shell: echo '{{ rhsm_status.stdout }}'
-#  when: "'Current' in rhsm_status.stdout"
-#  notify: fail hard
-
 - name: "Disabling all repos"
   shell: "subscription-manager repos --disable={{ item }}"
   with_items: "{{ rh_disabled_repos }}"
@@ -78,7 +64,7 @@
 - name: "Pull custom configuration from github"
   git:
     repo: 'https://github.com/syspimp/kubernetes-demo.git'
-    dest: /opt/git
+    dest: /opt/git/kubernetes-demo
 
 - name: "Updating MOTD"
   shell: cat custom/tiger.ascii > /etc/motd
