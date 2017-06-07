@@ -28,7 +28,7 @@
     state: present
     username: "{{ rh_satellite_user }}"
     password: "{{ rh_satellite_pass }}"
-    pool_ids: "{{ rh_subscription_pools }}"
+    pool: "{{ rh_subscription_pools }}"
   become: true
   register: rhsm_status
 
