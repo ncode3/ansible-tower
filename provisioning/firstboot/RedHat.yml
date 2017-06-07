@@ -24,7 +24,7 @@
   become: true
 
 - name: "Check if we are registered"
-  shell: "subscription-manager status"
+  shell: "subscription-manager status || true"
   register: rhsm_reg
 
 - name: Register and subscribe to multiple pools.
