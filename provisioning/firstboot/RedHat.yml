@@ -55,6 +55,18 @@
   with_items: "{{ packages }}"
   become: true
 
+# Only register if this system hasn't been registered before
+- stat: path=/etc/redhat-access-insights/.unregistered
+  register: unreg
+
+- name: "Configure Red Hat Access Insights Client"
+  template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
+  when: unreg.stat.exists == false
+
+- name: "Register to the Red Hat Access Insights Service"
+  command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
+  when: unreg.stat.exists == false
+
 - name: "Create custom configuration repo directory"
   file:
     path: /opt/git

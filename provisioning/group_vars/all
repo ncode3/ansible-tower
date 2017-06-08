@@ -1,4 +1,4 @@
-packages: ['deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
+packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms']
