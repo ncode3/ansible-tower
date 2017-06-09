@@ -8,13 +8,13 @@
   tasks:
     - name: launch an ec2 instance
       ec2:
-        key_name: tfound-ec2
-        instance_type: t2.micro
-        image: ami-6d1c2007
+        key_name: {{ aws_key_name }}
+        instance_type: {{ aws_instance_type }}
+        image: {{ aws_image_ami }}
         wait: yes
-        group: devtest
-        count: 3
-        #vpc_subnet_id:  subnet-29e63245
+        group: {{ aws_security_group }}
+        count: {{ number_of_vms }}
+        #vpc_subnet_id:  {{ aws_vpc_subnet_id }}
         assign_public_ip: yes
         userdata: |
           #cloud-config
