@@ -8,12 +8,12 @@
   tasks:
     - name: launch an ec2 instance
       ec2:
-        key_name: {{ aws_key_name }}
-        instance_type: {{ aws_instance_type }}
-        image: {{ aws_image_ami }}
+        key_name: "{{ aws_key_name }}"
+        instance_type: "{{ aws_instance_type }}"
+        image: "{{ aws_image_ami }}"
         wait: yes
-        group: {{ aws_security_group }}
-        count: {{ number_of_vms }}
+        group: "{{ aws_security_group }}"
+        count: "{{ number_of_vms }}"
         #vpc_subnet_id:  {{ aws_vpc_subnet_id }}
         assign_public_ip: yes
         userdata: |
