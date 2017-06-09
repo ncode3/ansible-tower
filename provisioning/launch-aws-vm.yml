@@ -13,8 +13,8 @@
         instance_type: "{{ aws_instance_type }}"
         image: "{{ aws_image_ami }}"
         wait: yes
-        #group: "{{ aws_security_group }}"
-        group: "{{ aws_security_group_id }}"
+        group: "{{ aws_security_group }}"
+        #group: "{{ aws_security_group_id }}"
         count: "{{ aws_number_of_vms }}"
         vpc_subnet_id:  "{{ aws_vpc_subnet_id }}"
         #assign_public_ip: yes
