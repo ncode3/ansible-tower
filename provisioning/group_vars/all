@@ -126,8 +126,8 @@ aws_instance_tags:
 aws_image_ami: "{{ centos7_ami }}"
 aws_key_name: tfound-ec2
 aws_instance_type: t2.micro
-aws_security_group: SecurityGroup:devtest
-aws_security_group_id: sg-9114fdf8
+aws_security_group: Redhat_Lab
+#aws_security_group_id: sg-edf7129c
 aws_vpc_id: vpc-b4f505d3
 aws_vpc_subnet_id: subnet-c72274b1
 
