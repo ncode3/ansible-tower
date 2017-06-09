@@ -1,0 +1,57 @@
+---
+# Creates a new instance with provisioning userdata using Cloud-Init
+- name: launch a demo instance in ec2
+  hosts: localhost
+  gather_facts: no
+  environment:
+    "{{ aws_info }}"
+  tasks:
+    - name: launch an ec2 instance
+      ec2:
+        key_name: tfound-ec2
+        instance_type: t2.micro
+        image: ami-6d1c2007
+        wait: yes
+        group: devtest
+        count: 3
+        #vpc_subnet_id:  subnet-29e63245
+        assign_public_ip: yes
+        userdata: |
+          #cloud-config
+          # for reference:
+          # http://cloudinit.readthedocs.org/en/latest/topics/examples.html
+          # https://access.redhat.com/articles/rhel-atomic-cloud-init-faq
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
