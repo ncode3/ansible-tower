@@ -17,6 +17,7 @@
         count: "{{ aws_number_of_vms }}"
         #vpc_subnet_id:  {{ aws_vpc_subnet_id }}
         assign_public_ip: yes
+        region: {{ aws_region }}
         user_data: |
           #cloud-config
           # for reference:
