@@ -35,7 +35,8 @@
 ---
 - name: "Control power on {{ ipmi_target }}, set to {{ powerstate }}"
   gather_facts: no
-  hosts: localhost
+  ## use localhost inventory
+  hosts: all
   vars:
     package: ipmiutil
     # use the ipmi address, not host address
