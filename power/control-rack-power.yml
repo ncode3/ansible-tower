@@ -36,7 +36,9 @@
 - name: "Control power on {{ ipmi_target }}, set to {{ powerstate }}"
   gather_facts: no
   ## use localhost inventory
-  hosts: all
+  hosts: localhost
+  connection: local
+  become: true
   vars:
     package: ipmiutil
     # use the ipmi address, not host address
@@ -46,7 +48,7 @@
     - name: "who am i"
       shell: "who am i"
       become: true
-      become_user: root
+      #become_user: root
       register: echoout
     
     - name: "who am i results"
@@ -55,7 +57,7 @@
     - name: "check if {{ package }} is installed"
       yum: list={{ package }}
       become: true
-      become_user: root
+      #become_user: root
       register: is_installed
     
     - name: "install {{ package }} if not exist"
@@ -63,7 +65,7 @@
         name: "{{ package }}"
         state: latest
       become: true
-      become_user: root
+      #become_user: root
       when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
 
     - name: "soft shutdown and power off for {{ ipmi_target }}"
