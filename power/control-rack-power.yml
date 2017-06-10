@@ -33,45 +33,45 @@
 #       -Z   set slave address of local MC
 #
 ---
-- gather_facts: no
+- name: "Control power on {{ ipmi_target }}, set to {{ powerstate }}"
+  gather_facts: no
   hosts: localhost
   vars:
     package: ipmiutil
     # use the ipmi address, not host address
     ipmi_target: 10.55.101.158
     powerstate: on
-
-tasks:
-  - name: "check if {{ package }} is installed"
-    yum: list={{ package }}
-    register: is_installed
+  tasks:
+    - name: "check if {{ package }} is installed"
+      yum: list={{ package }}
+      register: is_installed
+    
+    - name: "install {{ package }} if not exist"
+      yum:
+        name: "{{ package }}"
+        state: latest
+      when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+    
+    - name: "soft shutdown and power off for {{ ipmi_target }}"
+      shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate is 'shutdown'
   
-  - name: "install {{ package }} if not exist"
-    yum:
-      name: "{{ package }}"
-      state: latest
-    when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+    - name: "turn power off for {{ ipmi_target }}"
+      shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate is 'off'
+    
+    - name: "turn power on for {{ ipmi_target }}"
+      shell: ipmiutil reset -u -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate is 'on'
+    
+    - name: "soft reset for {{ ipmi_target }}"
+      shell: ipmiutil reset -o -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate is 'reset'
+    
+    - name: "hard reset for {{ ipmi_target }}"
+      shell: ipmiutil reset -r -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate is 'hard'
   
-  - name: "soft shutdown and power off for {{ ipmi_target }}"
-    shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-    when: powerstate is 'shutdown'
-
-  - name: "turn power off for {{ ipmi_target }}"
-    shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-    when: powerstate is 'off'
-  
-  - name: "turn power on for {{ ipmi_target }}"
-    shell: ipmiutil reset -u -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-    when: powerstate is 'on'
-  
-  - name: "soft reset for {{ ipmi_target }}"
-    shell: ipmiutil reset -o -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-    when: powerstate is 'reset'
-  
-  - name: "hard reset for {{ ipmi_target }}"
-    shell: ipmiutil reset -r -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-    when: powerstate is 'hard'
-
-  - name: "power cycle for {{ ipmi_target }}"
-    shell: ipmiutil reset -c -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-    when: powerstate is 'cycle'
+    - name: "power cycle for {{ ipmi_target }}"
+      shell: ipmiutil reset -c -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate is 'cycle'
