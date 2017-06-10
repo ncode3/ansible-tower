@@ -1,0 +1,13 @@
+---
+- name: deletes a demo instance in ec2 by tags
+  hosts: localhost
+  gather_facts: no
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+    AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
+  tasks:
+    - local_action:
+        module: ec2
+        instance_tags:
+          Name: "{{ aws_instance_tags }}"
+        state: absent

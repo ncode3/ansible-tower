@@ -1,3 +1,7 @@
+## the vault variables in this file were created with the command
+## echo -n "$plaintext" | ansible-vault encrypt_string
+## note the "echo -n" to suppress the newline
+## then enter the same passphrase as in ansible tower credentials
 packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
@@ -5,11 +9,6 @@ rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-se
 rh_disabled_repos: ['*']
 rh_satellite_url: https://subscription.rhn.redhat.com
 rh_satellite_org: None
-## vault info
-## create with !!!! NOTICE THE -n TO SUPPRESS THE NEWLINE !!! otherwise the newline is encrypted too ...
-## echo -n $plaintext_stuff | ansible-vault encrypt_string
-## then enter the same passphrase as in ansible tower credentials
-##
 cloud_user_pub_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           61373063313333626531353262393966383664633237656232366163396234343831306533313734
