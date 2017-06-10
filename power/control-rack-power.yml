@@ -51,6 +51,7 @@
         name: "{{ package }}"
         state: latest
       when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+      become: true
     
     - name: "soft shutdown and power off for {{ ipmi_target }}"
       shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
