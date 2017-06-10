@@ -1,21 +1,77 @@
+## this will change the power state for whatever server is passed as variable ipmi_target
+#Usage: ireset [-bcdDefhkmnoprsuwxy -N node -U user -P/-R pswd -EFTVY]
+# where -c  power Cycles the system
+#       -d  powers Down the system
+#       -D  soft-shutdown OS and power down
+#       -k  do Cold Reset of the BMC firmware
+#       -i<str>  set boot Initiator mailbox string
+#       -j<num>  set IANA number for boot Initiator
+#       -n  sends NMI to the system
+#       -o  soft-shutdown OS and reset
+#       -r  hard Resets the system
+#       -u  powers Up the system
+#       -m002000 specific MC (bus 00,sa 20,lun 00)
+#       -b  reboots to BIOS Setup
+#       -e  reboots to EFI
+#       -f  reboots to Floppy/Removable
+#       -h  reboots to Hard Disk
+#       -p  reboots to PXE via network
+#       -s  reboots to Service Partition
+#       -v  reboots to DVD/CDROM Media
+#       -w  Wait for BMC ready after reset
+#       -x  show eXtra debug messages
+#       -y  Yes, persist boot options [-befhpms]
+#       -N node  Nodename or IP address of target system
+#       -U user  Username for remote node
+#       -P/-R pswd  Remote Password
+#       -E   use password from Environment IPMI_PASSWORD
+#       -F   force driver type (e.g. imb, lan2)
+#       -J 0 use lanplus cipher suite 0: 0 thru 14, 3=default
+#       -T 1 use auth Type: 1=MD2, 2=MD5(default), 4=Pswd
+#       -V 2 use priVilege level: 2=user(default), 4=admin
+#       -Y   prompt for remote password
+#       -Z   set slave address of local MC
+#
 ---
 - gather_facts: no
+  hosts: localhost
   vars:
     package: ipmiutil
-- name: "check if {{ package }} is installed"
-  yum: list={{ package }}
-  register: is_installed
+    # use the ipmi address, not host address
+    ipmi_target: 10.55.101.158
+    powerstate: on
 
-- name: "install {{ package }} if not exist"
-  yum:
-    name: "{{ package }}"
-    state: latest
-  when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+tasks:
+  - name: "check if {{ package }} is installed"
+    yum: list={{ package }}
+    register: is_installed
+  
+  - name: "install {{ package }} if not exist"
+    yum:
+      name: "{{ package }}"
+      state: latest
+    when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+  
+  - name: "soft shutdown and power off for {{ ipmi_target }}"
+    shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    when: powerstate is 'shutdown'
 
-- name: "turn power off for {{ target }}"
-  shell: ipmiutil reset -d -N {{ target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-  when: extra_vars['target'] is undefined
+  - name: "turn power off for {{ ipmi_target }}"
+    shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    when: powerstate is 'off'
+  
+  - name: "turn power on for {{ ipmi_target }}"
+    shell: ipmiutil reset -u -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    when: powerstate is 'on'
+  
+  - name: "soft reset for {{ ipmi_target }}"
+    shell: ipmiutil reset -o -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    when: powerstate is 'reset'
+  
+  - name: "hard reset for {{ ipmi_target }}"
+    shell: ipmiutil reset -r -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    when: powerstate is 'hard'
 
-- name: "turn power off for {{ extra_vars['target'] }}"
-  shell: ipmiutil reset -d -N {{ extra_vars['target'] }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-  when: extra_vars['target'] is defined
+  - name: "power cycle for {{ ipmi_target }}"
+    shell: ipmiutil reset -c -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    when: powerstate is 'cycle'
