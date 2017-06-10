@@ -40,7 +40,7 @@
     package: ipmiutil
     # use the ipmi address, not host address
     ipmi_target: 10.55.101.158
-    powerstate: on
+    powerstate: "on"
   tasks:
     - name: "check if {{ package }} is installed"
       yum: list={{ package }}
