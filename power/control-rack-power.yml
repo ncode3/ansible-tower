@@ -37,7 +37,7 @@
   gather_facts: no
   ## use localhost inventory
   hosts: localhost
-  connection: local
+  #connection: local
   #become: true
   vars:
     package: ipmiutil
@@ -46,7 +46,7 @@
     powerstate: "on"
   tasks:
     - name: "who am i"
-      shell: "who am i"
+      shell: "sudo who am i"
       #become: true
       #become_user: root
       register: echoout
