@@ -82,12 +82,12 @@
     
     - name: "soft reset for {{ ipmi_target }}"
       shell: ipmiutil reset -o -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate is "reset"
+      when: powerstate == "reset"
     
     - name: "hard reset for {{ ipmi_target }}"
       shell: ipmiutil reset -r -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate is "hard"
+      when: powerstate == "hard"
   
     - name: "power cycle for {{ ipmi_target }}"
       shell: ipmiutil reset -c -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate is "cycle"
+      when: powerstate == "cycle"
