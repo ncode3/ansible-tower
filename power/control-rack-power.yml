@@ -37,7 +37,7 @@
   gather_facts: no
   ## use localhost inventory
   hosts: localhost
-  #connection: local
+  connection: local
   #become: true
   vars:
     package: ipmiutil
@@ -54,19 +54,19 @@
     - name: "who am i results"
       shell: "echo {{ echoout.stdout }}"
     
-    - name: "check if {{ package }} is installed"
-      yum: list={{ package }}
-      #become: true
-      #become_user: root
-      register: is_installed
+#    - name: "check if {{ package }} is installed"
+#      yum: list={{ package }}
+#      #become: true
+#      #become_user: root
+#      register: is_installed
     
-    - name: "install {{ package }} if not exist"
-      yum:
-        name: "{{ package }}"
-        state: latest
-      #become_user: root
-      when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
-      become: true
+#    - name: "install {{ package }} if not exist"
+#      yum:
+#        name: "{{ package }}"
+#        state: latest
+#      #become_user: root
+#      when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
+#      become: true
 
     - name: "soft shutdown and power off for {{ ipmi_target }}"
       shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
