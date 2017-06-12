@@ -45,21 +45,21 @@
     ipmi_target: 10.55.101.158
     powerstate: "on"
   tasks:
-    - name: "who am i"
-      shell: "sudo who am i"
-      #become: true
-      #become_user: root
-      register: echoout
-    
-    - name: "who am i results"
-      shell: "echo {{ echoout.stdout }}"
-    
+#    - name: "who am i"
+#      shell: "sudo who am i"
+#      #become: true
+#      #become_user: root
+#      register: echoout
+#    
+#    - name: "who am i results"
+#      shell: "echo {{ echoout.stdout }}"
+#    
 #    - name: "check if {{ package }} is installed"
 #      yum: list={{ package }}
 #      #become: true
 #      #become_user: root
 #      register: is_installed
-    
+#    
 #    - name: "install {{ package }} if not exist"
 #      yum:
 #        name: "{{ package }}"
