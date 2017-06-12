@@ -68,26 +68,38 @@
 #      when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
 #      become: true
 
-    - name: "soft shutdown and power off for {{ ipmi_target }}"
-      shell: ipmiutil reset -d -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    - name: "soft shutdown and power off for {{ ipmi_targets }}"
+      shell: ipmiutil reset -d -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "shutdown"
+      with_items:
+        - "{{ ipmi_targets }}"
   
-    - name: "turn power off for {{ ipmi_target }}"
-      shell: ipmiutil reset -d -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    - name: "turn power off for {{ ipmi_targets }}"
+      shell: ipmiutil reset -d -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "off"
+      with_items:
+        - "{{ ipmi_targets }}"
     
-    - name: "turn power on for {{ ipmi_target }}"
-      shell: ipmiutil reset -u -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    - name: "turn power on for {{ ipmi_targets }}"
+      shell: ipmiutil reset -u -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "on"
+      with_items:
+        - "{{ ipmi_targets }}"
     
-    - name: "soft reset for {{ ipmi_target }}"
-      shell: ipmiutil reset -o -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    - name: "soft reset for {{ ipmi_targets }}"
+      shell: ipmiutil reset -o -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "reset"
+      with_items:
+        - "{{ ipmi_targets }}"
     
-    - name: "hard reset for {{ ipmi_target }}"
-      shell: ipmiutil reset -r -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    - name: "hard reset for {{ ipmi_targets }}"
+      shell: ipmiutil reset -r -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "hard"
+      with_items:
+        - "{{ ipmi_targets }}"
   
-    - name: "power cycle for {{ ipmi_target }}"
-      shell: ipmiutil reset -c -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+    - name: "power cycle for {{ ipmi_targets }}"
+      shell: ipmiutil reset -c -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "cycle"
+      with_items:
+        - "{{ ipmi_targets }}"
