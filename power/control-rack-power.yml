@@ -69,25 +69,25 @@
 #      become: true
 
     - name: "soft shutdown and power off for {{ ipmi_target }}"
-      shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -d -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "shutdown"
   
     - name: "turn power off for {{ ipmi_target }}"
-      shell: ipmiutil reset -d -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -d -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "off"
     
     - name: "turn power on for {{ ipmi_target }}"
-      shell: ipmiutil reset -u -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -u -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "on"
     
     - name: "soft reset for {{ ipmi_target }}"
-      shell: ipmiutil reset -o -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -o -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "reset"
     
     - name: "hard reset for {{ ipmi_target }}"
-      shell: ipmiutil reset -r -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -r -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "hard"
   
     - name: "power cycle for {{ ipmi_target }}"
-      shell: ipmiutil reset -c -N {{ impi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -c -N {{ ipmi_target }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "cycle"
