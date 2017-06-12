@@ -104,8 +104,14 @@
       with_items:
         - "{{ ipmi_targets }}"
 
-    - name: "pxe boot on next reboot for {{ ipmi_targets }}"
+    - name: "reboot to pxe boot for {{ ipmi_targets }} temporarily"
       shell: ipmiutil reset -p -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "pxe"
+      with_items:
+        - "{{ ipmi_targets }}"
+
+    - name: "reboot to harddrive for {{ ipmi_targets }} and persist"
+      shell: ipmiutil reset -y -h -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate == "hdalways"
       with_items:
         - "{{ ipmi_targets }}"
