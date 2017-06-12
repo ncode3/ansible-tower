@@ -103,3 +103,9 @@
       when: powerstate == "cycle"
       with_items:
         - "{{ ipmi_targets }}"
+
+    - name: "pxe boot on next reboot for {{ ipmi_targets }}"
+      shell: ipmiutil reset -p -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate == "pxe"
+      with_items:
+        - "{{ ipmi_targets }}"
