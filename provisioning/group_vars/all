@@ -2,9 +2,12 @@
 ## echo -n "$plaintext" | ansible-vault encrypt_string
 ## note the "echo -n" to suppress the newline
 ## then enter the same passphrase as in ansible tower credentials
+##
+## general settings
 packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
+## redhat subscription management related
 rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms']
 rh_disabled_repos: ['*']
 rh_satellite_url: https://subscription.rhn.redhat.com
@@ -72,6 +75,9 @@ rh_subscription_pool_ids: !vault |
           64383437646535633331666466363332643133633561373636396134306162373266666633353035
           32616339323463383161643732363561373832623134663664393634363736373333383165653764
           64663236313836663131
+## openstack related
+openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
+openstack_packages: ['yum-utils','openstack-packstack']
 vault_os_adminuser: admin
 vault_os_adminpass: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -110,6 +116,7 @@ vault_os_url: !vault |
           30653966363264663766613733386439646135376531666338303263663361316133373839646362
           3238393438613638350a366661613466343231353561656131643539653736353535616565383638
           35633363373333633964313031386566613538386465316666303839663630323666
+## amazon aws related
 AWS_ACCESS_KEY_ID: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           34366334613165376332353130396139663431376131376561343937363562303237353639396366
@@ -137,8 +144,9 @@ aws_security_group: Redhat_Lab
 #aws_security_group_id: sg-edf7129c
 aws_vpc_id: vpc-b4f505d3
 aws_vpc_subnet_id: subnet-c72274b1
-openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
-openstack_packages: ['yum-utils','openstack-packstack']
+aws_security_private_group: Redhat_Lab_private
+aws_security_public_group: Redhat_LabSG_public
+## ipmi power control related
 ipmi_user: root
 ipmi_pass: !vault |
           $ANSIBLE_VAULT;1.1;AES256
