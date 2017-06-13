@@ -103,13 +103,13 @@
               ssh-authorized-keys:
                 - "{{ cloud_user_pub_key }}"
             - name: root
-              #ssh_pwauth: true
+              ssh_pwauth: true
               lock-passwd: false
               expire: false
-          #ssh_pwauth: true
-          #chpasswd:
-          #  list: |
-          #    root:redhat123
+          ssh_pwauth: true
+          chpasswd:
+            list: |
+              root:redhat123
           #    cloud-user:redhat123
           runcmd:
            # this is post configuration job template
@@ -157,13 +157,13 @@
               ssh-authorized-keys:
                 - "{{ cloud_user_pub_key }}"
             - name: root
-              #ssh_pwauth: true
+              ssh_pwauth: true
               lock-passwd: false
               expire: false
-          #ssh_pwauth: true
-          #chpasswd:
-          #  list: |
-          #    root:redhat123
+          ssh_pwauth: true
+          chpasswd:
+            list: |
+              root:redhat123
           #    cloud-user:redhat123
           runcmd:
            # this is post configuration job template
