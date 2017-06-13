@@ -66,18 +66,20 @@
     - name: "Set ntp to true"
       shell: |
         timedatectl set-ntp true
+        reboot
       poll: 0
       async: 0
       become: true
+      ignore_errors: yes
 
-#    - name: Wait for server to restart
-#      local_action:
-#        module: wait_for
-#          host={{ ansible_ssh_host }}
-#          port={{ ansible_ssh_port }}
-#          delay=1
-#          timeout=300
-#
+    - name: Wait for server to restart
+      local_action:
+        module: wait_for
+          host={{ ansible_ssh_host }}
+          port={{ ansible_ssh_port }}
+          delay=1
+          timeout=300
+
     - name: "Install OSE 3.3"
       shell: |
         mkdir -p /var/log/openshift-install
