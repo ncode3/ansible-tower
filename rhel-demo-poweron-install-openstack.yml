@@ -5,6 +5,8 @@
 - name: "Install Openstack 10 all in one"
   hosts: 10.55.102.158
   tasks:
+#    - include: "power/control-rack-power.yml"
+    - include: "provisioning/group_vars/all"
     - include: "provisioning/firstboot/{{ ansible_os_family }}.yml"
    
     - name: "Run Security Update Job"
