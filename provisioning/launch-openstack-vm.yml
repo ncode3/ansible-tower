@@ -10,6 +10,14 @@
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
   tasks:
+    - name: "create {{ os_volume_size }}g test volume"
+      os_volume:
+        state: present
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        size: "{{ os_volume_size }}"
+        display_name: "{{ os_volume_name }}"
+      when: os_volume_name is defined
+
     - name: launch an instance
       os_server:
         name: "{{ os_server['name'] }}"
@@ -60,3 +68,58 @@
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+        volumes:
+          - "{{ os_volume_name }}"
+      when: os_volume_name is defined
+
+    - name: launch an instance with no volume
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: present
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          # for reference:
+          # http://cloudinit.readthedocs.org/en/latest/topics/examples.html
+          # https://access.redhat.com/articles/rhel-atomic-cloud-init-faq
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+      when: os_volume_name is undefined
