@@ -4,7 +4,7 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
-packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
+packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget']
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 ## redhat subscription management related
