@@ -7,7 +7,7 @@
   tasks:
 #    - include: "power/control-rack-power.yml"
     - include: "provisioning/group_vars/all"
-    - include: "provisioning/firstboot/{{ ansible_os_family }}.yml"
+    - include: "provisioning/firstboot.yml"
    
     - name: "Run Security Update Job"
       shell: "curl -k --data 'host_config_key={{ redhat_insights_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ redhat_insights_jobid }}/callback/"
