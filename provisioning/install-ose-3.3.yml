@@ -5,75 +5,78 @@
     ose_svcs: ['docker','chronyd']
 
 - include: firstboot.yml
+# Launches new OSE 3.3 instance with provisioning userdata using Cloud-Init
+- name: launch a compute instance
+  hosts: all
+  tasks:
+    - name: "Install OSE yum packages"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ ose_pkgs }}"
+      become: true
 
-- name: "Install OSE yum packages"
-  yum:
-    name: "{{ item }}"
-    state: latest
-  with_items: "{{ ose_pkgs }}"
-  become: true
+    - template:
+        src: /templates/ose/installer.cfg.yml.j2
+        dest: /root/.config/openshift/installer.cfg.yml
+        owner: root
+        group: root
+        mode: 0755
 
-- template:
-    src: /templates/ose/installer.cfg.yml.j2
-    dest: /root/.config/openshift/installer.cfg.yml
-    owner: root
-    group: root
-    mode: 0755
+    - template:
+        src: /templates/ose/docker-storage-setup.j2
+        dest: /etc/sysconfig/docker-storage-setup
+        owner: root
+        group: root
+        mode: 0644
 
-- template:
-    src: /templates/ose/docker-storage-setup.j2
-    dest: /etc/sysconfig/docker-storage-setup
-    owner: root
-    group: root
-    mode: 0644
+    - template:
+        src: /templates/ose/docker.j2
+        dest: /etc/sysconfig/docker
+        owner: root
+        group: root
+        mode: 0644
 
-- template:
-    src: /templates/ose/docker.j2
-    dest: /etc/sysconfig/docker
-    owner: root
-    group: root
-    mode: 0644
-    
-- template:
-    src: /templates/ose/hosts.j2
-    dest: /root/.config/openshift/hosts
-    owner: root
-    group: root
-    mode: 0755
-    
-- name: "Setup docker storage, requires a separate volume on /dev/vdb"
-  shell: |
-    docker-storage-setup
+    - template:
+        src: /templates/ose/hosts.j2
+        dest: /root/.config/openshift/hosts
+        owner: root
+        group: root
+        mode: 0755
 
-- name: "Enabling and restarting services {{ ose_svcs }}"
-  service:
-    name: "{{ item }}"
-    state: restarted
-    enabled: yes
-  with_items: "{{ ose_svcs }}"
-  become: true
+    - name: "Setup docker storage, requires a separate volume on /dev/vdb"
+      shell: |
+        docker-storage-setup
 
-- name: "Set ntp to true and reboot"
-  shell: |
-    timedatectl set-ntp true
-    reboot
-  poll: 0
-  become: true
+    - name: "Enabling and restarting services {{ ose_svcs }}"
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items: "{{ ose_svcs }}"
+      become: true
 
-- name: Wait for server to restart
-  local_action:
-    module: wait_for
-      host={{ ansible_ssh_host }}
-      port={{ ansible_ssh_port }}
-      delay=1
-      timeout=300
+    - name: "Set ntp to true and reboot"
+      shell: |
+        timedatectl set-ntp true
+        reboot
+      poll: 0
+      become: true
 
-- name: "Install OSE 3.3"
-  shell: |
-    mkdir -p /var/log/openshift-install
-    newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
-    atomic-openshift-installer -u install
-    htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
-    oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
-    oc whoam i -t
-  become: true
+    - name: Wait for server to restart
+      local_action:
+        module: wait_for
+          host={{ ansible_ssh_host }}
+          port={{ ansible_ssh_port }}
+          delay=1
+          timeout=300
+
+    - name: "Install OSE 3.3"
+      shell: |
+        mkdir -p /var/log/openshift-install
+        newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
+        atomic-openshift-installer -u install
+        htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
+        oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
+        oc whoam i -t
+      become: true
