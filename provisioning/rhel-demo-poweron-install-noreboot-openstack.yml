@@ -38,3 +38,12 @@
     - name: "Run packstack against answer file"
       shell: "packstack --answer-file=/root/packstack-answer.txt"
       become: true
+
+    - name: "Create lab project and user"
+      shell: |
+        . /root/keystone_admin
+        openstack project create --description 'Redhat_Lab' Redhat_Lab
+        openstack user create --project Redhat_Lab --password redhat123 dtaylor
+      args:
+        chdir: /root
+      become: true
