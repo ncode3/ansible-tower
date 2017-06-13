@@ -111,9 +111,25 @@
             list: |
               root:redhat123
           #    cloud-user:redhat123
+          write_files:
+          - path: /tmp/firstboot.sh
+            permissions: '0755'
+            owner: root:root
+            content: |
+              #!/bin/bash
+              # managed by cloud-config
+              # this exists to give aws networking time to come up before phoning home
+              if [ -d /var/log/firstboot ]
+              then
+                 echo "*** firstboot.sh already run"
+                 echo "*** firstboot.sh delete /var/log/firstboot to run again"
+                 exit 0
+              fi
+              sleep 60
+              curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+           - /tmp/firstboot.sh
 
     - name: launch an ec2 instance in a private network
       when: aws_vpc_subnet_privateid is defined
