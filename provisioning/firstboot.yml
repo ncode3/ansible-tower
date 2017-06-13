@@ -2,7 +2,7 @@
 - name: Firstboot configuration tasks
   hosts: all
   tasks:
-    - include: "firstboot/{{ ansible_os_family }}.yml"
+    - include: "firstboot/{{ ansible_distribution }}.yml"
 
 # Commented out to demo in the Ansible Tower
 #    - name: "Run Security Update Job"
