@@ -4,6 +4,11 @@
 - name: launch a compute instance
   hosts: all
   tasks:
+    - name: "Enabling OSE needed repos"
+      shell: "subscription-manager repos --enable={{ item }}"
+      with_items: "{{ ose_repos }}"
+      become: true
+
     - name: "Install OSE yum packages"
       yum:
         name: "{{ item }}"
