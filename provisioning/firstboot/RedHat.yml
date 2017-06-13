@@ -27,7 +27,7 @@
   shell: "subscription-manager status || true"
   register: rhsm_reg
 
-- name: Register and subscribe to multiple pools.
+- name: Register and subscribe to multiple pools for virtual hosts
   redhat_subscription:
     state: present
     username: "{{ rh_satellite_user }}"
@@ -36,7 +36,18 @@
 #    pools: "{{ rh_subscription_pools }}"
   become: true
   register: rhsm_status
-  when: "'Overall Status: Current' not in rhsm_reg.stdout"
+  when: ( "'Overall Status: Current' not in rhsm_reg.stdout" ) and ( ansible_virtualization_role == 'guest' )
+
+- name: Register and subscribe to multiple pools for physical hosts
+  redhat_subscription:
+    state: present
+    username: "{{ rh_satellite_user }}"
+    password: "{{ rh_satellite_pass }}"
+    pool_ids: "{{ rh_subscription_pool_physical_ids }}"
+#    pools: "{{ rh_subscription_pools }}"
+  become: true
+  register: rhsm_status
+  when: ( "'Overall Status: Current' not in rhsm_reg.stdout" ) and ( ansible_virtualization_role != 'guest' )
 
 - name: "Disabling all repos"
   shell: "subscription-manager repos --disable={{ item }}"
