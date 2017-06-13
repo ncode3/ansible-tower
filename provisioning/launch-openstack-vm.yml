@@ -18,7 +18,7 @@
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
-        region_name: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['region_name'] }}"
         auto_ip: "{{ os_server['auto_ip'] }}"
         key_name: "{{ os_server['key_name'] }}"
         userdata: |
