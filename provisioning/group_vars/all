@@ -156,7 +156,7 @@ aws_instance_type: t2.micro
 aws_security_group: Redhat_Lab
 #aws_security_group_id: sg-edf7129c
 aws_vpc_id: vpc-b4f505d3
-aws_vpc_subnet_id: subnet-c72274b1
+#aws_vpc_subnet_id: subnet-c72274b1
 aws_security_private_group: Redhat_LabSG_private
 aws_security_public_group: Redhat_LabSG_public
 ## ipmi power control related
