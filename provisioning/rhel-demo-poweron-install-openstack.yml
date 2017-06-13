@@ -1,8 +1,4 @@
 ---
-- vars:
-    openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
-    packages: ['yum-utils','openstack-packstack']
-
 - include: "firstboot.yml"
 
 - name: "Install Openstack 10 all in one"
@@ -22,7 +18,7 @@
       yum:
         name: "{{ item }}"
         state: latest
-      with_items: "{{ packages }}"
+      with_items: "{{ openstack_packages }}"
       become: true
 
     - name: "Run packstack --allinone"
