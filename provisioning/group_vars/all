@@ -164,3 +164,6 @@ ipmi_pass: !vault |
           37366462313466323763313364633962616434643231386661343361343666623237333163616163
           3430333830386536350a626538653934623932306366616439376466363065333839633930626432
           3164
+ose_repos: ['rhel-7-server-ose-3.3-rpms']
+ose_pkgs: ['atomic-openshift-utils','docker','net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools']
+ose_svcs: ['docker','chronyd']

@@ -1,9 +1,4 @@
 ---
-- vars:
-    ose_repos: ['rhel-7-server-ose-3.3-rpms']
-    ose_pkgs: ['atomic-openshift-utils','docker','net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools']
-    ose_svcs: ['docker','chronyd']
-
 - include: firstboot.yml
 # Launches new OSE 3.3 instance with provisioning userdata using Cloud-Init
 - name: launch a compute instance
