@@ -26,6 +26,7 @@
           - device_name: /dev/sda1
             volume_type: gp2
             volume_size: "{{ aws_volume_size }}"
+            delete_on_termination: true
         user_data: |
           #cloud-config
           # for reference:
@@ -85,6 +86,7 @@
           - device_name: /dev/sda1
             volume_type: gp2
             volume_size: "{{ aws_volume_size }}"
+            delete_on_termination: true
         user_data: |
           #cloud-config
           # for reference:
@@ -160,6 +162,7 @@
           - device_name: /dev/sda1
             volume_type: gp2
             volume_size: "{{ aws_volume_size }}"
+            delete_on_termination: true
         user_data: |
           #cloud-config
           # for reference:
