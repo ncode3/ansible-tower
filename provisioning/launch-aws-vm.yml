@@ -52,10 +52,10 @@
               #ssh_pwauth: true
               lock-passwd: false
               expire: false
-          #ssh_pwauth: true
-          #chpasswd:
-          #  list: |
-          #    root:redhat123
+          ssh_pwauth: true
+          chpasswd:
+            list: |
+              root:redhat123
           #    cloud-user:redhat123
           runcmd:
            # this is post configuration job template
