@@ -12,15 +12,15 @@
   tasks:
     - name: launch an instance
       os_server:
-        name: RHEL Demo
+        name: "{{ os_server['name'] }}"
         state: present
-        image: "RHEL 7.3 Cloud"
-        flavor: "m1.small"
-        network: "Provisioning_102"
-        availability_zone: "nova"
-        region_name: "RegionOne"
-        auto_ip: no
-        key_name: "dtaylor-openstack"
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['availability_zone'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
         userdata: |
           #cloud-config
           # for reference:

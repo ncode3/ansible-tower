@@ -3,7 +3,7 @@
   tasks:
   - name: restart greenhouse
     shell: sleep 2 && shutdown -r now "Ansible Tower triggered reboot"
-    async: 1
+    async: 0
     poll: 0
     sudo: false
     ignore_errors: true

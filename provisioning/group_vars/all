@@ -7,6 +7,11 @@
 packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget']
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
+## ansible api server
+host_config_server: 10.55.102.248
+## redhat insights job id
+redhat_insights_key: 990c2493aefba904a89081496fc0319b
+redhat_insights_jobid: 117
 ## redhat subscription management related
 rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms']
 rh_disabled_repos: ['*']
