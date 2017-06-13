@@ -45,7 +45,7 @@
   shell: |
     docker-storage-setup
 
-- name: "Enabling and restarting services {{ enabled_svcs }}"
+- name: "Enabling and restarting services {{ ose_svcs }}"
   service:
     name: "{{ item }}"
     state: restarted
