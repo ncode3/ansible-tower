@@ -27,6 +27,7 @@
     state: stopped
     enabled: no
   with_items: "{{ disabled_svcs }}"
+  ignore_errors: yes
   become: true
 
 - name: "Check if we are registered"

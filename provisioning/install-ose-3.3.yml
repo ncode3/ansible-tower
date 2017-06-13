@@ -85,5 +85,5 @@
         atomic-openshift-installer -u install
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
         oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
-        oc whoam i -t
+        oc whoami -t
       become: true
