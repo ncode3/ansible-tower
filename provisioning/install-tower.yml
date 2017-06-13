@@ -10,6 +10,7 @@
         state: latest
       with_items: "{{ tower_pkgs }}"
       become: true
+      ignore_errors: yes
 
     - name: "Grab tower tarball"
       unarchive:
