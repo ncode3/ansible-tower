@@ -137,6 +137,10 @@ aws_number_of_vms: 2
 centos7_ami: ami-6d1c2007
 aws_instance_tags:
   Name: RHEL Ansible Demo VM
+aws_instance_private_tags:
+  Name: Private RHEL Ansible Demo VM
+aws_instance_public_tags:
+  Name: Public RHEL Ansible Demo VM
 aws_image_ami: "{{ centos7_ami }}"
 aws_key_name: tfound-ec2
 aws_instance_type: t2.micro
