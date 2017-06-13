@@ -9,7 +9,7 @@ enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 ## tower related
 tower_tarball_location: http://ec2-54-234-230-108.compute-1.amazonaws.com/tower/ansible-tower-setup-latest.tar.gz
-tower_pkgs: ['python-boto','python2-pip','python-heatclien','python-openstackclient','python2-shade']
+tower_pkgs: ['python2-boto','python2-pip','python-heatclient','python-openstackclient','python2-shade']
 ## ansible api server
 host_config_server: 10.55.102.248
 ## redhat insights job id
