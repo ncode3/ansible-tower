@@ -70,7 +70,7 @@
 #      become: true
 
     - name: "soft shutdown and power off for {{ ipmi_targets }}"
-      shell: ipmiutil reset -d -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      shell: ipmiutil reset -D -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
       when: powerstate == "shutdown"
       with_items:
         - "{{ ipmi_targets }}"
@@ -116,3 +116,15 @@
       when: powerstate == "hdalways"
       with_items:
         - "{{ ipmi_targets }}"
+
+    - name: Wait for server to restart
+      local_action:
+        module: wait_for
+          host=10.55.102.158
+          port=22
+          delay=1
+          timeout=300
+      when: ( powerstate == "on" ) or
+            ( powerstate == "hard" ) or
+            ( powerstate == "cycle" ) or
+            ( powerstate == "reset" )
