@@ -1,0 +1,31 @@
+---
+- vars:
+    openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
+    packages: ['yum-utils','openstack-packstack']
+
+- name: "Install Openstack 10 all in one"
+  hosts: 10.55.102.158
+  tasks:
+#    - include: "power/control-rack-power.yml"
+
+    - name: "include firstboot playbook"
+      include: "firstboot.yml"
+   
+    - name: "Run Security Update Job"
+      shell: "curl -k --data 'host_config_key={{ redhat_insights_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ redhat_insights_jobid }}/callback/"
+
+    - name: "Enabling needed repos for Openstack 10"
+      shell: "subscription-manager repos --enable={{ item }}"
+      with_items: "{{ openstack_enabled_repos }}"
+      become: true
+    
+    - name: "Install Openstack 10 Yum packages"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ packages }}"
+      become: true
+
+    - name: "Run packstack --allinone"
+      shell: "packstack --allinone"
+      become: true
