@@ -17,28 +17,28 @@
       become: true
 
     - template:
-        src: /templates/ose/installer.cfg.yml.j2
+        src: /ose/installer.cfg.yml.j2
         dest: /root/.config/openshift/installer.cfg.yml
         owner: root
         group: root
         mode: 0755
 
     - template:
-        src: /templates/ose/docker-storage-setup.j2
+        src: /ose/docker-storage-setup.j2
         dest: /etc/sysconfig/docker-storage-setup
         owner: root
         group: root
         mode: 0644
 
     - template:
-        src: /templates/ose/docker.j2
+        src: /ose/docker.j2
         dest: /etc/sysconfig/docker
         owner: root
         group: root
         mode: 0644
 
     - template:
-        src: /templates/ose/hosts.j2
+        src: /ose/hosts.j2
         dest: /root/.config/openshift/hosts
         owner: root
         group: root
