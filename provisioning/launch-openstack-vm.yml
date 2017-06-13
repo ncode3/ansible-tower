@@ -16,7 +16,7 @@
         availability_zone: "{{ os_server['availability_zone'] }}"
         size: "{{ os_volume_size }}"
         display_name: "{{ os_volume_name }}"
-      when: os_volume_name is defined
+      when: os_create_volume == "yes"
 
     - name: launch an instance
       os_server:
@@ -70,7 +70,7 @@
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
         volumes:
           - "{{ os_volume_name }}"
-      when: os_volume_name is defined
+      when: os_create_volume == "yes"
 
     - name: launch an instance with no volume
       os_server:
@@ -122,4 +122,4 @@
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
-      when: os_volume_name is undefined
+      when: os_create_volume == "yes"
