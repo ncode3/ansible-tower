@@ -9,5 +9,6 @@
     - local_action:
         module: ec2
         instance_tags:
+        region: "{{ aws_region }}"
           Name: "{{ aws_instance_tags }}"
         state: absent
