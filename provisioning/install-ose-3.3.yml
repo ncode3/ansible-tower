@@ -51,8 +51,6 @@
         group: root
         mode: 0644
 
-
-
     - name: "Setup docker storage, requires a separate volume on /dev/vdb"
       shell: |
         docker-storage-setup
@@ -70,6 +68,7 @@
         timedatectl set-ntp true
         reboot
       poll: 0
+      async: 0
       become: true
 
     - name: Wait for server to restart
