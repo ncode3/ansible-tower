@@ -16,12 +16,26 @@
       with_items: "{{ ose_pkgs }}"
       become: true
 
+    - file:
+        path: /root/.config/openshift
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
     - template:
         src: ose/installer.cfg.yml.j2
         dest: /root/.config/openshift/installer.cfg.yml
         owner: root
         group: root
-        mode: 0755
+        mode: 0644
+
+    - template:
+        src: ose/hosts.j2
+        dest: /root/.config/openshift/hosts
+        owner: root
+        group: root
+        mode: 0644
 
     - template:
         src: ose/docker-storage-setup.j2
@@ -37,12 +51,7 @@
         group: root
         mode: 0644
 
-    - template:
-        src: ose/hosts.j2
-        dest: /root/.config/openshift/hosts
-        owner: root
-        group: root
-        mode: 0755
+
 
     - name: "Setup docker storage, requires a separate volume on /dev/vdb"
       shell: |
