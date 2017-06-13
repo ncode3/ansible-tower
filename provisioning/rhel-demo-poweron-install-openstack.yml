@@ -36,8 +36,13 @@
         group: root
         mode: 0644
 
-    - name: "Run packstack against answer file"
-      shell: "packstack --answer-file=/root/packstack-answer.txt"
+#    - name: "Run packstack against answer file"
+#      shell: "packstack --answer-file=/root/packstack-answer.txt"
+#      become: true
+#
+## for demo use
+    - name: "Run packstack --allinone"
+      shell: "packstack --allinone"
       become: true
 
     - name: "Create lab project and user"
