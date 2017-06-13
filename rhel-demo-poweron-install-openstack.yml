@@ -24,6 +24,6 @@
       with_items: "{{ packages }}"
       become: true
 
-   - name: "Run packstack --allinone"
-     shell: "packstack --allinone"
-     become: true
+    - name: "Run packstack --allinone"
+      shell: "packstack --allinone"
+      become: true
