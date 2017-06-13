@@ -19,14 +19,14 @@
       with_items: "{{ openstack_packages }}"
       become: true
 
-    - name: "apply fix for packstack bugzilla 1147811 #1"
+    - name: "apply fix for packstack bugzilla 1147811 part 1"
       lineinfile:
         - path: /usr/share/openstack-puppet/modules/packstack/manifests/nova/compute.pp
           state: present
           regexp: "^'libvirt/live_migration_uri':$"
           line: "#'libvirt/live_migration_uri':"
 
-    - name: "apply fix for packstack bugzilla 1147811 #2"
+    - name: "apply fix for packstack bugzilla 1147811 part 2"
       lineinfile:
         - path: /usr/share/openstack-puppet/modules/packstack/manifests/nova/compute.pp
           state: present
