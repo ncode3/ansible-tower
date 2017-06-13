@@ -8,7 +8,7 @@
       yum:
         name: "{{ item }}"
         state: latest
-      with_items: "{{ tower_packages }}"
+      with_items: "{{ tower_pkgs }}"
       become: true
 
     - name: "Grab tower tarball"
