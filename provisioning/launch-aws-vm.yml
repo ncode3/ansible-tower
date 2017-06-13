@@ -23,7 +23,7 @@
         region: "{{ aws_region }}"
         instance_tags: "{{ aws_instance_tags }}"
         volumes:
-          - device_name: /dev/xvda
+          - device_name: /dev/sda1
             volume_type: gp2
             volume_size: "{{ aws_volume_size }}"
         user_data: |
@@ -82,7 +82,7 @@
         region: "{{ aws_region }}"
         instance_tags: "{{ aws_instance_public_tags }}"
         volumes:
-          - device_name: /dev/xvda
+          - device_name: /dev/sda1
             volume_type: gp2
             volume_size: "{{ aws_volume_size }}"
         user_data: |
@@ -157,7 +157,7 @@
         region: "{{ aws_region }}"
         instance_tags: "{{ aws_instance_private_tags }}"
         volumes:
-          - device_name: /dev/xvda
+          - device_name: /dev/sda1
             volume_type: gp2
             volume_size: "{{ aws_volume_size }}"
         user_data: |
