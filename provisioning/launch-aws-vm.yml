@@ -74,7 +74,7 @@
         vpc_subnet_id:  "{{ aws_vpc_subnet_publicid }}"
         assign_public_ip: yes
         region: "{{ aws_region }}"
-        instance_tags: "{{ aws_instance_tags }}"
+        instance_tags: "{{ aws_instance_public_tags }}"
         user_data: |
           #cloud-config
           # for reference:
@@ -128,7 +128,7 @@
         vpc_subnet_id:  "{{ aws_vpc_subnet_privateid }}"
         #assign_public_ip: yes
         region: "{{ aws_region }}"
-        instance_tags: "{{ aws_instance_tags }}"
+        instance_tags: "{{ aws_instance_private_tags }}"
         user_data: |
           #cloud-config
           # for reference:
