@@ -22,6 +22,10 @@
         assign_public_ip: "{{ aws_assign_public_ip }}"
         region: "{{ aws_region }}"
         instance_tags: "{{ aws_instance_tags }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_type: gp2
+            volume_size: "{{ aws_volume_size }}"
         user_data: |
           #cloud-config
           # for reference:
@@ -77,6 +81,10 @@
         assign_public_ip: yes
         region: "{{ aws_region }}"
         instance_tags: "{{ aws_instance_public_tags }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_type: gp2
+            volume_size: "{{ aws_volume_size }}"
         user_data: |
           #cloud-config
           # for reference:
@@ -148,6 +156,10 @@
         #assign_public_ip: yes
         region: "{{ aws_region }}"
         instance_tags: "{{ aws_instance_private_tags }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_type: gp2
+            volume_size: "{{ aws_volume_size }}"
         user_data: |
           #cloud-config
           # for reference:

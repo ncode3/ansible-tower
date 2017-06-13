@@ -159,6 +159,7 @@ aws_vpc_id: vpc-b4f505d3
 #aws_vpc_subnet_id: subnet-c72274b1
 aws_security_private_group: Redhat_LabSG_private
 aws_security_public_group: Redhat_LabSG_public
+aws_volume_size: 10
 ## ipmi power control related
 ipmi_user: root
 ipmi_pass: !vault |
