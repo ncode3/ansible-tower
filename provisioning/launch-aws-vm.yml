@@ -7,7 +7,8 @@
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
     AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
   tasks:
-    - name: launch an ec2 instance
+    - name: launch an ec2 instance in an isolated network
+      when: aws_vpc_subnet_id is defined
       ec2:
         key_name: "{{ aws_key_name }}"
         instance_type: "{{ aws_instance_type }}"
@@ -59,3 +60,112 @@
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+
+    - name: launch an ec2 instance in a public vpc
+      when: aws_vpc_subnet_publicid is defined
+      ec2:
+        key_name: "{{ aws_key_name }}"
+        instance_type: "{{ aws_instance_type }}"
+        image: "{{ aws_image_ami }}"
+        wait: yes
+        group: "{{ aws_security_group }}"
+        #group: "{{ aws_security_group_id }}"
+        count: "{{ aws_number_of_vms }}"
+        vpc_subnet_id:  "{{ aws_vpc_subnet_publicid }}"
+        assign_public_ip: yes
+        region: "{{ aws_region }}"
+        instance_tags: "{{ aws_instance_tags }}"
+        user_data: |
+          #cloud-config
+          # for reference:
+          # http://cloudinit.readthedocs.org/en/latest/topics/examples.html
+          # https://access.redhat.com/articles/rhel-atomic-cloud-init-faq
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+
+    - name: launch an ec2 instance in a private network
+      when: aws_vpc_subnet_privateid is defined
+      ec2:
+        key_name: "{{ aws_key_name }}"
+        instance_type: "{{ aws_instance_type }}"
+        image: "{{ aws_image_ami }}"
+        wait: yes
+        group: "{{ aws_security_group }}"
+        #group: "{{ aws_security_group_id }}"
+        count: "{{ aws_number_of_vms }}"
+        vpc_subnet_id:  "{{ aws_vpc_subnet_privateid }}"
+        #assign_public_ip: yes
+        region: "{{ aws_region }}"
+        instance_tags: "{{ aws_instance_tags }}"
+        user_data: |
+          #cloud-config
+          # for reference:
+          # http://cloudinit.readthedocs.org/en/latest/topics/examples.html
+          # https://access.redhat.com/articles/rhel-atomic-cloud-init-faq
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+

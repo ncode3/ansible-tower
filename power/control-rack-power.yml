@@ -37,6 +37,7 @@
   gather_facts: no
   ## use localhost inventory
   hosts: localhost
+  ignore_errors: yes
   connection: local
   #become: true
   vars:
