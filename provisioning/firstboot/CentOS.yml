@@ -1,9 +1,4 @@
 ---
-- vars:
-    packages: ['deltarpm','bash-completion','vim-enhanced','net-snmp','ntp','ntpdate','git','wget']
-    enabled_svcs: ['sshd','network','rsyslog']
-    disabled_svcs: ['NetworkManager']
-
 - name: "Set up /etc/hosts file"
   shell: |
     hostname=$(hostname)
