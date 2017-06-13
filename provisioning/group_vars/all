@@ -130,7 +130,8 @@ aws_security_group: Redhat_Lab
 aws_vpc_id: vpc-b4f505d3
 aws_vpc_subnet_id: subnet-c72274b1
 openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
-packages: ['yum-utils','openstack-packstack']
+openstack_packages: ['yum-utils','openstack-packstack']
+ipmi_user: root
 ipmi_pass: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           61326231363865313630396663656239373730333566313133363838666338386533653764333439
