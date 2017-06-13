@@ -7,6 +7,12 @@
     grep "${newip}" /etc/hosts || echo "${newip} ${hostname} ${shortname}" >> /etc/hosts
   become: true
 
+- name: Set authorized key for root
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ cloud_user_pub_key }}"
+
 - name: "Enabling and restarting services {{ enabled_svcs }}"
   service:
     name: "{{ item }}"
