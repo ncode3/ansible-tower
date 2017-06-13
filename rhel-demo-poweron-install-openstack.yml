@@ -6,7 +6,7 @@
   hosts: 10.55.102.158
   tasks:
 #    - include: "power/control-rack-power.yml"
-    - include: "provisioning/group_vars/all"
+#    - include: "provisioning/group_vars/all"
     - include: "provisioning/firstboot.yml"
    
     - name: "Run Security Update Job"
