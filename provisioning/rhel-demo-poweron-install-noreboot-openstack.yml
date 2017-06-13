@@ -27,6 +27,14 @@
         group: root
         mode: 0644
 
-    - name: "Run packstack --allinone"
-      shell: "packstack --allinone"
+    - name: "copy over pre-generated answer file"
+      template:
+        src: openstack/packstack-answer.txt.j2
+        dest: /root/packstack-answer.txt
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: "Run packstack against answer file"
+      shell: "packstack --answer-file=/root/packstack-answer.txt"
       become: true
