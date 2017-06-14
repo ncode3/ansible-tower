@@ -76,7 +76,7 @@
       local_action:
         module: wait_for
           host={{ ansible_ssh_host }}
-          port={{ ansible_ssh_port }}
+          port=22
           delay=1
           timeout=300
 
