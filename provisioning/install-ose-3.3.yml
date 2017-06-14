@@ -66,9 +66,9 @@
     - name: "Set ntp to true"
       shell: |
         timedatectl set-ntp true
-        reboot
+        sleep 2 && shutdown -r now
       poll: 0
-      async: 0
+      async: 1
       become: true
       ignore_errors: yes
 
