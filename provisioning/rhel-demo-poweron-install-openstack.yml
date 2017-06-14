@@ -36,6 +36,23 @@
         group: root
         mode: 0644
 
+    - name: "Add cinder-volumes vol group"
+      shell: |
+        echo "n
+        p
+        
+        
+        
+        t
+        
+        8e
+        w
+        "|fdisk /dev/sda
+        partprobe
+        vgcreate cinder-volumes /dev/sda3
+      ignore_errors: yes
+      become: true
+
 #    - name: "Run packstack against answer file"
 #      shell: "packstack --answer-file=/root/packstack-answer.txt"
 #      become: true
