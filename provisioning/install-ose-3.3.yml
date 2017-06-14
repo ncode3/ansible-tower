@@ -51,6 +51,13 @@
         group: root
         mode: 0644
 
+    - template:
+        src: ose/fix-ose-auth.txt.j2
+        dest: /tmp/fix-ose-auth.txt
+        owner: root
+        group: root
+        mode: 0644
+
     - name: "Setup docker storage, requires a separate volume on /dev/vdb"
       shell: |
         docker-storage-setup
@@ -85,7 +92,12 @@
         mkdir -p /var/log/openshift-install
         newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
         atomic-openshift-installer -u install
+        lead='^    method: auto$'
+        tail='^  masterCA: ca-bundle.crt$'
+        sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
+        }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
+        systemctl restart atomic-openshift-master
 #        oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
 #        oc whoami -t
       become: true
