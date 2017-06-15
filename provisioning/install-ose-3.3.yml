@@ -104,6 +104,7 @@
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
+        exit 0
         ## create a router for apps
         oc login -u system:admin -n default
         ## create a new project
