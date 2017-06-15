@@ -105,6 +105,7 @@
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
         sleep 1
+        exit 0
         ## create a router for apps
         oc login -u system:admin -n default
         oadm policy add-scc-to-user hostnetwork -z router
