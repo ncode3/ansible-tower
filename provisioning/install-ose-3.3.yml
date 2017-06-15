@@ -104,10 +104,12 @@
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
-        # wait a minute
-        sleep 60
         ## create a router for apps
         oc login -u system:admin -n default
+        ## create a new project
+        oc new-project redhat-lab \
+        --description="This is an example project to demonstrate OpenShift v3" \
+        --display-name="Redhat Lab Demo Project"
         oadm policy add-scc-to-user hostnetwork -z router
         oadm router redhat-lab-router --replicas=1 \
         --credentials='/etc/origin/master/admin.kubeconfig' \
@@ -118,15 +120,13 @@
         --credentials=/etc/origin/master/openshift-registry.kubeconfig \
         --images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
         --mount-host=/opt/ose-mount-host
+        ## add policy for admin user
+        oadm policy add-cluster-role-to-user cluster-admin admin
         ## restart ose for htpasswd auth to take effect
         systemctl restart atomic-openshift-master
         sleep 15
-        ## test login and create project
+        ## test login
         oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
-        ## create a new project
-        oc new-project redhat-lab \
-        --description="This is an example project to demonstrate OpenShift v3" \
-        --display-name="Redhat Lab Demo Project"
         echo
         echo "Visit http://${newip}:8443/console/ to manage OSE"
         echo "username: admin"
