@@ -172,6 +172,15 @@ ipmi_pass: !vault |
 ose_repos: ['rhel-7-server-ose-3.5-rpms','rhel-7-fast-datapath-rpms']
 ose_pkgs: ['atomic-openshift-utils','docker','net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools','iptables-services','sos','psacct']
 ose_svcs: ['docker','chronyd','NetworkManager']
+# openshift on openstack values
 os_create_volume: "no"
 os_volume_name: 'ose_volume'
 os_volume_size: 20
+## dhcp stuff
+dhcp_server_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          66386234613139626138613330363439303965396561323237353737383664663638323463653635
+          6163393238646565613365643338303332323361326263630a313639643330623138303134323135
+          66313166343132306134393263346466373863326239663839373833386462333561313437366365
+          3730646632313530660a393436303232663363346530306131633664363233623531636165623164
+          30326537643662363063656232626462613337303666616334373136356638366365
