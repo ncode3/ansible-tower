@@ -113,14 +113,13 @@
         --display-name="Redhat Lab Demo Project"
         oadm policy add-scc-to-user hostnetwork -z router
         oadm router redhat-lab-router --replicas=1 \
-        --credentials='/etc/origin/master/admin.kubeconfig' \
         --service-account=router
         ## create a persistent registry
-        oadm registry --service-account=registry \
-        --config=/etc/origin/master/admin.kubeconfig \
-        --credentials=/etc/origin/master/openshift-registry.kubeconfig \
-        --images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
-        --mount-host=/opt/ose-mount-host
+        #oadm registry --service-account=registry \
+        #--config=/etc/origin/master/admin.kubeconfig \
+        #--credentials=/etc/origin/master/openshift-registry.kubeconfig \
+        #--images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
+        #--mount-host=/opt/ose-mount-host
         ## add policy for admin user
         oadm policy add-cluster-role-to-user cluster-admin admin
         ## restart ose for htpasswd auth to take effect
