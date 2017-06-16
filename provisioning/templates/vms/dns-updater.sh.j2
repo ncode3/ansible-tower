@@ -1,0 +1,31 @@
+#!/bin/bash
+key="{{ dhcp_server_key }}"
+server="10.55.102.5"
+zone="stack.maskedadmins.com"
+hostname="$(hostname --fqdn)"
+reverse=$(echo ${ip} | awk -F. '{print $4"."$3"." $2"."$1}')
+reversezone=$(echo ${ip} | awk -F. '{print $3"." $2"."$1}')
+hostip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
+temp=/tmp.$$
+touch $temp
+cat > ${temp} <<EOF
+server ${server}
+key dhcpupdate ${key}
+zone ${reversezone}.in-addr.arp
+update delete ${reverse}.in-addr.arpa. PTR
+update add ${reverse}.in-addr.arpa. 300 IN PTR ${hostname}.
+send
+zone ${zone}
+update add ${hostname}. 300 IN A ${hostip}
+send
+EOF
+
+if [ "$op" == "add" ]
+then
+	nsupdate -v ${temp}
+	echo "$*" >> /tmp/dnsmasq.updater.txt
+ else
+	echo "$*" >> /tmp/dnsmasq.updater.txt
+ fi
+rm -f ${temp}
+
