@@ -65,6 +65,14 @@
         group: root
         mode: 0644
 
+    ## this is needed because a search domain will break things, so we update the dhcp script to comment it out
+    - template:
+        src: ose/99-origin-dns.sh.j2
+        dest: /usr/share/ansible/openshift-ansible/roles/openshift_node_dnsmasq/files/networkmanager/99-origin-dns.sh
+        owner: root
+        group: root
+        mode: 0755
+
     - name: "Setup docker storage, requires a separate volume on /dev/vdb"
       shell: |
         docker-storage-setup
@@ -96,10 +104,7 @@
 #
     - name: "Install OSE 3.5"
       shell: |
-        mkdir -p /var/log/openshift-install
         newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
-        sed -i -e 's/PEERDNS="yes"/PEERDNS="no"/g' /etc/sysconfig/network-scripts/ifcfg-eth0
-        sed -i -e 's/search /#search /g' /etc/resolv.conf
         atomic-openshift-installer -u install
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
