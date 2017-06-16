@@ -124,6 +124,8 @@
         --description="This is an example project to demonstrate OpenShift v3" \
         --display-name="Redhat Lab Demo Project"
         oadm policy add-cluster-role-to-user cluster-admin admin
+        sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
+        systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
         exit 0
         #oadm policy add-scc-to-user hostnetwork -z router
