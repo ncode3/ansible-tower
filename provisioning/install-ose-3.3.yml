@@ -65,9 +65,18 @@
         group: root
         mode: 0644
 
+    ## this is used by openshift dnsmasq to update the applications dns entry
     - template:
         src: ose/dns-updater.sh.j2
         dest: /opt/dns-updater.sh
+        owner: root
+        group: root
+        mode: 0755
+
+    ## this is needed to update dns with the real hostname given in openstack
+    - template:
+        src: vms/dns-updater.sh.j2
+        dest: /usr/sbin/ifup-local
         owner: root
         group: root
         mode: 0755
