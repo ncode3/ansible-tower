@@ -65,9 +65,9 @@
         group: root
         mode: 0644
 
-#    - name: "Setup docker storage, requires a separate volume on /dev/vdb"
-#      shell: |
-#        docker-storage-setup
+    - name: "Setup docker storage, requires a separate volume on /dev/vdb"
+      shell: |
+        docker-storage-setup
 
     - name: "Enabling and restarting services {{ ose_svcs }}"
       service:
@@ -98,15 +98,16 @@
       shell: |
         mkdir -p /var/log/openshift-install
         newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
+        sed -i -e 's/PEERDNS="yes"/PEERDNS="no"/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+        sed -i -e 's/search /#search /g' /etc/resolv.conf
         atomic-openshift-installer -u install
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
-        ## create a router for apps
-        oc login -u system:admin -n default
         ## create a new project
+        oc login -u system:admin -n default
         oc new-project redhat-lab \
         --description="This is an example project to demonstrate OpenShift v3" \
         --display-name="Redhat Lab Demo Project"
