@@ -111,9 +111,9 @@
         oc new-project redhat-lab \
         --description="This is an example project to demonstrate OpenShift v3" \
         --display-name="Redhat Lab Demo Project"
-        oadm policy add-scc-to-user hostnetwork -z router
-        oadm router redhat-lab-router --replicas=1 \
-        --service-account=router
+        #oadm policy add-scc-to-user hostnetwork -z router
+        #oadm router redhat-lab-router --replicas=1 \
+        #--service-account=router
         ## create a persistent registry
         #oadm registry --service-account=registry \
         #--config=/etc/origin/master/admin.kubeconfig \
