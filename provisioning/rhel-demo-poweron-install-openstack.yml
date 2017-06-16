@@ -53,14 +53,16 @@
       ignore_errors: yes
       become: true
 
-#    - name: "Run packstack against answer file"
-#      shell: "packstack --answer-file=/root/packstack-answer.txt"
-#      become: true
-#
-## for demo use
+    - name: "Run packstack against answer file"
+      shell: "packstack --answer-file=/root/packstack-answer.txt"
+      become: true
+      when: os_packstack_use_answerfile == "yes"
+
+    ## for demo use
     - name: "Run packstack --allinone"
       shell: "packstack --allinone"
       become: true
+      when: os_packstack_use_answerfile == "no"
 
     - name: "Create lab project and user"
       shell: |

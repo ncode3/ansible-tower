@@ -92,14 +92,14 @@ CONFIG_DEBUG_MODE=n
 
 # Server on which to install OpenStack services specific to the
 # controller role (for example, API servers or dashboard).
-CONFIG_CONTROLLER_HOST=10.55.102.158
+CONFIG_CONTROLLER_HOST={{ os_controller_nodes }}
 
 # List the servers on which to install the Compute service.
-CONFIG_COMPUTE_HOSTS=10.55.102.158
+CONFIG_COMPUTE_HOSTS={{ os_compute_nodes }}
 
 # List of servers on which to install the network service such as
 # Compute networking (nova network) or OpenStack Networking (neutron).
-CONFIG_NETWORK_HOSTS=10.55.102.158
+CONFIG_NETWORK_HOSTS={{ os_network_nodes }}
 
 # Specify 'y' if you want to use VMware vCenter as hypervisor and
 # storage; otherwise, specify 'n'. ['y', 'n']
@@ -136,11 +136,11 @@ CONFIG_VCENTER_CLUSTER_NAMES=
 
 # (Unsupported!) Server on which to install OpenStack services
 # specific to storage servers such as Image or Block Storage services.
-CONFIG_STORAGE_HOST=10.55.102.158
+CONFIG_STORAGE_HOST="{{ ansible_default_ipv4['address'] }}
 
 # (Unsupported!) Server on which to install OpenStack services
 # specific to OpenStack Data Processing (sahara).
-CONFIG_SAHARA_HOST=10.55.102.158
+CONFIG_SAHARA_HOST={{ ansible_default_ipv4['address'] }}
 
 # Specify 'y' to enable the EPEL repository (Extra Packages for
 # Enterprise Linux). ['y', 'n']
@@ -241,7 +241,7 @@ CONFIG_SATELLITE_PROXY_PW=
 CONFIG_SSL_CACERT_FILE=/etc/pki/tls/certs/selfcert.crt
 
 # Specify filepath for CA cert key file. If
-# CONFIG_SSL_CACERT_SELFSIGN is set to 'n' it has to be preexisting
+# CONFIG_SSL_CACERT_SELFSIGN is set to 'n' it has to 	be preexisting
 # file.
 CONFIG_SSL_CACERT_KEY_FILE=/etc/pki/tls/private/selfkey.key
 
@@ -268,16 +268,16 @@ CONFIG_SSL_CERT_SUBJECT_O=openstack
 CONFIG_SSL_CERT_SUBJECT_OU=packstack
 
 # Enter the ssl certificates subject common name.
-CONFIG_SSL_CERT_SUBJECT_CN=compute4.maskedadmins.com
+CONFIG_SSL_CERT_SUBJECT_CN={{ ansible_fqdn }}
 
-CONFIG_SSL_CERT_SUBJECT_MAIL=admin@compute4.maskedadmins.com
+CONFIG_SSL_CERT_SUBJECT_MAIL=admin@{{ ansible_fqdn }}
 
 # Service to be used as the AMQP broker. Allowed values are: rabbitmq
 # ['rabbitmq']
 CONFIG_AMQP_BACKEND=rabbitmq
 
 # IP address of the server on which to install the AMQP service.
-CONFIG_AMQP_HOST=10.55.102.158
+CONFIG_AMQP_HOST={{ os_amqp_nodes }}
 
 # Specify 'y' to enable SSL for the AMQP service. ['y', 'n']
 CONFIG_AMQP_ENABLE_SSL=n
@@ -299,7 +299,7 @@ CONFIG_AMQP_AUTH_PASSWORD=PW_PLACEHOLDER
 # installation was not specified in CONFIG_MARIADB_INSTALL, specify
 # the IP address of an existing database server (a MariaDB cluster can
 # also be specified).
-CONFIG_MARIADB_HOST=10.55.102.158
+CONFIG_MARIADB_HOST={{ os_mariadb_nodes }}
 
 # User name for the MariaDB administrative user.
 CONFIG_MARIADB_USER=root
@@ -346,7 +346,7 @@ CONFIG_KEYSTONE_TOKEN_FORMAT=UUID
 CONFIG_KEYSTONE_IDENTITY_BACKEND=sql
 
 # URL for the Identity service LDAP backend.
-CONFIG_KEYSTONE_LDAP_URL=ldap://10.55.102.158
+CONFIG_KEYSTONE_LDAP_URL=ldap://{{ ansible_default_ipv4['address'] }}
 
 # User DN for the Identity service LDAP backend.  Used to bind to the
 # LDAP server if the LDAP server does not allow anonymous
@@ -551,7 +551,7 @@ CONFIG_CINDER_BACKEND=lvm
 # proof-of-concept installation of the Block Storage service (a file-
 # backed volume group is not suitable for production usage). ['y',
 # 'n']
-CONFIG_CINDER_VOLUMES_CREATE=y
+CONFIG_CINDER_VOLUMES_CREATE=n
 
 # Size of Block Storage volumes group. Actual volume size will be
 # extended with 3% more space for VG metadata. Remember that the size
@@ -930,7 +930,7 @@ CONFIG_NEUTRON_OVS_BRIDGE_IFACES=br-enp10s0f1:enp10s0f1
 # compute=br-vlan --os-neutron-ovs-bridge-mappings="extnet:br-
 # ex,physnet1:br-vlan" --os-neutron-ovs-bridge-interfaces="br-ex:eth1
 # ,br-vlan:eth2"
-CONFIG_NEUTRON_OVS_BRIDGES_COMPUTE=
+CONFIG_NEUTRON_OVS_BRIDGES_COMPUTE=br-enp10s0f1
 
 # Interface for the Open vSwitch tunnel. Packstack overrides the IP
 # address used for tunnels on this hypervisor to the IP found on the
@@ -1275,10 +1275,10 @@ CONFIG_CEILOMETER_COORDINATION_BACKEND=redis
 CONFIG_CEILOMETER_METERING_BACKEND=database
 
 # IP address of the server on which to install MongoDB.
-CONFIG_MONGODB_HOST=10.55.102.158
+CONFIG_MONGODB_HOST={{ ansible_default_ipv4['address'] }}
 
 # IP address of the server on which to install the Redis server.
-CONFIG_REDIS_HOST=10.55.102.158
+CONFIG_REDIS_HOST={{ ansible_default_ipv4['address'] }}
 
 # Port on which the Redis server listens.
 CONFIG_REDIS_PORT=6379

@@ -124,6 +124,12 @@ vault_os_url: !vault |
           30653966363264663766613733386439646135376531666338303263663361316133373839646362
           3238393438613638350a366661613466343231353561656131643539653736353535616565383638
           35633363373333633964313031386566613538386465316666303839663630323666
+os_packstack_use_answerfile: "no"
+os_controller_nodes: "{{ ansible_default_ipv4['address'] }}"
+os_compute_nodes: "{{ ansible_default_ipv4['address'] }}"
+os_network_nodes: "{{ ansible_default_ipv4['address'] }}"
+os_amqp_nodes: "{{ ansible_default_ipv4['address'] }}"
+os_mariadb_nodes: "{{ ansible_default_ipv4['address'] }}"
 ## amazon aws related
 aws_assign_public_ip: no
 AWS_ACCESS_KEY_ID: !vault |
