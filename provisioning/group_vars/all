@@ -171,7 +171,7 @@ ipmi_pass: !vault |
           3164
 ose_repos: ['rhel-7-server-ose-3.5-rpms','rhel-7-fast-datapath-rpms']
 ose_pkgs: ['atomic-openshift-utils','docker','net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools']
-ose_svcs: ['docker','chronyd']
+ose_svcs: ['docker','chronyd','NetworkManager']
 os_create_volume: "no"
 os_volume_name: 'ose_volume'
 os_volume_size: 20
