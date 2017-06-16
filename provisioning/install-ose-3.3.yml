@@ -65,9 +65,9 @@
         group: root
         mode: 0644
 
-    - name: "Setup docker storage, requires a separate volume on /dev/vdb"
-      shell: |
-        docker-storage-setup
+#    - name: "Setup docker storage, requires a separate volume on /dev/vdb"
+#      shell: |
+#        docker-storage-setup
 
     - name: "Enabling and restarting services {{ ose_svcs }}"
       service:
@@ -104,13 +104,15 @@
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
         htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
-        exit 0
         ## create a router for apps
         oc login -u system:admin -n default
         ## create a new project
         oc new-project redhat-lab \
         --description="This is an example project to demonstrate OpenShift v3" \
         --display-name="Redhat Lab Demo Project"
+        oadm policy add-cluster-role-to-user cluster-admin admin
+        systemctl restart atomic-openshift-master
+        exit 0
         #oadm policy add-scc-to-user hostnetwork -z router
         #oadm router redhat-lab-router --replicas=1 \
         #--service-account=router
@@ -121,9 +123,9 @@
         #--images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
         #--mount-host=/opt/ose-mount-host
         ## add policy for admin user
-        oadm policy add-cluster-role-to-user cluster-admin admin
+        #oadm policy add-cluster-role-to-user cluster-admin admin
         ## restart ose for htpasswd auth to take effect
-        systemctl restart atomic-openshift-master
+        #systemctl restart atomic-openshift-master
         sleep 15
         ## test login
         oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
