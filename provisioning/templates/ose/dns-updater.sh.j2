@@ -6,7 +6,7 @@ op="${1:-op}"
 mac="${2:-mac}"
 ip="${3:-ip}"
 hostname="${4}"
-reverse=$(echo ${3} | awk -F. '{print $4"."$3"." $2"."$1}'`)
+reverse=$(echo ${3} | awk -F. '{print $4"."$3"." $2"."$1}')
 hostip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
 temp=/tmp.$$
 touch $temp
@@ -23,6 +23,7 @@ EOF
 if [ "$op" == "add" ]
 then
   nsupdate -v ${temp}
+  echo "$*" >> /tmp/dnsmasq.updater.txt
 else
   echo "$*" >> /tmp/dnsmasq.updater.txt
 fi
