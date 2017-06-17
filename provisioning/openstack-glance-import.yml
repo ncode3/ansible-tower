@@ -10,6 +10,15 @@
         group: root
         mode: 0755
 
+        
+    - name: "make the import directory"
+      file:
+        path: /mnt/compute1/glance-images
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
     - name: "Mount nfs share to import glance images"
       mount:
         path: /mnt/compute1/glance-images
