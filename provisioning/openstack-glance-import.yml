@@ -2,6 +2,24 @@
 - name: "Import glance images from nfs share"
   hosts: 10.55.102.158
   tasks:
+    - name: "Create lab project and user"
+      shell: |
+        . /root/keystonerc_admin
+        openstack project create --description 'Redhat_Lab' Redhat_Lab
+        openstack user create --project Redhat_Lab --password redhat123 dtaylor
+      args:
+        chdir: /root
+      become: true
+      ignore_errors: yes
+
+    - name: "copy over dtaylor keystone file"
+      template:
+        src: openstack/keystone_dtaylor.j2
+        dest: /root/keystone_dtaylor
+        owner: root
+        group: root
+        mode: 0644
+
     - name: "copy over glance import script"
       template:
         src: openstack/glance-import.sh.j2
@@ -9,7 +27,6 @@
         owner: root
         group: root
         mode: 0755
-
         
     - name: "make the import directory"
       file:
