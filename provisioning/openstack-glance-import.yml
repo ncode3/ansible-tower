@@ -1,0 +1,27 @@
+---
+- name: "Import glance images from nfs share"
+  hosts: 10.55.102.158
+  tasks:
+    - name: "copy over glance import script"
+      template:
+        src: openstack/glance-import.sh.j2
+        dest: /root/glance-import.sh
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: "Mount nfs share to import glance images"
+      mount:
+        path: /mnt/compute1/glance-images
+        src: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
+        fstype: nfs
+        opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
+        state: present
+
+    - name: "Import a couple of glance images ..."
+      shell: |
+        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
+        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
+      args:
+        chdir: /root
+
