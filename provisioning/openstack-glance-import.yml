@@ -29,6 +29,7 @@
 
     - name: "Import a couple of glance images ..."
       shell: |
+        mount /mnt/compute1/glance-images
         /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
         /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
       args:
