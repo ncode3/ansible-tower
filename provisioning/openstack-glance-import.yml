@@ -24,4 +24,5 @@
         /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
       args:
         chdir: /root
+      become: true
 
