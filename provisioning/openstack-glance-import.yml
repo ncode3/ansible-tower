@@ -14,8 +14,8 @@
 
     - name: "copy over dtaylor keystone file"
       template:
-        src: openstack/keystone_dtaylor.j2
-        dest: /root/keystone_dtaylor
+        src: openstack/keystonerc_dtaylor.j2
+        dest: /root/keystonerc_dtaylor
         owner: root
         group: root
         mode: 0644
