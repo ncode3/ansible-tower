@@ -10,15 +10,6 @@ TODO: Network Hardware (router and Switch) vlan configuration, dhcp and dns serv
 
 NOTE: Check out NETWORK.md for network configuration
 
-Requirements
-
-- vlans created on router and switches
-- two nics per servers
-- first nic can pxe boot and optionally natively set to your vlan of choice on the switch, and second nic is trunked on switch
-- server remote management/ipmi/idrac/ilo/etc is configured and works with linux ipmi utilities. Configured to use vlan 101
-- dhcp server to manage pxe booting, with a dhcp update key set
-- working dns server, and dhcp server can update dns records
-
 This document has the following objectives:
 
 - any server in vlan 101 can be remotely rebooted, and configured to reboot to pxe one time or the local disk permenantly.
@@ -42,14 +33,25 @@ Update provisioning/group_vars/all with your specific configuration and password
 REQUIRED:
  - Your Redhat Customer Portal/Satellite username/password
  - Your subscription pool name or pool ids
-
- OPTIONAL:
- - Openstack Credentials
- - AWS Credentials
+ - Openstack Credentials (optional)
+ - AWS Credentials (optional)
  - Private and Public Keys to place on servers
 
+Server Requirements
 
-If you already have Ansible Tower set up, It's really easy:
+- two nics per servers
+- first nic can pxe boot and optionally natively set to your vlan of choice on the switch, and second nic is trunked on switch
+- server remote management/ipmi/idrac/ilo/etc is configured and works with linux ipmi utilities. Configured to use vlan 101
+
+Network Requirements
+
+- vlans created on router and switches, check out NETWORK.md for help with this. 
+- dhcp server to manage pxe booting, with a dhcp update key set
+- working dns server, and dhcp server can update dns records
+- TODO have ansible deploy dhcp and dns server configs
+- TODO have ansible configure network devices
+
+If you already have Ansible Tower set up, It's really fast and easy to get started:
 
 Step 1: Create some new Credentials in Settings Gear
  - Rename 'Demo Credential' to Dummy Credential
