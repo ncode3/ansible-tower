@@ -185,6 +185,7 @@ Code Snippets for how your dhcp and dns server configuration should look like. T
 dhcp snippets for host 10.55.102.5:
 
 /etc/dhcp/dhcpd.conf:
+
 	key dhcpupdate {
 	  algorithm hmac-md5;
 	  secret xxxxxxxxxxxx;
@@ -250,29 +251,29 @@ dns/bind 9 configuration for host 10.55.102.5:
 
 /etc/named.conf.dhcp:
 
-key dhcpupdate {
-  algorithm hmac-md5;
-  secret "xxxxxxxxxxx";
-};
-zone "redhat-lab.local" {
-  type master;
-  file "dhcp/redhat-lab.local.zone";
-  allow-update { key dhcpupdate; };
-  allow-transfer { 10.55.0.0/16; localhost; ::1; };
-};
-zone "ose.redhat-lab.local" {
-  type master;
-  file "dhcp/ose.redhat-lab.local.zone";
-  allow-update { key dhcpupdate; };
-  allow-transfer { 10.55.0.0/16; localhost; ::1; };
-};
-zone "stack.redhat-lab.local" {
-  type master;
-  file "dhcp/stack.redhat-lab.local.zone";
-  allow-update { key dhcpupdate; };
-  allow-transfer { 10.55.0.0/16; localhost; ::1; };
-};
-
+    key dhcpupdate {
+      algorithm hmac-md5;
+      secret "xxxxxxxxxxx";
+    };
+    zone "redhat-lab.local" {
+      type master;
+      file "dhcp/redhat-lab.local.zone";
+      allow-update { key dhcpupdate; };
+      allow-transfer { 10.55.0.0/16; localhost; ::1; };
+    };
+    zone "ose.redhat-lab.local" {
+      type master;
+      file "dhcp/ose.redhat-lab.local.zone";
+      allow-update { key dhcpupdate; };
+      allow-transfer { 10.55.0.0/16; localhost; ::1; };
+    };
+    zone "stack.redhat-lab.local" {
+      type master;
+      file "dhcp/stack.redhat-lab.local.zone";
+      allow-update { key dhcpupdate; };
+      allow-transfer { 10.55.0.0/16; localhost; ::1; };
+    };
+    
 NOTE: setting up your zone files is beyond the scope of this write-up, but here is a base you can start with. You need one for each zone you gave in /etc/named/named.conf:
 
 /var/named/dhcp/ose.redhat-lab.local.zone:
