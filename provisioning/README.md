@@ -112,6 +112,7 @@ You can override the variables located in ansible-tower/provisioning/group_vars/
 Copy the Power - Reboot template and rename it to 'Power - Off'. Leave the settings the same, except use the following for extra variables:
 
 Extra Variables:
+
 	---
 	ipmi_targets:
 	  - 10.55.101.158
@@ -121,6 +122,7 @@ Extra Variables:
 You guessed it.
 
 Extra Variables:
+
 	---
 	ipmi_targets:
 	  - 10.55.101.158
@@ -256,6 +258,7 @@ This callback script is not run directly and non admin groups shouldn't have acc
  - Openstack Cloud Credentials
 
 Extra Variables:
+
 	---
 	##  this says to create a cinder volume named 'ose-volume'. We use this for docker container persistent data
 	os_create_volume: "yes"
