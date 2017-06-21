@@ -2,9 +2,12 @@
 ## this is for fedora only
 ## installs a coin miner from source
 ## you need to place the tarball somewhere
-- name: "Install motionEye survellience system"
+- name: "Install coin mining software"
   hosts: all
   tasks:
+    - name: "what are we?"
+      debug: msg="{{ ansible_distribution}} is the var"
+
     - name: "fail if we are not on fedora"
       shell: "/bin/false"
       when: ansible_distribution != 'Fedora'
