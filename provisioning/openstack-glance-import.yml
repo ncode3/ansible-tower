@@ -53,28 +53,32 @@
         mode: 0644
 
     - name: update neutron dhcp_agent.ini dns values
-      dest: /etc/neutron/dhcp_agent.ini
-      lineinfile: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
-      regexp: "^#dnsmasq_dns_servers ="
-      state: present
+      lineinfile: 
+        line: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
+        dest: /etc/neutron/dhcp_agent.ini
+        regexp: "^#dnsmasq_dns_servers ="
+        state: present
 
     - name: update neutron dhcp_agent.ini domain values
-      dest: /etc/neutron/dhcp_agent.ini
-      lineinfile: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
-      regexp: "^#dhcp_domain ="
-      state: present
+      lineinfile: 
+        line: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
+        dest: /etc/neutron/dhcp_agent.ini
+        regexp: "^#dhcp_domain ="
+        state: present
 
     - name: update neutron dhcp_agent.ini config file values
-      dest: /etc/neutron/dhcp_agent.ini
-      lineinfile: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
-      regexp: "^#dnsmasq_config_file ="
-      state: present
+      lineinfile:
+        line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
+        dest: /etc/neutron/dhcp_agent.ini
+        regexp: "^#dnsmasq_config_file ="
+        state: present
 
     - name: update nova.conf domain values
-      dest: /etc/nova/nova.conf
-      lineinfile: "dhcp_domain={{ openstack['dhcp_domain'] }}"
-      regexp: "^#dhcp_domain="
-      state: present
+      lineinfile:
+        line: "dhcp_domain={{ openstack['dhcp_domain'] }}"
+        dest: /etc/nova/nova.conf
+        regexp: "^#dhcp_domain="
+        state: present
 
     - name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
       service:
