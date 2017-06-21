@@ -80,6 +80,10 @@
         regexp: "^#dhcp_domain="
         state: present
 
+    - name: "killing dnsmasq"
+      command: killall dnsmasq
+      become: true
+
     - name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
       service:
         name: "{{ item }}"
