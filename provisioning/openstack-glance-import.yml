@@ -115,7 +115,7 @@
 #
     - name: "Create the networks ..."
       shell: |
-        . keystone_{{ openstack['project_user'] }}
+        . keystonerc_{{ openstack['project_user'] }}
         neutron net-create Storage_105 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 105 
         neutron net-create Provisioning_102 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 102
         neutron subnet-create Storage_105 10.55.105.0/24 --gateway 10.55.105.1 --name "NET105" --allocation-pool start=10.55.105.200,end=10.55.105.225
