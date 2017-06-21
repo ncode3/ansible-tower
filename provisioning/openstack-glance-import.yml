@@ -37,7 +37,7 @@
         mode: 0755
 
     - name: this is used by openstack dnsmasq to update the applications dns entry
-    - template:
+      template:
         src: openstack/dns-updater.sh.j2
         dest: /usr/local/bin/dns-updater.sh
         owner: root
