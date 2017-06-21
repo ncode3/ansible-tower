@@ -301,7 +301,7 @@ miner_pkgs: ['autoconf','libdb4-cxx-devel','libdb-cxx-devel','boost-devel','open
 miner_name: Mooncoin
 miner_config_dir: "/root/.Mooncoin"
 miner_tarball_name: "mooncoin-0.10.5-tokenblock"
-miner_tarball_location: "http://10.55.102.5/"
+miner_tarball_location: "http://10.55.102.5"
 ## motioneye vars
 motion_pkgs: ['motion','ffmpeg','v4l-utils','python-pip','python-devel','gcc','libcurl-devel']
 motion_dirs: ['/etc/motioneye','/var/lib/motioneye']

@@ -19,7 +19,7 @@
     - name: "Grab tower tarball"
       unarchive:
         src: "{{ miner_tarball_location }}/{{ miner_tarball_name }}.tar.gz"
-        dest: /opt
+        dest: "/opt"
         remote_src: True
 
     - name: "make install the coin app"
