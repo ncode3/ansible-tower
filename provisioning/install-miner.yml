@@ -7,7 +7,7 @@
   tasks:
     - name: "fail if we are not on fedora"
       shell: "/bin/false"
-      when: "'{{ ansible_distribution }}' != 'Fedora'"
+      when: ansible_distribution != 'Fedora'
 
     - name: "first, groupinstall Dev Tools"
       shell: "yum -y groupinstall 'C Development Tools and Libraries'"

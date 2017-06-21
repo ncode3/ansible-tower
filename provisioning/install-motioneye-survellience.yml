@@ -8,7 +8,7 @@
   tasks:
     - name: "fail if we are not on fedora"
       shell: "/bin/false"
-      when: "'{{ ansible_distribution }}' != 'Fedora'"
+      when: ansible_distribution != 'Fedora'
 
     - name: "installing rpmfusion repo, need to use shell to expand the arch and version rpms vars"
       shell: |
