@@ -103,13 +103,23 @@
         opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
         state: present
 
-    - name: "Import a couple of glance images ..."
+#    - name: "Import a couple of glance images ..."
+#      shell: |
+#        mount /mnt/compute1/glance-images
+#        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
+#        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
+#        /root/glance-import.sh  -f /mnt/compute1/glance-images/PXE-client-bare.raw
+#      args:
+#        chdir: /root
+#      become: true
+#
+    - name: "Create the networks ..."
       shell: |
-        mount /mnt/compute1/glance-images
-        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
-        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
-        /root/glance-import.sh  -f /mnt/compute1/glance-images/PXE-client-bare.raw
+        . keystone_{{ openstack['project_name'] }}
+        neutron net-create Storage_105 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 105 
+        neutron net-create Provisioning_102 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 102
+        neutron subnet-create Storage_105 10.55.105.0/24 --gateway 10.55.105.1 --name "NET105" --allocation-pool start=10.55.105.200,end=10.55.105.225
+        neutron subnet-create Provisioning_102 10.55.102.0/24 --gateway 10.55.102.1  --name "NET102" --allocation-pool start=10.55.102.200,end=10.55.102.225
       args:
         chdir: /root
       become: true
-
