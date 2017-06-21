@@ -296,4 +296,13 @@ dhcp_server_key: !vault |
           66313166343132306134393263346466373863326239663839373833386462333561313437366365
           3730646632313530660a393436303232663363346530306131633664363233623531636165623164
           30326537643662363063656232626462613337303666616334373136356638366365
-
+## miner vars
+miner_pkgs: ['autoconf','libdb4-cxx-devel','libdb-cxx-devel','boost-devel','openssl-devel','protobuf-devel','protobuf-compiler','qrencode-devel']
+miner_name: Mooncoin
+miner_config_dir: "/root/.Mooncoin"
+miner_tarball_name: "mooncoin-0.10.5-tokenblock"
+miner_tarball_location: "http://10.55.102.5/"
+## motioneye vars
+motion_pkgs: ['motion','ffmpeg','v4l-utils','python-pip','python-devel','gcc','libcurl-devel']
+motion_dirs: ['/etc/motioneye','/var/lib/motioneye']
+motion_svcs: ['motioneye']

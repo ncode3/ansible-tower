@@ -3,11 +3,6 @@
 ## https://github.com/ccrisan/motioneye/wiki/Install-On-Fedora
 ## installs motion and motionEye web frontend
 ## http://0.0.0.0:8765  username: admin password: <blank>
-- vars:
-    motion_pkgs: ['motion','ffmpeg','v4l-utils','python-pip','python-devel','gcc','libcurl-devel']
-    pip_pkgs: ['motioneye']
-    motion_dirs: ['/etc/motioneye','/var/lib/motioneye']
-    motion_svcs: ['motioneye']
 - name: "Install motionEye survellience system"
   hosts: all
   tasks:

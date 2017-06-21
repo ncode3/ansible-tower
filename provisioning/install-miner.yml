@@ -2,12 +2,6 @@
 ## this is for fedora only
 ## installs a coin miner from source
 ## you need to place the tarball somewhere
-- vars:
-    miner_pkgs: ['autoconf','libdb4-cxx-devel','libdb-cxx-devel','boost-devel','openssl-devel','protobuf-devel','protobuf-compiler','qrencode-devel']
-    miner_name: Mooncoin
-    miner_config_dir: "/root/.Mooncoin"
-    miner_tarball_name: "mooncoin-0.10.5-tokenblock"
-    miner_tarball_location: "http://10.55.102.5/"
 - name: "Install motionEye survellience system"
   hosts: all
   tasks:
