@@ -297,7 +297,7 @@ dhcp_server_key: !vault |
           3730646632313530660a393436303232663363346530306131633664363233623531636165623164
           30326537643662363063656232626462613337303666616334373136356638366365
 ## miner vars
-miner_pkgs: ['python','autoconf','libdb4-cxx-devel','libdb-cxx-devel','boost-devel','openssl-devel','protobuf-devel','protobuf-compiler','qrencode-devel']
+miner_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
 miner_name: Mooncoin
 miner_config_dir: "/root/.Mooncoin"
 miner_tarball_name: "mooncoin-0.10.5-tokenblock"

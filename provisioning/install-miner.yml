@@ -17,12 +17,10 @@
       become: true
 
     - name: "Install yum packages"
-      yum:
-        name: "{{ item }}"
-        state: latest
-      with_items: "{{ miner_pkgs }}"
+      shell: yum -y install {{ miner_pkgs }}
       become: true
       ignore_errors: yes
+
     - name: "Grab tower tarball"
       unarchive:
         src: "{{ miner_tarball_location }}/{{ miner_tarball_name }}.tar.gz"
