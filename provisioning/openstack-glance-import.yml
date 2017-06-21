@@ -5,8 +5,8 @@
     - name: "Create lab project and user"
       shell: |
         . /root/keystonerc_admin
-        openstack project create --description 'Redhat_Lab' Redhat_Lab
-        openstack user create --project Redhat_Lab --password redhat123 dtaylor
+        openstack project create --description "{{ openstack['project_name'] }}" {{ openstack['project_name'] }}
+        openstack user create --project {{ openstack['project_name'] }} --password {{ openstack['project_pass'] }} {{ openstack['project_user'] }}
       args:
         chdir: /root
       become: true
@@ -14,8 +14,8 @@
 
     - name: "copy over dtaylor keystone file"
       template:
-        src: openstack/keystonerc_dtaylor.j2
-        dest: /root/keystonerc_dtaylor
+        src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
+        dest: "/root/keystonerc_{{ openstack['project_user'] }}"
         owner: root
         group: root
         mode: 0644
@@ -36,6 +36,61 @@
         group: root
         mode: 0755
 
+    - name: this is used by openstack dnsmasq to update the applications dns entry
+    - template:
+        src: openstack/dns-updater.sh.j2
+        dest: /usr/local/bin/dns-updater.sh
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: openstack dnsmasq config file
+      template:
+        src: openstack/dnsmasq.conf.j2
+        dest: /etc/neutron/dnsmasq.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: update neutron dhcp_agent.ini dns values
+      dest: /etc/neutron/dhcp_agent.ini
+      lineinfile: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
+      regexp: "^#dnsmasq_dns_servers ="
+      state: present
+
+    - name: update neutron dhcp_agent.ini domain values
+      dest: /etc/neutron/dhcp_agent.ini
+      lineinfile: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
+      regexp: "^#dhcp_domain ="
+      state: present
+
+    - name: update neutron dhcp_agent.ini config file values
+      dest: /etc/neutron/dhcp_agent.ini
+      lineinfile: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
+      regexp: "^#dnsmasq_config_file ="
+      state: present
+
+    - name: update nova.conf domain values
+      dest: /etc/nova/nova.conf
+      lineinfile: "dhcp_domain={{ openstack['dhcp_domain'] }}"
+      regexp: "^#dhcp_domain="
+      state: present
+
+    - name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - neutron-dhcp-agent
+        - openstack-nova-api
+        - openstack-nova-cert
+        - openstack-nova-consoleauth
+        - openstack-nova-scheduler
+        - openstack-nova-conductor
+        - openstack-nova-novncproxy 
+      become: true
+
     - name: "Mount nfs share to import glance images"
       mount:
         path: /mnt/compute1/glance-images
@@ -49,6 +104,7 @@
         mount /mnt/compute1/glance-images
         /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
         /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
+        /root/glance-import.sh  -f /mnt/compute1/glance-images/PXE-client-bare.raw
       args:
         chdir: /root
       become: true

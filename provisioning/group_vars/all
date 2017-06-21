@@ -176,6 +176,22 @@ rh_subscription_pool_ids: !vault |
 ## openstack related
 openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
 openstack_packages: ['yum-utils','openstack-packstack']
+openstack:
+  project_name: Redhat_Lab
+  project_user: dtaylor
+  project_pass: redhat123
+  dns_server: 10.55.102.5
+  dhcp_server: "{{ openstack['dns_server'] }}"
+  dhcp_domain: stack.openstack.com
+  dhcp_mtu: 1454
+  enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
+  packages: ['yum-utils','openstack-packstack']
+  use_answerfile: "no"
+  controller_nodes: "{{ ansible_default_ipv4['address'] }}"
+  compute_nodes: "{{ ansible_default_ipv4['address'] }}"
+  network_nodes: "{{ ansible_default_ipv4['address'] }}"
+  amqp_nodes: "{{ ansible_default_ipv4['address'] }}"
+  mariadb_nodes: "{{ ansible_default_ipv4['address'] }}"
 vault_os_adminuser: admin
 vault_os_adminpass: !vault |
           $ANSIBLE_VAULT;1.1;AES256

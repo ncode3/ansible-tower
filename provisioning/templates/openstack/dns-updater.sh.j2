@@ -1,7 +1,7 @@
 #!/bin/bash
 key="{{ dhcp_server_key }}"
-server="10.55.102.5"
-zone="stack.maskedadmins.com"
+server="{{ openstack['dns_server'] }}"
+zone="{{ openstack['dhcp_domain'] }}"
 op="${1:-op}"
 mac="${2:-mac}"
 ip="${3:-ip}"

@@ -1,0 +1,63 @@
+---
+## this is for fedora only
+## https://github.com/ccrisan/motioneye/wiki/Install-On-Fedora
+## installs motion and motionEye web frontend
+## http://0.0.0.0:8765  username: admin password: <blank>
+- vars:
+    motion_pkgs: ['motion','ffmpeg','v4l-utils','python-pip','python-devel','gcc','libcurl-devel']
+    pip_pkgs: ['motioneye']
+    motion_dirs: ['/etc/motioneye','/var/lib/motioneye']
+    motion_svcs: ['motioneye']
+- name: "Install motionEye survellience system"
+  hosts: all
+  tasks:
+    - name: "fail if we are not on fedora"
+      shell: "/bin/false"
+      when: "'{{ ansible_distribution }}' != 'Fedora'"
+
+    - name: "installing rpmfusion repo, need to use shell to expand the arch and version rpms vars"
+      shell: |
+        dnf install --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+      become: true
+
+    - name: "installing motion and dependencies {{ motion_pkgs }}"
+      dnf:
+        install: "{{ item }}"
+        state: latest
+      with_items: "{{ motion_pkgs }}"
+
+    - name: "use pip to build and install motioneye"
+      command: pip install motioneye
+      become: true
+
+    - name: "making dirs {{ motion_dirs }}"
+      file:
+        state: directory
+        path: "{{ item }}"
+        owner: root
+        group: root
+        mode: 0755
+      with_items: "{{ motion_dirs }}"
+      become: true
+
+    - name: copy conf file into place
+      command: cp /usr/share/motioneye/extra/motioneye.conf.sample /etc/motioneye/motioneye.conf
+
+    - name: copy service file into place
+      command: cp /usr/share/motioneye/extra/motioneye.systemd-unit /etc/systemd/system/motioneye.service
+
+    - name: "reload systemd unit files"
+      command: systemctl daemon-reload
+      become: true
+
+    - name: "enabling and restarting services {{ motion_svcs }}"
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items: "{{ motion_svcs }}"
+      become: true
+
+    - name: "success announcement"
+      debug: msg="visit the url http://{{ ansible_default_ipv4['address'] }}:8765  username: admin password: <blank> to configure motioneye"
+      
