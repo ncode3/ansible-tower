@@ -1,0 +1,49 @@
+---
+## this is for fedora only
+## installs a coin miner from source
+## you need to place the tarball somewhere
+- vars:
+    miner_pkgs: ['autoconf','libdb4-cxx-devel','libdb-cxx-devel','boost-devel','openssl-devel','protobuf-devel','protobuf-compiler','qrencode-devel']
+    miner_name: Mooncoin
+    miner_config_dir: "/root/.Mooncoin"
+    miner_tarball_name: "mooncoin-0.10.5-tokenblock"
+    miner_tarball_location: "http://10.55.102.5/"
+- name: "Install motionEye survellience system"
+  hosts: all
+  tasks:
+    - name: "fail if we are not on fedora"
+      shell: "/bin/false"
+      when: "'{{ ansible_distribution }}' != 'Fedora'"
+
+    - name: "first, groupinstall Dev Tools"
+      shell: "yum -y groupinstall 'C Development Tools and Libraries'"
+      become: true
+
+    - name: "Grab tower tarball"
+      unarchive:
+        src: "{{ miner_tarball_location }}/{{ miner_tarball_name }}.tar.gz"
+        dest: /opt
+        remote_src: True
+
+    - name: "make install the coin app"
+      shell: |
+        ./autogen.sh
+        ./configure
+        make
+        make install
+      become: true
+      args:
+        chdir: "/opt/{{ miner_tarball_name }}"
+
+    - name: "making config dir {{ miner_config_dir }}"
+      file:
+        state: directory
+        path: "{{ miner_config_dir }}"
+        owner: root
+        group: root
+        mode: 0755
+      become: true
+
+    - name: "success announcement"
+      debug: msg="copy your wallet into place and run your miner {{ miner_name }}"
+      
