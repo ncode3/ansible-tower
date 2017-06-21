@@ -39,5 +39,5 @@
       become: true
 
     - name: "success announcement"
-      debug: msg="copy your wallet into place and run your miner {{ miner_name }}"
+      debug: msg="copy your wallet into {{ miner_config_dir }} and run your miner {{ miner_name }}"
       
