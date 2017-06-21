@@ -115,11 +115,12 @@
 #
     - name: "Create the networks ..."
       shell: |
-        . /root/keystonerc_{{ openstack['project_user'] }}
-        neutron net-create Storage_105 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 105 
-        neutron net-create Provisioning_102 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 102
-        neutron subnet-create Storage_105 10.55.105.0/24 --gateway 10.55.105.1 --name "NET105" --allocation-pool start=10.55.105.200,end=10.55.105.225
-        neutron subnet-create Provisioning_102 10.55.102.0/24 --gateway 10.55.102.1  --name "NET102" --allocation-pool start=10.55.102.200,end=10.55.102.225
+        . /root/keystonerc_admin
+        projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
+        neutron net-create Storage_105 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 105 --tenant-id=$projectid
+        neutron net-create Provisioning_102 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 102 --tenant-id=$projectid
+        neutron subnet-create Storage_105 10.55.105.0/24 --gateway 10.55.105.1 --name "NET105" --allocation-pool start=10.55.105.200,end=10.55.105.225 --tenant-id=$projectid
+        neutron subnet-create Provisioning_102 10.55.102.0/24 --gateway 10.55.102.1  --name "NET102" --allocation-pool start=10.55.102.200,end=10.55.102.225 --tenant-id=$projectid
       args:
         chdir: /root
       become: true
