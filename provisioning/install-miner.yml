@@ -4,6 +4,19 @@
 ## you need to place the tarball somewhere
 - name: "Install coin mining software"
   hosts: all
+  vars:
+    use_source_tarball: "no"
+    use_git: "yes"
+    miner_compine: "yes"
+    git_repo: "https://github.com/dogecoin/dogecoin.git"
+    miner_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
+    miner_name: dogecoin
+    miner_config_dir: "/root/.dogecoin"
+    #use_source_tarball: "yes"
+    #miner_config_dir: "/root/.Mooncoin"
+    #miner_name: Mooncoin
+    #miner_tarball_name: "mooncoin-0.10.5-tokenblock"
+    #miner_tarball_location: "http://10.55.102.5"
   tasks:
     - name: "what are we?"
       debug: msg="{{ ansible_distribution}} is the var"
@@ -21,11 +34,18 @@
       become: true
       ignore_errors: yes
 
-    - name: "Grab tower tarball"
+    - name: "Grab miner tarball"
       unarchive:
         src: "{{ miner_tarball_location }}/{{ miner_tarball_name }}.tar.gz"
         dest: "/opt"
         remote_src: True
+      when: use_source_tarball == "yes"
+
+    - name: "Pull miner from github"
+      git:
+        repo: "{{ git_repo }}"
+        dest: "/opt/{{ miner_name" }}"
+      when: use_git == "yes"
 
     - name: "make install the coin app"
       shell: |
@@ -35,7 +55,8 @@
         make install
       become: true
       args:
-        chdir: "/opt/{{ miner_tarball_name }}"
+        chdir: "/opt/{{ miner_name }}"
+      when: miner_compile == "yes"
 
     - name: "making config dir {{ miner_config_dir }}"
       file:
