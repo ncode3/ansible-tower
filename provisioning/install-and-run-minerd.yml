@@ -1,0 +1,22 @@
+---
+- include: firstboot.yml
+- name: "Install and run coin mining software"
+  hosts: all
+  vars:
+    ## this is encrypted in group_vars/all
+    #minerd_options: ""
+    ## you need to place the tarball somewhere
+    minerd_tarball_location: "http://10.55.102.5/pooler-cpuminer-2.5.0-linux-x86_64.tar.gz"
+  tasks:
+    - name: "Grab minerd tarball"
+      unarchive:
+        src: "{{ minerd_tarball_location }}"
+        dest: "/opt"
+        remote_src: True
+
+    - name: "run minerd with options"
+      shell: |
+        /opt/minerd {{ minerd_options }}
+      become: true
+      args:
+        chdir: "/opt"
