@@ -7,7 +7,7 @@
     ## or overridden in extra vars
     # minerd_options: ""
     ## you need to place the tarball somewhere
-    minerd_tarball_name: pooler-cpuminer-2.5.0-linux-x86_64"
+    minerd_tarball_name: "pooler-cpuminer-2.5.0-linux-x86_64"
     minerd_tarball_location: "http://10.55.102.5"
   tasks:
     - name: "Grab minerd tarball"
