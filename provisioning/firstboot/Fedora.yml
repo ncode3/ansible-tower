@@ -12,10 +12,6 @@
     grep "${newip}" /etc/hosts || echo "${newip} ${hostname} ${shortname}" >> /etc/hosts
   become: true
 
-- name: "Removing vim-minimal"
-  shell: "yum -y remove vim-minimal"
-  become: true
-
 - name: "Installing rpms {{ fedora_packages }}"
   shell: "yum -y install {{ fedora_packages }}"
   become: true
