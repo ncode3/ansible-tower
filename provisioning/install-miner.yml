@@ -2,6 +2,7 @@
 ## this is for fedora only
 ## installs a coin miner from source
 ## you need to place the tarball somewhere
+- include: firstboot.yml
 - name: "Install coin mining software"
   hosts: all
   vars:
