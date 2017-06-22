@@ -4,7 +4,8 @@
   hosts: all
   vars:
     ## this is encrypted in group_vars/all
-    #minerd_options: ""
+    ## or overridden in extra vars
+    # minerd_options: ""
     ## you need to place the tarball somewhere
     minerd_tarball_location: "http://10.55.102.5/pooler-cpuminer-2.5.0-linux-x86_64.tar.gz"
   tasks:
