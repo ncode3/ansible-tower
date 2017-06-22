@@ -7,7 +7,7 @@
   vars:
     use_source_tarball: "no"
     use_git: "yes"
-    miner_compine: "yes"
+    miner_compile: "yes"
     git_repo: "https://github.com/dogecoin/dogecoin.git"
     miner_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
     miner_name: dogecoin
