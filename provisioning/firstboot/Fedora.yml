@@ -1,6 +1,7 @@
 ---
+## this is for fedora 25 has python3 and python3 is not supported yet for anisble
 - name: install python and deps for ansible modules
-  shell: dnf install -y python2 python2-dnf libselinux-python rsyslog
+  shell: dnf install -y python2 python2-dnf libselinux-python
 
 - name: "Set up /etc/hosts file"
   shell: |
@@ -8,6 +9,14 @@
     shortname=$(hostname --short)
     newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
     grep "${newip}" /etc/hosts || echo "${newip} ${hostname} ${shortname}" >> /etc/hosts
+  become: true
+
+- name: "Removing vim-minimal"
+  shell: "yum -y remove vim-minimal"
+  become: true
+
+- name: "Installing rpms {{ fedora_packages }}"
+  shell: "yum -y install {{ fedora_packages }}"
   become: true
 
 - name: "Enabling and restarting services {{ enabled_svcs }}"
@@ -27,10 +36,6 @@
   become: true
   ignore_errors: yes
 
-- name: "Installing rpms {{ packages }}"
-  shell: "yum -y install {{ item }}"
-  with_items: "{{ packages }}"
-  become: true
 
 - name: "Custom configuration repo"
   file:

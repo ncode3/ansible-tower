@@ -66,11 +66,11 @@
   with_items: "{{ rh_enabled_repos }}"
   become: true
 
-- name: "Installing rpms {{ packages }}"
+- name: "Installing rpms {{ redhat_packages }}"
   yum:
     name: "{{ item }}"
     state: latest
-  with_items: "{{ packages }}"
+  with_items: "{{ redhat_packages }}"
   become: true
 
 # Only register if this system hasn't been registered before

@@ -4,7 +4,9 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
-packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget']
+redhat_packages: ['redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget']
+centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget']
+fedora_packages: "deltarpm bash-completion vim-enhanced ntp ntpdate git wget rsyslog"
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 ## tower related
