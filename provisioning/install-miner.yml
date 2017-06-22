@@ -44,7 +44,7 @@
     - name: "Pull miner from github"
       git:
         repo: "{{ git_repo }}"
-        dest: "/opt/{{ miner_name" }}"
+        dest: "/opt/{{ miner_name }}"
       when: use_git == "yes"
 
     - name: "make install the coin app"
