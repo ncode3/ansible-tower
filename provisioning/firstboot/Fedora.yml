@@ -1,6 +1,6 @@
 ---
 - name: install python and deps for ansible modules
-  shell: dnf install -y python2 python2-dnf libselinux-python
+  shell: dnf install -y python2 python2-dnf libselinux-python rsyslog
 
 - name: "Set up /etc/hosts file"
   shell: |
