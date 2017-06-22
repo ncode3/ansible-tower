@@ -1,0 +1,75 @@
+---
+## this is for fedora only
+## builds a coin wallet from source
+## you need to place the tarball somewhere
+- include: firstboot.yml
+- name: "Install coin wallet software"
+  hosts: all
+  vars:
+    use_source_tarball: "no"
+    use_git: "yes"
+    altcoin_wallet_compile: "yes"
+    git_repo: "https://github.com/dogecoin/dogecoin.git"
+    altcoin_wallet_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
+    altcoin_wallet_name: dogecoin
+    altcoin_wallet_config_dir: "/root/.dogecoin"
+    altcoin_wallet_build_options: "--with-incompatible-bdb"
+    #use_source_tarball: "yes"
+    #altcoin_wallet_config_dir: "/root/.Mooncoin"
+    #altcoin_wallet_name: Mooncoin
+    #altcoin_wallet_tarball_name: "mooncoin-0.10.5-tokenblock"
+    #altcoin_wallet_tarball_location: "http://10.55.102.5"
+    #altcoin_wallet_build_options: ""
+  tasks:
+    - name: "what are we?"
+      debug: msg="{{ ansible_distribution}} is the var"
+
+    - name: "fail if we are not on fedora"
+      shell: "/bin/false"
+      when: ansible_distribution != 'Fedora'
+
+    - name: "first, groupinstall Dev Tools"
+      shell: "yum -y groupinstall 'C Development Tools and Libraries'"
+      become: true
+
+    - name: "Install yum packages"
+      shell: yum -y install {{ altcoin_wallet_pkgs }}
+      become: true
+      ignore_errors: yes
+
+    - name: "Grab miner tarball"
+      unarchive:
+        src: "{{ altcoin_wallet_tarball_location }}/{{ altcoin_wallet_tarball_name }}.tar.gz"
+        dest: "/opt"
+        remote_src: True
+      when: use_source_tarball == "yes"
+
+    - name: "Pull miner from github"
+      git:
+        repo: "{{ git_repo }}"
+        dest: "/opt/{{ altcoin_wallet_name }}"
+      when: use_git == "yes"
+
+    - name: "make install the wallet"
+      shell: |
+        ./autogen.sh
+        ./configure {{ altcoin_wallet_build_options }}
+        make
+        make install
+      become: true
+      args:
+        chdir: "/opt/{{ altcoin_wallet_name }}"
+      when: altcoin_wallet_compile == "yes"
+
+    - name: "making config dir {{ altcoin_wallet_config_dir }}"
+      file:
+        state: directory
+        path: "{{ altcoin_wallet_config_dir }}"
+        owner: root
+        group: root
+        mode: 0755
+      become: true
+
+    - name: "success announcement"
+      debug: msg="copy your wallet into {{ altcoin_wallet_config_dir }} and run your miner {{ altcoin_wallet_name }}"
+      

@@ -299,11 +299,21 @@ dhcp_server_key: !vault |
           3730646632313530660a393436303232663363346530306131633664363233623531636165623164
           30326537643662363063656232626462613337303666616334373136356638366365
 ## miner vars
-miner_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
-miner_name: Mooncoin
-miner_config_dir: "/root/.Mooncoin"
-miner_tarball_name: "mooncoin-0.10.5-tokenblock"
-miner_tarball_location: "http://10.55.102.5"
+altcoin_wallet_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
+altcoin_wallet_name: Mooncoin
+altcoin_wallet_config_dir: "/root/.Mooncoin"
+altcoin_wallet_tarball_name: "mooncoin-0.10.5-tokenblock"
+altcoin_wallet_tarball_location: "http://10.55.102.5"
+minerd_options: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63633934623663383161646230313432663339316164356136653739363865383765623362343734
+          6566393263653863363363363330303831633365363531340a633164393462613833333730356661
+          61326138333362393061616531366364653435656535316563663164336262663764366566303235
+          3563386136653130620a323539663530343237386338326266366539663230353066303962383730
+          34376663353762353234373365653436316361373264656334393366383864363035646665396436
+          63346431306632386133373565623463313265366637626166336564363430316363323430393133
+          62373538623734383630313736653934656166323835313361613430323735313761306239396437
+          65636438303933353464
 ## motioneye vars
 motion_pkgs: ['motion','ffmpeg','v4l-utils','python-pip','python-devel','gcc','libcurl-devel']
 motion_dirs: ['/etc/motioneye','/var/lib/motioneye']
