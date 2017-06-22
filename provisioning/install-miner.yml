@@ -51,7 +51,7 @@
     - name: "make install the coin app"
       shell: |
         ./autogen.sh
-        ./configure
+        ./configure --with-incompatible-bdb
         make
         make install
       become: true
