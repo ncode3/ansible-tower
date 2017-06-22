@@ -28,9 +28,7 @@
   ignore_errors: yes
 
 - name: "Installing rpms {{ packages }}"
-  yum:
-    name: "{{ item }}"
-    state: latest
+  shell: "yum -y install {{ item }}"
   with_items: "{{ packages }}"
   become: true
 
