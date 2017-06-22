@@ -1,5 +1,6 @@
 ---
 ## this is for fedora 25 has python3 and python3 is not supported yet for anisble
+## also, you will have to use "ansible_python_interpreter: /usr/bin/python3" in extra variables
 - name: install python and deps for ansible modules
   shell: dnf install -y python2 python2-dnf libselinux-python
 
