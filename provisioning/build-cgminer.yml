@@ -8,7 +8,7 @@
     use_source_tarball: "yes"
     use_git: "no"
     cgminer_compile: "yes"
-    cgminer_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
+    cgminer_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel libcurl-devel"
     cgminer_name: cgminer
     #cgminer_config_dir: ""
     cgminer_name: "cgminer-4.10.0"
