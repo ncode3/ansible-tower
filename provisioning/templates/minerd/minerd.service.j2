@@ -1,0 +1,10 @@
+[Unit]
+Description=Run minerd
+
+[Service]
+Type=oneshot
+ExecStart=+/opt/minerd {{ minerd_options }} -B
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
