@@ -11,9 +11,13 @@
     minerd_tarball_location: "http://10.55.102.5"
   tasks:
     - name: "Grab minerd tarball"
-      shell: |
-        wget {{ minerd_tarball_location }}/{{ minerd_tarball_name }}.tar.gz
-        tar zxf {{ minerd_tarball_name}.tar.gz
+      shell: "wget {{ minerd_tarball_location }}/{{ minerd_tarball_name }}.tar.gz"
+      args:
+        chdir: "/opt"
+      become: true
+
+    - name: "Unzip it"
+      shell: "tar zxf {{ minerd_tarball_name}.tar.gz"
       args:
         chdir: "/opt"
       become: true
