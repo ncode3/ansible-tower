@@ -37,6 +37,8 @@
         wget {{ cgminer_tarball_location }}/{{ cgminer_tarball_name }}.tar.gz
         tar zxf {{ cgminer_tarball_name }}.tar.gz
       when: use_source_tarball == "yes"
+      args:
+        chdir: "/opt"
 
     - name: "Pull miner from github"
       git:
