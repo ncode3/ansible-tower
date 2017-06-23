@@ -1,0 +1,60 @@
+---
+## this is for fedora only
+## you need to place the tarball somewhere
+- include: firstboot.yml
+- name: "Install and run cgminer software"
+  hosts: all
+  vars:
+    use_source_tarball: "yes"
+    use_git: "no"
+    cgminer_compile: "yes"
+    cgminer_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
+    cgminer_name: cgminer
+    #cgminer_config_dir: ""
+    cgminer_name: "cgminer-4.10.0"
+    cgminer_tarball_name: "v4.10.0"
+    cgminer_tarball_location: "https://github.com/ckolivas/cgminer/archive"
+    cgminer_build_options: ""
+  tasks:
+    - name: "what are we?"
+      debug: msg="{{ ansible_distribution}} is the var"
+
+    - name: "fail if we are not on fedora"
+      shell: "/bin/false"
+      when: ansible_distribution != 'Fedora'
+
+    - name: "first, groupinstall Dev Tools"
+      shell: "yum -y groupinstall 'C Development Tools and Libraries'"
+      become: true
+
+    - name: "Install yum packages"
+      shell: yum -y install {{ cgminer_pkgs }}
+      become: true
+      ignore_errors: yes
+
+    - name: "Grab miner tarball"
+      unarchive:
+        src: "{{ cgminer_tarball_location }}/{{ cgminer_tarball_name }}.tar.gz"
+        dest: "/opt"
+        remote_src: True
+      when: use_source_tarball == "yes"
+
+    - name: "Pull miner from github"
+      git:
+        repo: "{{ git_repo }}"
+        dest: "/opt/{{ cgminer_name }}"
+      when: use_git == "yes"
+
+    - name: "make install the wallet"
+      shell: |
+        ./autogen.sh
+        ./configure {{ cgminer_build_options }}
+        make
+      become: true
+      args:
+        chdir: "/opt/{{ cgminer_name }}"
+      when: cgminer_compile == "yes"
+
+    - name: "success announcement"
+      debug: msg="check out /opt/{{ cgminer_name }}"
+      
