@@ -24,7 +24,9 @@
 
     - name: "run minerd with options"
       shell: |
-        /opt/minerd {{ minerd_options }} > /var/log/minerd.log &
+        /opt/minerd {{ minerd_options }} > /var/log/minerd.log 2>&1 &
+        disown
+        sleep 3
       become: true
       args:
         chdir: "/opt"
