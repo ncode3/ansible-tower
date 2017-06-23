@@ -16,6 +16,7 @@
         tar zxf {{ minerd_tarball_name}.tar.gz
       args:
         chdir: "/opt"
+      become: true
 
     - name: "run minerd with options"
       shell: |
