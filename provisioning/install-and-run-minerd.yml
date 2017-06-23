@@ -17,7 +17,7 @@
       become: true
 
     - name: "Unzip it"
-      shell: "tar zxf {{ minerd_tarball_name}.tar.gz"
+      shell: "tar zxf {{ minerd_tarball_name }}.tar.gz"
       args:
         chdir: "/opt"
       become: true
