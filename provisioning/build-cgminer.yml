@@ -33,10 +33,9 @@
       ignore_errors: yes
 
     - name: "Grab miner tarball"
-      unarchive:
-        src: "{{ cgminer_tarball_location }}/{{ cgminer_tarball_name }}.tar.gz"
-        dest: "/opt"
-        remote_src: True
+      shell: |
+        wget {{ cgminer_tarball_location }}/{{ cgminer_tarball_name }}.tar.gz
+        tar zxf {{ cgminer_tarball_name }}.tar.gz
       when: use_source_tarball == "yes"
 
     - name: "Pull miner from github"
