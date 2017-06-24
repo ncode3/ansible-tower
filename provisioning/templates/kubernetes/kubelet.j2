@@ -1,0 +1,4 @@
+KUBELET_ADDRESS="--address={{ ansible_default_ipv4['address'] }}"
+KUBELET_API_SERVER="--api-servers=http://{{ ansible_default_ipv4['address'] }}:8080"
+KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
+KUBELET_ARGS="--register-node=true --config=/etc/kubernetes/manifests/"
