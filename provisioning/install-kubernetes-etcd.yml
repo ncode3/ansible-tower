@@ -1,4 +1,5 @@
 ---
+- include: firstboot.yml
 - name: "Install kubernetes, docker, and etcd"
   hosts: all
   vars:
