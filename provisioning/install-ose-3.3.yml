@@ -136,6 +136,8 @@
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
+        echo "rebooting to run dns scripts"
+        shutdown -r +1 &
         exit 0
         #oadm policy add-scc-to-user hostnetwork -z router
         #oadm router redhat-lab-router --replicas=1 \
