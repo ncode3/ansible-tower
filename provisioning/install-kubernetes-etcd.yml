@@ -8,7 +8,7 @@
   tasks:
     - name: "installing kubenetes, docker, etcd and dependencies {{ kde_pkgs }}"
       yum:
-        install: "{{ item }}"
+        name: "{{ item }}"
         state: latest
       with_items: "{{ kde_pkgs }}"
 
