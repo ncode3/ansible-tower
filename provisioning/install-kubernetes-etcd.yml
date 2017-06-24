@@ -83,6 +83,7 @@
         enabled: no
       with_items: "{{ kde_nonsvcs }}"
       become: true
+      ignore_errors: yes
 
     - name: "enabling and restarting services {{ kde_svcs }}"
       service:
