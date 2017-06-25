@@ -133,9 +133,13 @@
         --description="This is an example project to demonstrate OpenShift v3" \
         --display-name="Redhat Lab Demo Project"
         oadm policy add-cluster-role-to-user cluster-admin admin
+        oadm policy add-role-to-user system:image-builder admin
+        oadm policy add-role-to-user admin admin -n openshift
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
+        /usr/sbin/ifup-local
+        /opt/dns-updater.sh add mac $(hostname --short) $newip
         echo "rebooting to run dns scripts"
         shutdown -r +1 &
         exit 0
@@ -163,3 +167,4 @@
         echo "${newip} $(hostname --fqdn) $(hostname)"
         echo 
       become: true
+      ignore_errors: yes
