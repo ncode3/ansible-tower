@@ -4,7 +4,7 @@
   hosts: localhost
   gather_facts: no
   environment:
-#    OS_TENANT_NAME: "{{ vault_os_project }}"
+    OS_TENANT_NAME: "{{ vault_os_project }}"
     OS_TENANT_ID: "{{ vault_os_projectid }}"
     OS_USERNAME: "{{ vault_os_user }}"
     OS_PASSWORD: "{{ vault_os_pass }}"
