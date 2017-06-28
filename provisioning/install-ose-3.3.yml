@@ -151,31 +151,7 @@
         #oc login -u admin -p redhat123
         oc project redhat-lab
         oc create -f /tmp/outbound-traffic.json
-        echo "rebooting to run dns scripts"
-        shutdown -r +1 &
-        exit 0
-        #oadm policy add-scc-to-user hostnetwork -z router
-        #oadm router redhat-lab-router --replicas=1 \
-        #--service-account=router
-        ## create a persistent registry
-        #oadm registry --service-account=registry \
-        #--config=/etc/origin/master/admin.kubeconfig \
-        #--credentials=/etc/origin/master/openshift-registry.kubeconfig \
-        #--images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
-        #--mount-host=/opt/ose-mount-host
-        ## add policy for admin user
-        #oadm policy add-cluster-role-to-user cluster-admin admin
-        ## restart ose for htpasswd auth to take effect
-        #systemctl restart atomic-openshift-master
-        sleep 15
-        ## test login
-        oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
-        echo
-        echo "Visit http://${newip}:8443/console/ to manage OSE"
-        echo "username: admin"
-        echo "password: redhat123"
-        echo "You may need to update your hosts file to:"
-        echo "${newip} $(hostname --fqdn) $(hostname)"
-        echo 
+        echo "calling app deploy because I am lazy"
+        curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
       become: true
       ignore_errors: yes
