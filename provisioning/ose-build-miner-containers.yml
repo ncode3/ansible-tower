@@ -5,20 +5,42 @@
     ose_project: "redhat-lab"
     ose_user: "admin"
     ose_pass: "redhat123"
+    miner_container: "cpuminer-multipool"
+    etcd_container: "etcd-container"
   tasks:
     - name: "Pull custom configuration from github"
       git:
         repo: 'https://github.com/syspimp/docker-wolf-cpuminer-multi.git'
         dest: /opt/docker-wolf-cpuminer-multi
 
-    - name: "Build and push etcd-container and cpuminer-multipool containers"
+    - name: "Build and push cpuminer-multipool containers"
       shell: |
-        chmod +x ./buildboth.sh
-        chmod +x ./buildandpush.sh
-        chmod +x ./etcd-container/rebuild.sh
-        ./buildboth.sh
+        docker build --no-cache -t {{ miner_container }} .
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project default
+        server=$(oc get svc|grep docker-reg| awk '{print $2}')
+        id=$(docker images|grep ^{{ miner_container }}|awk '{print $3}')
+        token=$(oc whoami -t)
+        docker login -u {{ ose_user }} -p $token ${server}:5000
+        docker tag {{ miner_container }} ${server}:5000/${ose_project}/{{ miner_container }}
+        docker push ${server}:5000/{{ ose_project }}/{{ miner_container }}
       args:
-        chdir: "/opt"
+        chdir: "/opt/docker-wolf-cpuminer-multi"
+      become: true
+
+    - name: "Build and push etcd-container container"
+      shell: |
+        docker build --no-cache -t {{ etcd_container }} .
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project default
+        server=$(oc get svc|grep docker-reg| awk '{print $2}')
+        id=$(docker images|grep ^{{ etcd_container }}|awk '{print $3}')
+        token=$(oc whoami -t)
+        docker login -u {{ ose_user }} -p $token ${server}:5000
+        docker tag {{ etcd_container }} ${server}:5000/${ose_project}/{{ etcd_container }}
+        docker push ${server}:5000/{{ ose_project }}/{{ etcd_container }}
+      args:
+        chdir: "/opt/docker-wolf-cpuminer-multi/etcd-container"
       become: true
 
     - name: "Launch etcd-container in openshift"
