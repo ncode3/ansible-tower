@@ -1,0 +1,37 @@
+---
+- name: "Build miner and etcd containers"
+  hosts: all
+  vars:
+    ose_project: "redhat-lab"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+  tasks:
+    - name: "Pull custom configuration from github"
+      git:
+        repo: 'https://github.com/syspimp/docker-wolf-cpuminer-multi.git'
+        dest: /opt/docker-wolf-cpuminer-multi
+
+    - name: "Build and push etcd-container and cpuminer-multipool containers"
+      shell: |
+        chmod +x ./buildboth.sh
+        chmod +x ./buildandpush.sh
+        chmod +x ./etcd-container/rebuild.sh
+        ./buildboth.sh
+      args:
+        chdir: "/opt"
+      become: true
+
+    - name: "Launch etcd-container in openshift"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc new-app -i {{ ose_project }}/etcd-container
+        echo "waiting 10 secs for it to deploy" && sleep 10
+      become: true
+
+    - name: "Launch cpuminer-multipool in openshift"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc new-app -i {{ ose_project }}/cpuminer-multipool -e ETCD_SERVER=etcd-container:22379
+      become: true
