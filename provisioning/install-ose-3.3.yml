@@ -38,6 +38,13 @@
         mode: 0644
 
     - template:
+        src: ose/outbound-traffic.json.j2
+        dest: /tmp/outbound-traffic.json
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
         src: ose/hosts.j2
         dest: /root/.config/openshift/hosts
         owner: root
@@ -140,6 +147,10 @@
         systemctl restart atomic-openshift-master
         /usr/sbin/ifup-local
         /opt/dns-updater.sh add mac $(hostname --short) $newip
+        # create outbound policy rule
+        #oc login -u admin -p redhat123
+        oc project redhat-lab
+        oc create -f /tmp/outbound-traffic.json
         echo "rebooting to run dns scripts"
         shutdown -r +1 &
         exit 0
