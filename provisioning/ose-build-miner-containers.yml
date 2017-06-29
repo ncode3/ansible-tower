@@ -22,7 +22,7 @@
         id=$(docker images|grep ^{{ miner_container }}|awk '{print $3}')
         token=$(oc whoami -t)
         docker login -u {{ ose_user }} -p $token ${server}:5000
-        docker tag {{ miner_container }} ${server}:5000/${ose_project}/{{ miner_container }}
+        docker tag {{ miner_container }} ${server}:5000/{{ ose_project }}/{{ miner_container }}
         docker push ${server}:5000/{{ ose_project }}/{{ miner_container }}
       args:
         chdir: "/opt/docker-wolf-cpuminer-multi"
@@ -37,7 +37,7 @@
         id=$(docker images|grep ^{{ etcd_container }}|awk '{print $3}')
         token=$(oc whoami -t)
         docker login -u {{ ose_user }} -p $token ${server}:5000
-        docker tag {{ etcd_container }} ${server}:5000/${ose_project}/{{ etcd_container }}
+        docker tag {{ etcd_container }} ${server}:5000/{{ ose_project }}/{{ etcd_container }}
         docker push ${server}:5000/{{ ose_project }}/{{ etcd_container }}
       args:
         chdir: "/opt/docker-wolf-cpuminer-multi/etcd-container"
