@@ -3,6 +3,13 @@
 # Launches new OSE 3.3 instance with provisioning userdata using Cloud-Init
 - name: launch a compute instance
   hosts: all
+  vars:
+    ose_add_user: "admin"
+    ose_add_pass: "redhat123"
+    ose_add_project: "redhat-lab"
+    ose_add_project_description: "This is an example project to demonstrate OpenShift v3"
+    ose_add_project_displayname: "Redhat Lab Demo Project"
+    ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
     - name: "Enabling OSE needed repos"
       shell: "subscription-manager repos --enable={{ item }}"
@@ -133,23 +140,23 @@
         tail='^  masterCA: ca-bundle.crt$'
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
-        htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
+        htpasswd -c -b /etc/origin/master/htpasswd {{ ose_add_user }} {{ ose_add_pass }}
         ## create a new project
         oc login -u system:admin -n default
-        oc new-project redhat-lab \
-        --description="This is an example project to demonstrate OpenShift v3" \
-        --display-name="Redhat Lab Demo Project"
-        oadm policy add-cluster-role-to-user cluster-admin admin
-        oadm policy add-role-to-user system:image-builder admin
-        oadm policy add-role-to-user admin admin -n openshift
+        oc new-project {{ ose_add_project }} \
+        --description="{{ ose_add_project_description }}" \
+        --display-name="{{ ose_add_project_displayname }}"
+        oadm policy add-cluster-role-to-user cluster-admin {{ ose_add_user }}
+        oadm policy add-role-to-user system:image-builder {{ ose_add_user }}
+        oadm policy add-role-to-user admin {{ ose_add_user }} -n openshift
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
         /usr/sbin/ifup-local
         /opt/dns-updater.sh add mac $(hostname --short) $newip
         # create outbound policy rule
-        #oc login -u admin -p redhat123
-        oc project redhat-lab
+        #oc login -u {{ ose_add_user }} -p {{ ose_add_pass }}
+        oc project {{ ose_add_project }}
         oc create -f /tmp/outbound-traffic.json
         echo "calling app deploy because I am lazy"
         curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/

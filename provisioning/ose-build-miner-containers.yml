@@ -8,6 +8,15 @@
     miner_container: "cpuminer-multipool"
     etcd_container: "etcd-container"
   tasks:
+    - name: "Configure Huge Pages and set a performance openstack flavor ..."
+      shell: |
+        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+        grub2-install /dev/vda
+      args:
+        chdir: /root
+      become: true
+      ignore_errors: yes
+
     - name: "Pull custom configuration from github"
       git:
         repo: 'https://github.com/syspimp/docker-wolf-cpuminer-multi.git'
