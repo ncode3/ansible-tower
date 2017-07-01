@@ -154,7 +154,7 @@
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
         grub2-install /dev/sda
         source /root/keystonerc_admin
-        nova flavor-create m1.medium.performance 6 4096 20 8
+        nova flavor-create m1.medium.performance 6 4096 20 4
         nova flavor-key m1.medium.performance set hw:mem_page_size=2048
       args:
         chdir: /root
@@ -162,8 +162,16 @@
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
-        shutdown -r +1 && sleep 3
+        shutdown -r +1 && sleep 55
       args:
         chdir: /root
       become: true
+
+    - name: Wait for server to restart
+      local_action:
+        module: wait_for
+          host={{ ansible_host }}
+          port=22
+          delay=1
+          timeout=660
 
