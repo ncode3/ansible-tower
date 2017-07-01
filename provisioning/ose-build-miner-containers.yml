@@ -8,11 +8,11 @@
     miner_container: "cpuminer-multipool"
     etcd_container: "etcd-container"
   tasks:
-    - name: "Configure Huge Pages and reboot ..."
+    - name: "Configure Huge Pages and you need to reboot  later..."
       shell: |
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
         grub2-install /dev/vda
-        shutdown -r +1 && sleep 55
+        #shutdown -r +1 && sleep 55
       args:
         chdir: /root
       become: true
@@ -25,6 +25,8 @@
           port=22
           delay=1
           timeout=660
+      ignore_errors: yes
+      become: true
 
     - name: "Pull custom configuration from github"
       git:
