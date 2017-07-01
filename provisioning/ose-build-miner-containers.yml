@@ -8,7 +8,7 @@
     miner_container: "cpuminer-multipool"
     etcd_container: "etcd-container"
   tasks:
-    - name: "Configure Huge Pages and set a performance openstack flavor ..."
+    - name: "Configure Huge Pages and reboot ..."
       shell: |
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
         grub2-install /dev/vda
