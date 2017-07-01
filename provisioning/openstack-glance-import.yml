@@ -160,6 +160,14 @@
         chdir: /root
       become: true
 
+    - name: "Update Nova Scheduler to filter on capabilities  ..."
+      shell: |
+        sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
+        systemctl restart openstack-nova-scheduler.service
+      args:
+        chdir: /root
+      become: true
+
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
         shutdown -r +1 && sleep 55
