@@ -148,3 +148,22 @@
       args:
         chdir: /root
       become: true
+
+    - name: "Configure Huge Pages and set a performance openstack flavor ..."
+      shell: |
+        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+        grub2-install /dev/sda
+        source /root/keystonerc_admin
+        nova flavor-create m1.medium.performance 6 4096 20 8
+        nova flavor-key m1.medium.performance set hw:mem_page_size=2048
+      args:
+        chdir: /root
+      become: true
+
+    - name: "Reboot to new settings. Back in 10 mins or so"
+      shell: |
+        shutdown -r +1 && sleep 3
+      args:
+        chdir: /root
+      become: true
+
