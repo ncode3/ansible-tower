@@ -38,56 +38,55 @@
         group: root
         mode: 0644
 
-  - name: "Provisioning Satellite 6"
-    shell: |
-        hammer organization create --name "{{ sat6_org }}" --label "{{ sat6_org }}" \
-        --description "Our example organization for managing content."
-
-  - name: "Provisioning Satellite 6 - upload manifest"
-    shell: |
-        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}"
-
-  - name: "Provisioning Satellite 6 - configure repositories"
-    shell: |
-        hammer repository-set enable \
-        --name "Red Hat Enterprise Linux 7 Server (RPMs)" \
-        --releasever "7Server" --basearch "x86_64" \
-        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_org }}"
-        hammer repository-set enable \
-        --name "Red Hat Enterprise Linux 7 Server (Kickstart)" \
-        --releasever "7Server" --basearch "x86_64" \
-        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_org }}"
-        hammer repository-set enable \
-        --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
-        --basearch "x86_64" --product "Red Hat Enterprise Linux Server" \
-        --organization "{{ sat6_org }}"
-
-  - name: "Provisioning Satellite 6 - Syncing Content"
-    shell: |
-        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
-        --organization "{{ sat6_org }}"
-
-  - name: "Provisioning Satellite 6 Lifecycle Base"
-    shell: |
-        # Create our application life cycle
-        hammer lifecycle-environment create --name "{{ sat6_environments_base }}" \
-        --description "Environment for {{ sat6_org }}'s {{ sat6_environments_base }} Team" \
-        --prior "Library" --organization "{{ sat6_org }}"
-
-  - name: "Provisioning Satellite 6 Lifecycle - the rest"
-    shell: |
-        # Create our application life cycle
-        hammer lifecycle-environment create --name "{{ item }}" \
-        --description "Environment for {{ sat6_org }}'s {{ item }} Team" \
-        --prior "Library" --organization "{{ sat6_org }}"
-    with_items: sat6_environments
-
+#  - name: "Provisioning Satellite 6"
+#    shell: |
+#        hammer organization create --name "{{ sat6_org }}" --label "{{ sat6_org }}" \
+#        --description "Our example organization for managing content."
+#
+#  - name: "Provisioning Satellite 6 - upload manifest"
+#    shell: |
+#        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}"
+#
+#  - name: "Provisioning Satellite 6 - configure repositories"
+#    shell: |
+#        hammer repository-set enable \
+#        --name "Red Hat Enterprise Linux 7 Server (RPMs)" \
+#        --releasever "7Server" --basearch "x86_64" \
+#        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_org }}"
+#        hammer repository-set enable \
+#        --name "Red Hat Enterprise Linux 7 Server (Kickstart)" \
+#        --releasever "7Server" --basearch "x86_64" \
+#        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_org }}"
+#        hammer repository-set enable \
+#        --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
+#        --basearch "x86_64" --product "Red Hat Enterprise Linux Server" \
+#        --organization "{{ sat6_org }}"
+#
+#  - name: "Provisioning Satellite 6 - Syncing Content"
+#    shell: |
+#        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
+#        --organization "{{ sat6_org }}"
+#
+#  - name: "Provisioning Satellite 6 Lifecycle Base"
+#    shell: |
+#        # Create our application life cycle
+#        hammer lifecycle-environment create --name "{{ sat6_environments_base }}" \
+#        --description "Environment for {{ sat6_org }}'s {{ sat6_environments_base }} Team" \
+#        --prior "Library" --organization "{{ sat6_org }}"
+#
+#  - name: "Provisioning Satellite 6 Lifecycle - the rest"
+#    shell: |
+#        # Create our application life cycle
+#        hammer lifecycle-environment create --name "{{ item }}" \
+#        --description "Environment for {{ sat6_org }}'s {{ item }} Team" \
+#        --prior "Library" --organization "{{ sat6_org }}"
+#    with_items: sat6_environments
+#
   - name: "Creating Base Content View"
     shell: |
         hammer content-view create --name "Base" \
         --description "Base operating system" \
-        --repositories "Red Hat Enterprise Linux 7 Server RPMs x86_64
-        7Server,Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64" \
+        --repository-ids "rhel-7-server-rpms,rhel-7-server-satellite-tools-6.2-rpms" \
         --organization "{{ sat6_org }}"
         hammer content-view publish --name "Base" \
         --description "Initial content view for our operating system" \
