@@ -55,13 +55,15 @@
 #        hammer organization create --name "{{ sat6_org }}" --label "{{ sat6_org }}" \
 #        --description "Our example organization for managing content."
 #        touch /root/.setup/step1
-#     creates: /root/.setup/step1
+#    args:
+#      creates: /root/.setup/step1
 #
 #  - name: "Provisioning Satellite 6 - upload manifest"
 #    shell: |
 #        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}"
 #        touch /root/.setup/step2
-#     creates: /root/.setup/step2
+#    args:
+#      creates: /root/.setup/step2
 #
 #  - name: "Provisioning Satellite 6 - configure repositories"
 #    shell: |
@@ -78,14 +80,16 @@
 #        --basearch "x86_64" --product "Red Hat Enterprise Linux Server" \
 #        --organization "{{ sat6_org }}"
 #        touch /root/.setup/step3
-#     creates: /root/.setup/step3
+#    args:
+#      creates: /root/.setup/step3
 #
 #  - name: "Provisioning Satellite 6 - Syncing Content"
 #    shell: |
 #        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
 #        --organization "{{ sat6_org }}"
 #        touch /root/.setup/step4
-#     creates: /root/.setup/step4
+#    args:
+#      creates: /root/.setup/step4
 #
 #  - name: "Provisioning Satellite 6 Lifecycle Base"
 #    shell: |
@@ -94,7 +98,8 @@
 #        --description "Environment for {{ sat6_org }}'s {{ sat6_environments_base }} Team" \
 #        --prior "Library" --organization "{{ sat6_org }}"
 #        touch /root/.setup/step5
-#     creates: /root/.setup/step5
+#    args:
+#      creates: /root/.setup/step5
 #
 #  - name: "Provisioning Satellite 6 Lifecycle - the rest"
 #    shell: |
@@ -104,7 +109,8 @@
 #        --prior "Library" --organization "{{ sat6_org }}"
 #        touch /root/.setup/step6
 #    with_items: sat6_environments
-#    creates: /root/.setup/step6
+#    args:
+#      creates: /root/.setup/step6
 #
 #  - name: "Creating Base Content View"
 #    shell: |
@@ -121,7 +127,8 @@
 #        --description "Initial content view for our operating system" \
 #        --organization "{{ sat6_org }}"
 #        touch /root/.setup/step7
-#     creates: /root/.setup/step7
+#    args:
+#      creates: /root/.setup/step7
 #
   - name: "Promoting Environments {{ sat6_environments }}"
     shell: |
@@ -131,7 +138,8 @@
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
-    creates: /root/.setup/step8
+    args:
+      creates: /root/.setup/step8
 
   - name: "Creating activation keys for environments"
     shell: |
@@ -143,7 +151,8 @@
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
-    creates: /root/.setup/step9
+    args:
+      creates: /root/.setup/step9
 
   - name: "Adding subs to activation keys for environments"
     shell: |
@@ -154,7 +163,8 @@
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_pool_ids }}"
-    creates: /root/.setup/step10
+    args:
+      creates: /root/.setup/step10
 
   - name: "Adding subs to activation keys for environments"
     shell: |
@@ -165,7 +175,8 @@
     with_items:
       - "{{ sat6_environments }}"
       - "{{ sat6_pool_ids }}"
-    creates: /root/.setup/step11
+    args:
+      creates: /root/.setup/step11
 
   - name: "Enableing sat tools repo in the keys"
     shell: |
@@ -176,4 +187,5 @@
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
-    creates: /root/.setup/step12
+    args:
+      creates: /root/.setup/step12
