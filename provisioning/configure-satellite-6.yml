@@ -26,6 +26,12 @@
       state: directory
       mode: 0755
 
+  - name: "make setup tracking dir"
+    file:
+      path: /root/.setup
+      state: directory
+      mode: 0755
+
   - name: "Configure hammer cli tool"
     template:
         dest: /etc/hammer/cli_config.yml
@@ -48,10 +54,14 @@
 #    shell: |
 #        hammer organization create --name "{{ sat6_org }}" --label "{{ sat6_org }}" \
 #        --description "Our example organization for managing content."
+#        touch /root/.setup/step1
+#     creates: /root/.setup/step1
 #
 #  - name: "Provisioning Satellite 6 - upload manifest"
 #    shell: |
 #        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}"
+#        touch /root/.setup/step2
+#     creates: /root/.setup/step2
 #
 #  - name: "Provisioning Satellite 6 - configure repositories"
 #    shell: |
@@ -67,11 +77,15 @@
 #        --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
 #        --basearch "x86_64" --product "Red Hat Enterprise Linux Server" \
 #        --organization "{{ sat6_org }}"
+#        touch /root/.setup/step3
+#     creates: /root/.setup/step3
 #
 #  - name: "Provisioning Satellite 6 - Syncing Content"
 #    shell: |
 #        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
 #        --organization "{{ sat6_org }}"
+#        touch /root/.setup/step4
+#     creates: /root/.setup/step4
 #
 #  - name: "Provisioning Satellite 6 Lifecycle Base"
 #    shell: |
@@ -79,6 +93,8 @@
 #        hammer lifecycle-environment create --name "{{ sat6_environments_base }}" \
 #        --description "Environment for {{ sat6_org }}'s {{ sat6_environments_base }} Team" \
 #        --prior "Library" --organization "{{ sat6_org }}"
+#        touch /root/.setup/step5
+#     creates: /root/.setup/step5
 #
 #  - name: "Provisioning Satellite 6 Lifecycle - the rest"
 #    shell: |
@@ -86,30 +102,36 @@
 #        hammer lifecycle-environment create --name "{{ item }}" \
 #        --description "Environment for {{ sat6_org }}'s {{ item }} Team" \
 #        --prior "Library" --organization "{{ sat6_org }}"
+#        touch /root/.setup/step6
 #    with_items: sat6_environments
+#    creates: /root/.setup/step6
 #
-  - name: "Creating Base Content View"
-    shell: |
-        defaultorg=$(hammer organization list  | grep {{ sat6_org }} | awk '{print $1}')
-        hammer defaults add --param-name organization_id --param-value $defaultorg
-        sattoolsid=$(hammer repository list  | grep "Satellite Tools 6.2" | awk '{print $1}')
-        rhelrepoid=$(hammer repository list  | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
-        ksid=$(hammer repository list  | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
-        hammer content-view create --name "Base" \
-        --description "Base operating system" \
-        --repository-ids "${ksid},${rhelrepoid},${sattoolsid}" \
-        --organization "{{ sat6_org }}"
-        hammer content-view publish --name "Base" \
-        --description "Initial content view for our operating system" \
-        --organization "{{ sat6_org }}"
-
+#  - name: "Creating Base Content View"
+#    shell: |
+#        defaultorg=$(hammer organization list  | grep {{ sat6_org }} | awk '{print $1}')
+#        hammer defaults add --param-name organization_id --param-value $defaultorg
+#        sattoolsid=$(hammer repository list  | grep "Satellite Tools 6.2" | awk '{print $1}')
+#        rhelrepoid=$(hammer repository list  | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
+#        ksid=$(hammer repository list  | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
+#        hammer content-view create --name "Base" \
+#        --description "Base operating system" \
+#        --repository-ids "${ksid},${rhelrepoid},${sattoolsid}" \
+#        --organization "{{ sat6_org }}"
+#        hammer content-view publish --name "Base" \
+#        --description "Initial content view for our operating system" \
+#        --organization "{{ sat6_org }}"
+#        touch /root/.setup/step7
+#     creates: /root/.setup/step7
+#
   - name: "Promoting Environments {{ sat6_environments }}"
     shell: |
         hammer content-view version promote --content-view "Base" --version 1 \
         --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
+        touch /root/.setup/step8
     with_items:
-      - sat6_environments_base
-      - sat6_environments
+      - "{{ sat6_environments_base }}"
+      - "{{ sat6_environments }}"
+    creates: /root/.setup/step8
 
   - name: "Creating activation keys for environments"
     shell: |
@@ -117,33 +139,41 @@
       --unlimited-content-hosts true --description "Example activation key" \
       --lifecycle-environment "{{ item }}" --content-view "Base" \
       --organization "{{ sat6_org }}"
+      touch /root/.setup/step9
     with_items:
-      - sat6_environments_base
-      - sat6_environments
+      - "{{ sat6_environments_base }}"
+      - "{{ sat6_environments }}"
+    creates: /root/.setup/step9
 
   - name: "Adding subs to activation keys for environments"
     shell: |
       hammer activation-key add-subscription --name "{{ sat6_org}}-{{ item[0] }}-key" \
       --subscription-id {{ item[1] }} \
       --organization "{{ sat6_org }}"
+      touch /root/.setup/step10
     with_items:
-      - sat6_environments_base
-      - sat6_pool_ids
+      - "{{ sat6_environments_base }}"
+      - "{{ sat6_pool_ids }}"
+    creates: /root/.setup/step10
 
   - name: "Adding subs to activation keys for environments"
     shell: |
       hammer activation-key add-subscription --name "{{ sat6_org}}-{{ item[0] }}-key" \
       --subscription-id {{ item[1] }} \
       --organization "{{ sat6_org }}"
+      touch /root/.setup/setup11
     with_items:
-      - sat6_environments
-      - sat6_pool_ids
+      - "{{ sat6_environments }}"
+      - "{{ sat6_pool_ids }}"
+    creates: /root/.setup/step11
 
   - name: "Enableing sat tools repo in the keys"
     shell: |
       hammer activation-key content-override --name "{{ sat6_org}}-{{item }}-key" \
       --content-label rhel-7-server-satellite-tools-6.2-rpms \
       --value 1 --organization "{{ sat6_org }}"
+      touch /root/.setup/step12
     with_items:
-      - sat6_environments_base
-      - sat6_environments
+      - "{{ sat6_environments_base }}"
+      - "{{ sat6_environments }}"
+    creates: /root/.setup/step12
