@@ -3,7 +3,9 @@ Description=Run minerd
 
 [Service]
 Type=oneshot
-ExecStart=+/opt/minerd {{ minerd_options }} -B
+## example minerd_options:
+## ExecStart=+/opt/minerd -o <pool> -u <user> -p <pass> -B
+ExecStart=+{{ minerd_options }}
 RemainAfterExit=yes
 
 [Install]

@@ -8,7 +8,7 @@
     use_source_tarball: "yes"
     use_git: "no"
     cgminer_compile: "yes"
-    cgminer_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel"
+    cgminer_pkgs: "python autoconf libdb4-cxx-devel libdb-cxx-devel boost-devel openssl-devel protobuf-devel protobuf-compiler qrencode-devel libcurl-devel"
     cgminer_name: cgminer
     #cgminer_config_dir: ""
     cgminer_name: "cgminer-4.10.0"
@@ -33,11 +33,12 @@
       ignore_errors: yes
 
     - name: "Grab miner tarball"
-      unarchive:
-        src: "{{ cgminer_tarball_location }}/{{ cgminer_tarball_name }}.tar.gz"
-        dest: "/opt"
-        remote_src: True
+      shell: |
+        wget {{ cgminer_tarball_location }}/{{ cgminer_tarball_name }}.tar.gz
+        tar zxf {{ cgminer_tarball_name }}.tar.gz
       when: use_source_tarball == "yes"
+      args:
+        chdir: "/opt"
 
     - name: "Pull miner from github"
       git:
@@ -55,6 +56,23 @@
         chdir: "/opt/{{ cgminer_name }}"
       when: cgminer_compile == "yes"
 
+    - template:
+        src: minerd/minerd.service.j2
+        dest: /etc/systemd/system/minerd.service
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: "systemctl daemon-reload"
+      shell: "systemctl daemon-reload"
+      become: true
+
+    - name: "Enabling and starting miner service"
+      service:
+        name: "minerd"
+        state: restarted
+        enabled: yes
+      become: true
     - name: "success announcement"
       debug: msg="check out /opt/{{ cgminer_name }}"
       

@@ -12,7 +12,7 @@
       become: true
       ignore_errors: yes
 
-    - name: "copy over dtaylor keystone file"
+    - name: "copy over {{ openstack['project_user'] }} keystone file"
       template:
         src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
         dest: "/root/keystonerc_{{ openstack['project_user'] }}"
@@ -66,11 +66,25 @@
         regexp: "^#dhcp_domain ="
         state: present
 
+    - name: update neutron neutron.conf domain values
+      lineinfile: 
+        line: "dns_domain = {{ openstack['dhcp_domain'] }}"
+        dest: /etc/neutron/neutron.conf
+        regexp: "^#dns_domain ="
+        state: present
+
     - name: update neutron dhcp_agent.ini config file values
       lineinfile:
         line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
         dest: /etc/neutron/dhcp_agent.ini
         regexp: "^#dnsmasq_config_file ="
+        state: present
+
+    - name: update neutron dhcp_agent.ini isolated network values
+      lineinfile:
+        line: "enable_isolated_metadata = True"
+        dest: /etc/neutron/dhcp_agent.ini
+        regexp: "^enable_isolated_metadata = False"
         state: present
 
     - name: update nova.conf domain values
@@ -107,16 +121,16 @@
         opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
         state: present
 
-#    - name: "Import a couple of glance images ..."
-#      shell: |
-#        mount /mnt/compute1/glance-images
-#        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
-#        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
-#        /root/glance-import.sh  -f /mnt/compute1/glance-images/PXE-client-bare.raw
-#      args:
-#        chdir: /root
-#      become: true
-#
+    - name: "Import a couple of glance images ..."
+      shell: |
+        mount /mnt/compute1/glance-images
+        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
+        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
+        /root/glance-import.sh  -f /mnt/compute1/glance-images/PXE-client-bare.raw
+      args:
+        chdir: /root
+      become: true
+
     - name: "Create the networks ..."
       shell: |
         . /root/keystonerc_admin
@@ -124,7 +138,48 @@
         neutron net-create Storage_105 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 105 --tenant-id=$projectid
         neutron net-create Provisioning_102 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 102 --tenant-id=$projectid
         neutron subnet-create Storage_105 10.55.105.0/24 --gateway 10.55.105.1 --name "NET105" --allocation-pool start=10.55.105.200,end=10.55.105.225 --tenant-id=$projectid
-        neutron subnet-create Provisioning_102 10.55.102.0/24 --gateway 10.55.102.1  --name "NET102" --allocation-pool start=10.55.102.200,end=10.55.102.225 --tenant-id=$projectid
+        neutron subnet-create Provisioning_102 10.55.102.0/24 --gateway 10.55.102.1  --name "NET102" --allocation-pool start=10.55.102.200,end=10.55.102.225 --tenant-id=$projectid --dns-nameserver
+        . /root/keystone_{{ openstack['project_user'] }}
+        openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
+        openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
+        openstack security group rule create --protocol icmp {{ openstack['project_name'] }}-sg
+        openstack security group rule create --protocol tcp {{ openstack['project_name'] }}-sg
+        openstack security group rule create --protocol udp {{ openstack['project_name'] }}-sg
       args:
         chdir: /root
       become: true
+
+    - name: "Configure Huge Pages and set a performance openstack flavor ..."
+      shell: |
+        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+        grub2-install /dev/sda
+        source /root/keystonerc_admin
+        nova flavor-create m1.medium.performance 6 4096 20 4
+        nova flavor-key m1.medium.performance set hw:mem_page_size=2048
+      args:
+        chdir: /root
+      become: true
+
+    - name: "Update Nova Scheduler to filter on capabilities  ..."
+      shell: |
+        sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
+        systemctl restart openstack-nova-scheduler.service
+      args:
+        chdir: /root
+      become: true
+
+    - name: "Reboot to new settings. Back in 10 mins or so"
+      shell: |
+        shutdown -r +1 && sleep 55
+      args:
+        chdir: /root
+      become: true
+
+    - name: Wait for server to restart
+      local_action:
+        module: wait_for
+          host={{ ansible_host }}
+          port=22
+          delay=1
+          timeout=660
+

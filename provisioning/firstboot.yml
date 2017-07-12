@@ -1,6 +1,8 @@
 ---
 - name: Firstboot configuration tasks
   hosts: all
+  vars:
+    dns_domain: "maskedadmins.com"
   tasks:
     - include: "firstboot/{{ ansible_distribution }}.yml"
 

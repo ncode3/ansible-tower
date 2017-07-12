@@ -1,0 +1,98 @@
+---
+- include: firstboot.yml
+- name: "Install kubernetes, docker, and etcd"
+  hosts: all
+  vars:
+    kde_pkgs: ['kubernetes','docker','etcd','docker-selinux','docker-distribution']
+    kde_svcs: ['docker','docker-distribution','etcd','kube-apiserver','kube-controller-manager','kubelet','kube-proxy.service','kube-scheduler.service']
+    kde_nonsvcs: ['firewalld']
+  tasks:
+    - name: "installing kubenetes, docker, etcd and dependencies {{ kde_pkgs }}"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ kde_pkgs }}"
+
+    - template:
+        src: kubernetes/etcd.conf.j2
+        dest: /etc/etcd/etcd.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: kubernetes/apiserver.j2
+        dest: /etc/kubernetes/apiserver
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: kubernetes/config.j2
+        dest: /etc/kubernetes/config
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: kubernetes/controller-manager.j2
+        dest: /etc/kubernetes/controller-manager
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: kubernetes/kubelet.j2
+        dest: /etc/kubernetes/kubelet
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: kubernetes/proxy.j2
+        dest: /etc/kubernetes/proxy
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: kubernetes/scheduler.j2
+        dest: /etc/kubernetes/scheduler
+        owner: root
+        group: root
+        mode: 0644
+
+    - file:
+        path: /etc/kubernetes/manifests
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: "iptables and bashrc setup"
+      shell: |
+        iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 5000 -j ACCEPT
+        echo "alias kubectl='kubectl -s {{ ansible_default_ipv4['address'] }}:8080'" >> /root/.bashrc
+        echo "alias kubectl='kubectl -s {{ ansible_default_ipv4['address'] }}:8080'" >> /home/cloud-user/.bashrc
+      become: true
+
+    - name: "disabling and stopping services {{ kde_nonsvcs }}"
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      with_items: "{{ kde_nonsvcs }}"
+      become: true
+      ignore_errors: yes
+
+    - name: "enabling and restarting services {{ kde_svcs }}"
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items: "{{ kde_svcs }}"
+      become: true
+
+    - name: "success announcement"
+      debug: msg="Try kubectl -s {{ ansible_default_ipv4['address'] }}:8080 get pods\n or etcdctl --endpoints {{ ansible_default_ipv4['address'] }} get test"
+      

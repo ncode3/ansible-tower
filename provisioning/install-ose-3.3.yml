@@ -3,6 +3,13 @@
 # Launches new OSE 3.3 instance with provisioning userdata using Cloud-Init
 - name: launch a compute instance
   hosts: all
+  vars:
+    ose_add_user: "admin"
+    ose_add_pass: "redhat123"
+    ose_add_project: "redhat-lab"
+    ose_add_project_description: "This is an example project to demonstrate OpenShift v3"
+    ose_add_project_displayname: "Redhat Lab Demo Project"
+    ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
     - name: "Enabling OSE needed repos"
       shell: "subscription-manager repos --enable={{ item }}"
@@ -33,6 +40,13 @@
     - template:
         src: ose/installer.cfg.yml.j2
         dest: /root/.config/openshift/installer.cfg.yml
+        owner: root
+        group: root
+        mode: 0644
+
+    - template:
+        src: ose/outbound-traffic.json.j2
+        dest: /tmp/outbound-traffic.json
         owner: root
         group: root
         mode: 0644
@@ -126,38 +140,25 @@
         tail='^  masterCA: ca-bundle.crt$'
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
         }; /$tail/p; d }"  /etc/origin/master/master-config.yaml
-        htpasswd -c -b /etc/origin/master/htpasswd admin redhat123
+        htpasswd -c -b /etc/origin/master/htpasswd {{ ose_add_user }} {{ ose_add_pass }}
         ## create a new project
         oc login -u system:admin -n default
-        oc new-project redhat-lab \
-        --description="This is an example project to demonstrate OpenShift v3" \
-        --display-name="Redhat Lab Demo Project"
-        oadm policy add-cluster-role-to-user cluster-admin admin
+        oc new-project {{ ose_add_project }} \
+        --description="{{ ose_add_project_description }}" \
+        --display-name="{{ ose_add_project_displayname }}"
+        oadm policy add-cluster-role-to-user cluster-admin {{ ose_add_user }}
+        oadm policy add-role-to-user system:image-builder {{ ose_add_user }}
+        oadm policy add-role-to-user admin {{ ose_add_user }} -n openshift
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
-        exit 0
-        #oadm policy add-scc-to-user hostnetwork -z router
-        #oadm router redhat-lab-router --replicas=1 \
-        #--service-account=router
-        ## create a persistent registry
-        #oadm registry --service-account=registry \
-        #--config=/etc/origin/master/admin.kubeconfig \
-        #--credentials=/etc/origin/master/openshift-registry.kubeconfig \
-        #--images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
-        #--mount-host=/opt/ose-mount-host
-        ## add policy for admin user
-        #oadm policy add-cluster-role-to-user cluster-admin admin
-        ## restart ose for htpasswd auth to take effect
-        #systemctl restart atomic-openshift-master
-        sleep 15
-        ## test login
-        oc login --certificate-authority=/etc/origin/master/ca.crt -u admin -p redhat123 https://${newip}:8443
-        echo
-        echo "Visit http://${newip}:8443/console/ to manage OSE"
-        echo "username: admin"
-        echo "password: redhat123"
-        echo "You may need to update your hosts file to:"
-        echo "${newip} $(hostname --fqdn) $(hostname)"
-        echo 
+        /usr/sbin/ifup-local
+        /opt/dns-updater.sh add mac $(hostname --short) $newip
+        # create outbound policy rule
+        #oc login -u {{ ose_add_user }} -p {{ ose_add_pass }}
+        oc project {{ ose_add_project }}
+        oc create -f /tmp/outbound-traffic.json
+        echo "calling app deploy because I am lazy"
+        curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
       become: true
+      ignore_errors: yes

@@ -31,8 +31,8 @@ This document has the following objectives:
 Update provisioning/group_vars/all with your specific configuration and passwords. You can encrypt and put your root passwords, aws secret keys, etc in this file
 
 REQUIRED:
- - Your Redhat Customer Portal/Satellite username/password
- - Your subscription pool name or pool ids
+ - Your Redhat Customer Portal/Satellite username/password (for RHEL 7)
+ - Your subscription pool name or pool ids (for RHEL 7)
  - Openstack Credentials (optional)
  - AWS Credentials (optional)
  - Private and Public Keys to place on servers

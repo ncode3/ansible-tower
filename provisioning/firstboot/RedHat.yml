@@ -1,10 +1,13 @@
 ---
-- name: "Set up /etc/hosts file"
+- name: "Set up /etc/hosts file and hostname"
   shell: |
-    hostname=$(hostname)
     shortname=$(hostname --short)
+    hostname=${shortname}.{{ dns_domain }}
+    echo "${hostname}" > /etc/hostname
+    hostnamectl set-hostname ${hostname}
     newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
     grep "${newip}" /etc/hosts || echo "${newip} ${hostname} ${shortname}" >> /etc/hosts
+    service network restart
   become: true
 
 - name: Set authorized key for root
