@@ -20,6 +20,12 @@
     sat6_user: "admin"
     sat6_pass: "changeme"
   tasks:
+  - name: "make hammer config dir"
+    file:
+      path: /root/.hammer
+      state: directory
+      mode: 0755
+
   - name: "Configure hammer cli tool"
     template:
         dest: /etc/hammer/cli_config.yml
@@ -84,9 +90,14 @@
 #
   - name: "Creating Base Content View"
     shell: |
+        defaultorg=$(hammer organization list  | grep {{ sat6_org }} | awk '{print $1}')
+        hammer defaults add --param-name organization_id --param-value $defaultorg
+        sattoolsid=$(hammer repository list  | grep "Satellite Tools 6.2" | awk '{print $1}')
+        rhelrepoid=$(hammer repository list  | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
+        ksid=$(hammer repository list  | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
         hammer content-view create --name "Base" \
         --description "Base operating system" \
-        --repository-ids "rhel-7-server-rpms,rhel-7-server-satellite-tools-6.2-rpms" \
+        --repository-ids "${ksid},${rhelrepoid},${sattoolsid}" \
         --organization "{{ sat6_org }}"
         hammer content-view publish --name "Base" \
         --description "Initial content view for our operating system" \
