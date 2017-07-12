@@ -16,7 +16,7 @@
     sat6_pool_ids: ['']
     sat6_environments_base: "Development"
     sat6_environments: ['Testing','Production']
-    sat6_user: "https://{{ ansible_hostname }}"
+    sat6_user: "https://{{ ansible_fqdn }}/"
     sat6_pass: "admin"
     sat6_url: "changeme"
   tasks:
