@@ -1,0 +1,134 @@
+## hammer cli guide
+## https://access.redhat.com/documentation/en-us/red_hat_satellite/6.2/html-single/hammer_cli_guide/
+## hammer cheat sheet
+## https://access.redhat.com/articles/2258471
+## sat6 quick start guide
+## https://access.redhat.com/documentation/en-us/red_hat_satellite/6.2/html-single/quick_start_guide/
+##  
+- name: "Configure Satellite 6"
+  hosts: all
+  vars:
+    sat6_org: Redhat_Lab
+    sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
+    sat6_pool_ids: ['']
+    sat6_environments_base: "Development"
+    sat6_environments: ['Testing','Production']
+    sat6_user: "https://{{ ansible_hostname }}"
+    sat6_pass: "admin"
+    sat6_url: "changeme"
+  tasks:
+    name: "Configure hammer cli tool"
+    template:
+        dest: /etc/hammer/cli_config.yml
+        src: satellite/cli_config.yml.j2
+        owner: root
+        group: root
+        mode: 0644
+
+    name: "Copy over manifest"
+    template:
+        dest: /tmp/manifest.zip
+        src: "satellite/{{ sat6_manifest }}"
+        owner: root
+        group: root
+        mode: 0644
+
+    name: "Provisioning Satellite 6"
+    shell: |
+        hammer organization create --name "{{ sat6_org }}" --label "{{ sat6_org }}" \
+        --description "Our example organization for managing content."
+
+    name: "Provisioning Satellite 6 - upload manifest"
+    shell: |
+        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}"
+
+    name: "Provisioning Satellite 6 - configure repositories"
+    shell: |
+        hammer repository-set enable \
+        --name "Red Hat Enterprise Linux 7 Server (RPMs)" \
+        --releasever "7Server" --basearch "x86_64" \
+        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_org }}"
+        hammer repository-set enable \
+        --name "Red Hat Enterprise Linux 7 Server (Kickstart)" \
+        --releasever "7Server" --basearch "x86_64" \
+        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_org }}"
+        hammer repository-set enable \
+        --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
+        --basearch "x86_64" --product "Red Hat Enterprise Linux Server" \
+        --organization "{{ sat6_org }}"
+
+    name: "Provisioning Satellite 6 - Syncing Content"
+    shell: |
+        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
+        --organization "{{ sat6_org }}"
+
+    name: "Provisioning Satellite 6 Lifecycle Base"
+    shell: |
+        # Create our application life cycle
+        hammer lifecycle-environment create --name "{{ sat6_environments_base }}" \
+        --description "Environment for {{ sat6_org }}'s {{ sat6_environments_base }} Team" \
+        --prior "Library" --organization "{{ sat6_org }}"
+
+    name: "Provisioning Satellite 6 Lifecycle - the rest"
+    shell: |
+        # Create our application life cycle
+        hammer lifecycle-environment create --name "{{ item }}" \
+        --description "Environment for {{ sat6_org }}'s {{ item }} Team" \
+        --prior "Library" --organization "{{ sat6_org }}"
+    with_items: sat6_environments
+
+    name: "Creating Base Content View"
+    shell: |
+        hammer content-view create --name "Base" \
+        --description "Base operating system" \
+        --repositories "Red Hat Enterprise Linux 7 Server RPMs x86_64
+        7Server,Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64" \
+        --organization "{{ sat6_org }}"
+        hammer content-view publish --name "Base" \
+        --description "Initial content view for our operating system" \
+        --organization "{{ sat6_org }}"
+
+    name: "Promoting Environments {{ sat6_environments }}"
+    shell: |
+        hammer content-view version promote --content-view "Base" --version 1 \
+        --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
+    with_items:
+      - sat6_environments_base
+      - sat6_environments
+
+    name: "Creating activation keys for environments"
+    shell: |
+      hammer activation-key create --name "{{ sat6_org}}-{{ item }}-key" \
+      --unlimited-content-hosts true --description "Example activation key" \
+      --lifecycle-environment "{{ item }}" --content-view "Base" \
+      --organization "{{ sat6_org }}"
+    with_items:
+      - sat6_environments_base
+      - sat6_environments
+
+    name: "Adding subs to activation keys for environments"
+    shell: |
+      hammer activation-key add-subscription --name "{{ sat6_org}}-{{ item[0] }}-key" \
+      --subscription-id {{ item[1] }} \
+      --organization "{{ sat6_org }}"
+    with_items:
+      - sat6_environments_base
+      - sat6_pool_ids
+
+    name: "Adding subs to activation keys for environments"
+    shell: |
+      hammer activation-key add-subscription --name "{{ sat6_org}}-{{ item[0] }}-key" \
+      --subscription-id {{ item[1] }} \
+      --organization "{{ sat6_org }}"
+    with_items:
+      - sat6_environments
+      - sat6_pool_ids
+
+    name: "Enableing sat tools repo in the keys"
+    shell: |
+      hammer activation-key content-override --name "{{ sat6_org}}-{{item }}-key" \
+      --content-label rhel-7-server-satellite-tools-6.2-rpms \
+      --value 1 --organization "{{ sat6_org }}"
+    with_items:
+      - sat6_environments_base
+      - sat6_environments
