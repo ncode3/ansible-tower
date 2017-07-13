@@ -6,7 +6,7 @@
 ## sat6 quick start guide
 ## https://access.redhat.com/documentation/en-us/red_hat_satellite/6.2/html-single/quick_start_guide/
 
-#- include: "firstboot.yml"
+- include: "firstboot.yml"
 
 - name: "Configure Satellite 6"
   hosts: all
