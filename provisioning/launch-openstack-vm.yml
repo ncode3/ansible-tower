@@ -71,6 +71,11 @@
         volumes:
           - "{{ os_volume_name }}"
       when: os_create_volume == "yes"
+      register: server_with_volume
+
+    - name: Show Server's IP
+      debug: var=server_with_volume.openstack.public_v4
+      when: os_create_volume == "yes"
 
     - name: launch an instance with no volume
       os_server:
@@ -122,4 +127,9 @@
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+      when: os_create_volume == "no"
+      register: server_with_no_volume
+
+    - name: Show Server's IP
+      debug: var=server_with_no_volume.openstack.public_v4
       when: os_create_volume == "no"
