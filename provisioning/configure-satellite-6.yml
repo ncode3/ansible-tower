@@ -20,6 +20,9 @@
     sat6_user: "admin"
     sat6_pass: "changeme"
   tasks:
+  - name: "Enabling needed repos for updates"
+    shell: "subscription-manager repos --enable=rhel-7-server-satellite-tools-6.2-rpms"
+
   - name: "yum update this bad boy"
     shell: |
       yum -y update
