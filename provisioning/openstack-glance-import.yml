@@ -172,7 +172,7 @@
       args:
         chdir: /root
       become: true
-      with_items: {{ openstack['glance']['image_names'] }}
+      with_items: "{{ openstack['glance']['image_names'] }}"
       when: openstack['glance']['import'] == "yes"
 
     - name: "Create the networks and subnets ..."
