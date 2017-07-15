@@ -64,7 +64,7 @@
         
     - name: "make the import directory"
       file:
-        path: "{{ openstack['glance_image_path'] }}"
+        path: "{{ openstack['glance']['image_path'] }}"
         state: directory
         owner: root
         group: root

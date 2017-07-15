@@ -25,11 +25,6 @@
       shell: |
         cp /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub
 
-    - name: "Enabling needed repos for Openstack 10"
-      shell: "subscription-manager repos --enable={{ item }}"
-      with_items: "{{ openstack_enabled_repos }}"
-      become: true
-
     - name: "Install Openstack 10 Yum packages"
       yum:
         name: "{{ item }}"
@@ -80,3 +75,6 @@
       shell: "packstack --allinone"
       become: true
       when: os_packstack_use_answerfile == "no"
+
+## customize openstack
+- include: "openstack-glance-import.yml"
