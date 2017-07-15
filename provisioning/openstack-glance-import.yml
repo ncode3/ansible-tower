@@ -35,6 +35,12 @@
           dhcp_end: 10.55.105.225
           gateway: 10.55.105.1
   tasks:
+    - name: "Check if project exists"
+      shell: |
+        . /root/keystonerc_admin
+        openstack project show {{ openstack['project_name'] }}
+      register: proj_stat
+    
     - name: "Create lab project and user"
       shell: |
         . /root/keystonerc_admin
@@ -44,6 +50,7 @@
         chdir: /root
       become: true
       ignore_errors: yes
+      when: when: "'No tenant' not in proj_stat.stdout"
 
     - name: "copy over {{ openstack['project_user'] }} keystone file"
       template:
@@ -132,6 +139,8 @@
     - name: "killing dnsmasq"
       command: killall dnsmasq
       become: true
+      ignore_errors: yes
+
 
     - name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
       service:
@@ -157,7 +166,7 @@
         state: present
       when: openstack['glance']['mount_nfs']  == "yes"
 
-    - name: "Ensure nfs is  mounted"
+    - name: "Ensure nfs is mounted"
       shell: |
         mount {{ openstack['glance']['image_path'] }}
       args:
