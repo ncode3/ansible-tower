@@ -50,7 +50,7 @@
         chdir: /root
       become: true
       ignore_errors: yes
-      when: "'No tenant' not in proj_stat.stdout"
+      when: "'No tenant' in proj_stat.stdout"
 
     - name: "copy over {{ openstack['project_user'] }} keystone file"
       template:
