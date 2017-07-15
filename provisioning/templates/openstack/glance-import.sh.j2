@@ -2,8 +2,8 @@
 # this will import all glance images from the $FILES directory
 # or one file, give ghe full path ie ./glance-import -f /shelf/compute4/glance-images/myimg.raw
 # the meta data should exist, ie /shelf/compute4/glance-images/myimg.raw.metadata
-source /root/keystonerc_dtaylor
-FILES='/mnt/compute1/glance-images'
+source /root/keystonerc_{{ openstack['project_user'] }}
+FILES='{{ openstack['glance_image_path'] }}'
 #TYPES=( qcow2 )
 TYPES=( qcow2 raw iso vhd vmdk )
 PROPS=''

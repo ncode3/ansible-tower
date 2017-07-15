@@ -1,6 +1,39 @@
 ---
-- name: "Import glance images from nfs share"
+- name: "Customize OSP 10 -  create networks, projects, users, and import glance images from nfs share"
   hosts: 10.55.102.158
+  vars:
+    openstack:
+      project_name: Redhat_Lab
+      project_user: dtaylor
+      project_pass: redhat123
+      dns_server: 10.55.102.5
+      dhcp_server: 10.55.102.5
+      dhcp_domain: stack.openstack.com
+      dhcp_mtu: 1454
+      hugepages:
+        use: "no"
+        device: /dev/sda
+      glance:
+        mount_nfs: "yes"
+        import: "yes"
+        image_path: /mnt/compute1/glance-images
+        nfs_target: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
+        image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
+      networks:
+        Provisioning_102:
+          cidr: 10.55.102.0/24
+          vlanid: 102
+          subnet_name: NET102
+          dhcp_start: 10.55.102.200
+          dhcp_end: 10.55.102.225
+          gateway: 10.55.102.1
+        Storage_105:
+          cidr: 10.55.105.0/24
+          vlanid: 105
+          subnet_name: NET105
+          dhcp_start: 10.55.105.200
+          dhcp_end: 10.55.105.225
+          gateway: 10.55.105.1
   tasks:
     - name: "Create lab project and user"
       shell: |
@@ -27,16 +60,18 @@
         owner: root
         group: root
         mode: 0755
+      when: "{{ openstack['glance']['import'] }}" == "yes"
         
     - name: "make the import directory"
       file:
-        path: /mnt/compute1/glance-images
+        path: "{{ openstack['glance_image_path'] }}"
         state: directory
         owner: root
         group: root
         mode: 0755
+      when: "{{ openstack['glance']['import'] }}" == "yes"
 
-    - name: this is used by openstack dnsmasq to update the applications dns entry
+    - name: copy over dns script  used by openstack dnsmasq to update the vm's dns entry
       template:
         src: openstack/dns-updater.sh.j2
         dest: /usr/local/bin/dns-updater.sh
@@ -44,7 +79,7 @@
         group: root
         mode: 0755
 
-    - name: openstack dnsmasq config file
+    - name: openstack dnsmasq config file to use the dns script and custom mtu settings etc
       template:
         src: openstack/dnsmasq.conf.j2
         dest: /etc/neutron/dnsmasq.conf
@@ -56,42 +91,42 @@
       lineinfile: 
         line: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
         dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^#dnsmasq_dns_servers ="
+        regexp: "^dnsmasq_dns_servers =*"
         state: present
 
     - name: update neutron dhcp_agent.ini domain values
       lineinfile: 
         line: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
         dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^#dhcp_domain ="
+        regexp: "^dhcp_domain =*"
         state: present
 
     - name: update neutron neutron.conf domain values
       lineinfile: 
         line: "dns_domain = {{ openstack['dhcp_domain'] }}"
         dest: /etc/neutron/neutron.conf
-        regexp: "^#dns_domain ="
-        state: present
-
-    - name: update neutron dhcp_agent.ini config file values
-      lineinfile:
-        line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
-        dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^#dnsmasq_config_file ="
-        state: present
-
-    - name: update neutron dhcp_agent.ini isolated network values
-      lineinfile:
-        line: "enable_isolated_metadata = True"
-        dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^enable_isolated_metadata = False"
+        regexp: "^dns_domain =*"
         state: present
 
     - name: update nova.conf domain values
       lineinfile:
         line: "dhcp_domain={{ openstack['dhcp_domain'] }}"
         dest: /etc/nova/nova.conf
-        regexp: "^#dhcp_domain="
+        regexp: "^dhcp_domain=*"
+        state: present
+
+    - name: update neutron dhcp_agent.ini to use dnsmasq config file
+      lineinfile:
+        dest: /etc/neutron/dhcp_agent.ini
+        line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
+        regexp: "^dnsmasq_config_file =*"
+        state: present
+
+    - name: update neutron dhcp_agent.ini isolated network values so cloud-init will work when not using a neutron router
+      lineinfile:
+        line: "enable_isolated_metadata = True"
+        dest: /etc/neutron/dhcp_agent.ini
+        regexp: "^enable_isolated_metadata = False"
         state: present
 
     - name: "killing dnsmasq"
@@ -115,30 +150,44 @@
 
     - name: "Mount nfs share to import glance images"
       mount:
-        path: /mnt/compute1/glance-images
-        src: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
+        path: "{{ openstack['glance']['image_path'] }}"
+        src: "{{ openstack['glance']['nfs_target'] }}"
         fstype: nfs
         opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
         state: present
+      when: "{{ openstack['glance']['mount_nfs'] }}" == "yes"
 
-    - name: "Import a couple of glance images ..."
+    - name: "Ensure nfs is  mounted"
       shell: |
-        mount /mnt/compute1/glance-images
-        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-7.3-Cloud-bare.qcow2
-        /root/glance-import.sh  -f /mnt/compute1/glance-images/RHEL-Atomic-7.2.6-1-bare.qcow2
-        /root/glance-import.sh  -f /mnt/compute1/glance-images/PXE-client-bare.raw
+        mount {{ openstack['glance']['image_path'] }}
       args:
         chdir: /root
       become: true
+      when: "{{ openstack['glance']['mount_nfs'] }}" == "yes"
 
-    - name: "Create the networks ..."
+    - name: "Import a couple of glance images ..."
+      shell: |
+        mount {{ openstack['glance']['image_path'] }}
+        /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
+      args:
+        chdir: /root
+      become: true
+      with_items: {{ openstack['glance']['image_names'] }}
+      when: "{{ openstack['glance']['import'] }}" == "yes"
+
+    - name: "Create the networks and subnets ..."
       shell: |
         . /root/keystonerc_admin
         projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
-        neutron net-create Storage_105 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 105 --tenant-id=$projectid
-        neutron net-create Provisioning_102 --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 102 --tenant-id=$projectid
-        neutron subnet-create Storage_105 10.55.105.0/24 --gateway 10.55.105.1 --name "NET105" --allocation-pool start=10.55.105.200,end=10.55.105.225 --tenant-id=$projectid
-        neutron subnet-create Provisioning_102 10.55.102.0/24 --gateway 10.55.102.1  --name "NET102" --allocation-pool start=10.55.102.200,end=10.55.102.225 --tenant-id=$projectid --dns-nameserver
+        neutron net-create {{ item.key }} --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id {{ item.value.vlanid }} --tenant-id=$projectid
+        neutron subnet-create {{ item.key }} {{ item.value.cidr }} --gateway {{ item.value.gateway }} --name "{{ item.value.subnet_name }}" --allocation-pool start={{ item.value.dhcp_start }},end={{ item.value.dhcp_end }} --tenant-id=$projectid --dns-nameserver {{ openstack['dns_server'] }}
+      args:
+        chdir: /root
+      become: true
+      with_items: "{{ openstack['networks'] }}"
+
+    - name: "Create the security groups ..."
+      shell: |
         . /root/keystone_{{ openstack['project_user'] }}
         openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
         openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
@@ -149,16 +198,24 @@
         chdir: /root
       become: true
 
-    - name: "Configure Huge Pages and set a performance openstack flavor ..."
+    - name: "Configure the system for Huge Pages"
       shell: |
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
-        grub2-install /dev/sda
+        grub2-install {{ openstack['hugepages_device'] }}
+      args:
+        chdir: /root
+      become: true
+      when: "{{ openstack['hugepages']['use'] }}" == "yes"
+
+    - name: "Create the flavors for huge pages ..."
+      shell: |
         source /root/keystonerc_admin
         nova flavor-create m1.medium.performance 6 4096 20 4
         nova flavor-key m1.medium.performance set hw:mem_page_size=2048
       args:
         chdir: /root
       become: true
+      when: "{{ openstack['hugepages']['use'] }}" == "yes"
 
     - name: "Update Nova Scheduler to filter on capabilities  ..."
       shell: |
@@ -167,6 +224,7 @@
       args:
         chdir: /root
       become: true
+      when: "{{ openstack['hugepages']['use'] }}" == "yes"
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
@@ -174,8 +232,9 @@
       args:
         chdir: /root
       become: true
+      when: "{{ openstack['hugepages']['use'] }}" == "yes"
 
-    - name: Wait for server to restart
+    - name: Wait for server to come back
       local_action:
         module: wait_for
           host={{ ansible_host }}
