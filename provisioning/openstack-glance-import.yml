@@ -60,7 +60,7 @@
         owner: root
         group: root
         mode: 0755
-      when: "{{ openstack['glance']['import'] }}" == "yes"
+      when: openstack['glance']['import']  == "yes"
         
     - name: "make the import directory"
       file:
@@ -69,7 +69,7 @@
         owner: root
         group: root
         mode: 0755
-      when: "{{ openstack['glance']['import'] }}" == "yes"
+      when: openstack['glance']['import']  == "yes"
 
     - name: copy over dns script  used by openstack dnsmasq to update the vm's dns entry
       template:
@@ -155,7 +155,7 @@
         fstype: nfs
         opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
         state: present
-      when: "{{ openstack['glance']['mount_nfs'] }}" == "yes"
+      when: openstack['glance']['mount_nfs']  == "yes"
 
     - name: "Ensure nfs is  mounted"
       shell: |
@@ -163,7 +163,7 @@
       args:
         chdir: /root
       become: true
-      when: "{{ openstack['glance']['mount_nfs'] }}" == "yes"
+      when: openstack['glance']['mount_nfs']  == "yes"
 
     - name: "Import a couple of glance images ..."
       shell: |
@@ -173,7 +173,7 @@
         chdir: /root
       become: true
       with_items: {{ openstack['glance']['image_names'] }}
-      when: "{{ openstack['glance']['import'] }}" == "yes"
+      when: openstack['glance']['import'] == "yes"
 
     - name: "Create the networks and subnets ..."
       shell: |
@@ -205,7 +205,7 @@
       args:
         chdir: /root
       become: true
-      when: "{{ openstack['hugepages']['use'] }}" == "yes"
+      when: openstack['hugepages']['use']  == "yes"
 
     - name: "Create the flavors for huge pages ..."
       shell: |
@@ -215,7 +215,7 @@
       args:
         chdir: /root
       become: true
-      when: "{{ openstack['hugepages']['use'] }}" == "yes"
+      when: openstack['hugepages']['use']  == "yes"
 
     - name: "Update Nova Scheduler to filter on capabilities  ..."
       shell: |
@@ -224,7 +224,7 @@
       args:
         chdir: /root
       become: true
-      when: "{{ openstack['hugepages']['use'] }}" == "yes"
+      when: openstack['hugepages']['use']  == "yes"
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
@@ -232,7 +232,7 @@
       args:
         chdir: /root
       become: true
-      when: "{{ openstack['hugepages']['use'] }}" == "yes"
+      when: openstack['hugepages']['use']  == "yes"
 
     - name: Wait for server to come back
       local_action:
