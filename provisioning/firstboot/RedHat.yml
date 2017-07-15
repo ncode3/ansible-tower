@@ -87,20 +87,10 @@
   command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
   when: unreg.stat.exists == false
 
-- name: "Create custom configuration repo directory"
-  file:
-    path: /opt/git
-    state: directory
-    mode: 0755
-    
-- name: "Pull custom configuration from github"
-  git:
-    repo: 'https://github.com/syspimp/kubernetes-demo.git'
-    dest: /opt/git/kubernetes-demo
-
 - name: "Updating MOTD"
-  shell: cat custom/tiger.ascii > /etc/motd
-  args:
-    chdir: /opt/git/kubernetes-demo
-  become: true
-
+  template: 
+    src: tiger.ascii.j2
+    dest: /etc/motd 
+    owner: root 
+    group: root 
+    mode: 0644
