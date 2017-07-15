@@ -134,7 +134,6 @@
 #
     - name: "Install OSE 3.5"
       shell: |
-        newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
         atomic-openshift-installer -u install
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
@@ -153,7 +152,7 @@
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
         /usr/sbin/ifup-local
-        /opt/dns-updater.sh add mac $(hostname --short) $newip
+        /opt/dns-updater.sh add mac $(hostname --short) {{ ansible_default_ipv4['address'] }}
         # create outbound policy rule
         #oc login -u {{ ose_add_user }} -p {{ ose_add_pass }}
         oc project {{ ose_add_project }}

@@ -3,8 +3,7 @@
   shell: |
     hostname=$(hostname)
     shortname=$(hostname --short)
-    newip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
-    grep "${newip}" /etc/hosts || echo "${newip} ${hostname} ${shortname}" >> /etc/hosts
+    grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
   become: true
 
 - name: "Enabling and restarting services {{ enabled_svcs }}"

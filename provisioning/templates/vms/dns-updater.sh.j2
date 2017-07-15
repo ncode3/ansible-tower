@@ -3,7 +3,6 @@ key="{{ dhcp_server_key }}"
 server="10.55.102.5"
 zone="stack.maskedadmins.com"
 hostname="$(hostname --short)"
-hostip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
 reverse=$(echo ${hostip} | awk -F. '{print $4"."$3"." $2"."$1}')
 reversezone=$(echo ${hostip} | awk -F. '{print $3"." $2"."$1}')
 temp=/tmp.$$
@@ -16,7 +15,7 @@ update delete ${reverse}.in-addr.arpa. PTR
 update add ${reverse}.in-addr.arpa. 300 IN PTR ${hostname}.${zone}.
 send
 zone ${zone}
-update add ${hostname}.${zone}. 300 IN A ${hostip}
+update add ${hostname}.${zone}. 300 IN A {{ ansible_default_ipv4['address'] }}
 send
 EOF
 
