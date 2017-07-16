@@ -254,6 +254,7 @@
 #
 - name: "Wait for the reboot"
   hosts: localhost
+  connection: local
   gather_facts: no
   tasks:
     - name: Wait for server to come back
