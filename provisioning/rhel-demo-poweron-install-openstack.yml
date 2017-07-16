@@ -1,5 +1,5 @@
 ---
-- include: "control-rack-power.yml"
+#- include: "control-rack-power.yml"
 
 - name: "Enable OSP 10 repos on all hosts"
   hosts: 10.55.102.158,10.55.102.157,10.55.102.156
