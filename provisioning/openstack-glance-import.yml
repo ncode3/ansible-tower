@@ -200,6 +200,7 @@
         chdir: /root
       become: true
       with_dict: "{{ openstack['networks'] }}"
+      ignore_errors: yes
 
     - name: "Create the security groups ..."
       shell: |
@@ -222,6 +223,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
+      ignore_errors: yes
 
     - name: "Create the flavors for huge pages ..."
       shell: |
@@ -232,6 +234,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
+      ignore_errors: yes
 
     - name: "Update Nova Scheduler to filter on capabilities  ..."
       shell: |
@@ -241,6 +244,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
+      ignore_errors: yes
 
 #    - name: "Reboot to new settings. Back in 10 mins or so"
 #      shell: |
