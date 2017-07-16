@@ -38,7 +38,7 @@
     - name: "Check if project exists"
       shell: |
         . /root/keystonerc_admin
-        openstack project show {{ openstack['project_name'] }}
+        openstack project list | grep {{ openstack['project_name'] }}
       ignore_errors: yes
       register: proj_stat
     
@@ -51,7 +51,7 @@
         chdir: /root
       become: true
       ignore_errors: yes
-      when: "'No tenant' in proj_stat.stdout"
+      when: openstack['project_name'] not in proj_stat.stdout
 
     - name: "copy over {{ openstack['project_user'] }} keystone file"
       template:
@@ -253,3 +253,13 @@
           delay=1
           timeout=660
 
+    ## launch ose 3.5 demo
+    - name: "Install OSE 3.5"
+      hosts: 10.55.102.158
+      tasks:
+        - name: "Calling OSE install job"
+          shell: |
+            echo "OSE 3.5 launch job"
+            curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+            echo "Sat 6 launch job"
+            curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
