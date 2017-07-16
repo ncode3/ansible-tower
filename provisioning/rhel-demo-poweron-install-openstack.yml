@@ -77,5 +77,11 @@
 
 ## customize openstack
 - include: "openstack-glance-import.yml"
+
 ## launch ose 3.5 demo
-- include: "launch-ose-cluster-in-osp10.yml"
+- name: "Install OSE 3.5"
+  hosts: 10.55.102.158
+  tasks:
+    - name: "Calling OSE install job"
+      shell: |
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/

@@ -167,7 +167,7 @@
               permissions: '0755'
               -   content: |
                   #!/bin/bash
-                  curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "$1","extra_vars": "{\"multinode\": \"yes\", \"node1_ip\": \"{{ atomic_node1.server.public_v4 }}\", \"node2_hostname\": \"{{ atomic_node1.server.name  }}\", \"node2_ip\": \"{{ atomic_node2.server.public_v4 }}\", \"node2_hostname\": \"{{ atomic_node2.server.name }}\"}"}' --user admin:ansible http://{{ host_config_server }}:443/api/v1/job_templates/227/launch/
+                  curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "$1","extra_vars": "{\"multinode\": \"yes\", \"node1_ip\": \"{{ atomic_node1.server.public_v4 }}\", \"node2_hostname\": \"{{ atomic_node1.server.name  }}\", \"node2_ip\": \"{{ atomic_node2.server.public_v4 }}\", \"node2_hostname\": \"{{ atomic_node2.server.name }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/227/launch/
 #          runcmd:
 #            - "/opt/start-install.sh"
         volumes:
