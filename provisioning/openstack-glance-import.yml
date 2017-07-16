@@ -195,7 +195,7 @@
       args:
         chdir: /root
       become: true
-      with_items: "{{ openstack['networks'] }}"
+      with_dict: "{{ openstack['networks'] }}"
 
     - name: "Create the security groups ..."
       shell: |
