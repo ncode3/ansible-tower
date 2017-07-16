@@ -6,11 +6,22 @@
   tasks:
     - name: "Enabling needed repos for Openstack 10"
       shell: "subscription-manager repos --enable={{ item }}"
-      with_items: "{{ openstack_enabled_repos }}"
       become: true
+      with_items:
+        - rhel-7-server-openstack-10-rpms
+        - rhel-7-server-rh-common-rpms
+        - rhel-7-server-extras-rpms
+        - rhel-7-server-openstack-10-devtools-rpms
 
-- name: "Install Openstack 10 all in one"
+- name: "Install Openstack 10 on 3 nodes"
   hosts: 10.55.102.158
+  vars:
+    os_packstack_use_answerfile: "yes"
+    os_controller_nodes: "10.55.102.158"
+    os_compute_nodes: "10.55.102.158,10.55.102.157,10.55.102.156"
+    os_network_nodes: "10.55.102.158"
+    os_amqp_nodes: "10.55.102.158"
+    os_mariadb_nodes: "10.55.102.158"
   tasks:
     - name: "installing private key"
       template:
