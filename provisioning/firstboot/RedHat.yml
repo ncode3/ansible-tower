@@ -6,7 +6,7 @@
     echo "${hostname}" > /etc/hostname
     hostnamectl set-hostname ${hostname}
     grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
-    service network restart
+    #service network restart
   become: true
 
 - name: Set authorized key for root
