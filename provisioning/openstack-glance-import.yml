@@ -271,7 +271,7 @@
 
 ## copy over the dynatrace install script
 - name: "Install Dynatrace Monitoring Agent"
-  hosts: 10.55.102.158,10.55.102.157,10.55.102.158
+  hosts: 10.55.102.158,10.55.102.157,10.55.102.156
   tasks:
     - name: "Copy over Dynatrace script"
       copy:
