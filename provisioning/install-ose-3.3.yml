@@ -1,7 +1,6 @@
 ---
 - include: firstboot.yml
-# Launches new OSE 3.5 instance with provisioning userdata using Cloud-Init
-- name: launch a compute instance
+- name: Launches new OSE 3.5 instance with provisioning userdata using Cloud-Init
   hosts: all
   vars:
     multinode: "no"
@@ -184,3 +183,4 @@
         curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
       become: true
       ignore_errors: yes
+

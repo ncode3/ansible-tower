@@ -269,21 +269,3 @@
         echo "CMFE launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
 
-## copy over the dynatrace install script
-- name: "Install Dynatrace Monitoring Agent"
-  hosts: 10.55.102.158,10.55.102.157,10.55.102.156
-  tasks:
-    - name: "Copy over Dynatrace script"
-      copy:
-        dest: /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
-        src: "/opt/Dynatrace-OneAgent-Linux-1.121.186.sh"
-        owner: root
-        group: root
-        mode: 0755
-
-    - name: "Running Dynatrace script"
-      shell: |
-        echo "Running Dynatrace script"
-        /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
-      args:
-        chdir: /opt

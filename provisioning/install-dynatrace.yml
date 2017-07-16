@@ -1,0 +1,18 @@
+---
+- name: Install Dynatrace Monitoring Agent on Linux
+  hosts: all
+  tasks:
+    - name: "Copy over Dynatrace script"
+      copy:
+        dest: /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
+        src: "/opt/Dynatrace-OneAgent-Linux-1.121.186.sh"
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: "Running Dynatrace script"
+      shell: |
+        echo "Running Dynatrace script"
+        /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
+      args:
+        chdir: /root
