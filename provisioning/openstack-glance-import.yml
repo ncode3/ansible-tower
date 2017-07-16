@@ -42,214 +42,219 @@
       ignore_errors: yes
       register: proj_stat
     
-    - name: "Create lab project and user"
-      shell: |
-        . /root/keystonerc_admin
-        openstack project create --description "{{ openstack['project_name'] }}" {{ openstack['project_name'] }}
-        openstack user create --project {{ openstack['project_name'] }} --password {{ openstack['project_pass'] }} {{ openstack['project_user'] }}
-      args:
-        chdir: /root
-      become: true
-      ignore_errors: yes
-      when: openstack['project_name'] not in proj_stat.stdout
-
-    - name: "copy over {{ openstack['project_user'] }} keystone file"
-      template:
-        src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
-        dest: "/root/keystonerc_{{ openstack['project_user'] }}"
-        owner: root
-        group: root
-        mode: 0644
-
-    - name: "copy over glance import script"
-      template:
-        src: openstack/glance-import.sh.j2
-        dest: /root/glance-import.sh
-        owner: root
-        group: root
-        mode: 0755
-      when: openstack['glance']['import']  == "yes"
-        
-    - name: "make the import directory"
-      file:
-        path: "{{ openstack['glance']['image_path'] }}"
-        state: directory
-        owner: root
-        group: root
-        mode: 0755
-      when: openstack['glance']['import']  == "yes"
-
-    - name: copy over dns script  used by openstack dnsmasq to update the vm's dns entry
-      template:
-        src: openstack/dns-updater.sh.j2
-        dest: /usr/local/bin/dns-updater.sh
-        owner: root
-        group: root
-        mode: 0755
-
-    - name: openstack dnsmasq config file to use the dns script and custom mtu settings etc
-      template:
-        src: openstack/dnsmasq.conf.j2
-        dest: /etc/neutron/dnsmasq.conf
-        owner: root
-        group: root
-        mode: 0644
-
-    - name: update neutron dhcp_agent.ini dns values
-      lineinfile: 
-        line: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
-        dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^dnsmasq_dns_servers =*"
-        state: present
-
-    - name: update neutron dhcp_agent.ini domain values
-      lineinfile: 
-        line: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
-        dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^dhcp_domain =*"
-        state: present
-
-    - name: update neutron neutron.conf domain values
-      lineinfile: 
-        line: "dns_domain = {{ openstack['dhcp_domain'] }}"
-        dest: /etc/neutron/neutron.conf
-        regexp: "^dns_domain =*"
-        state: present
-
-    - name: update nova.conf domain values
-      lineinfile:
-        line: "dhcp_domain={{ openstack['dhcp_domain'] }}"
-        dest: /etc/nova/nova.conf
-        regexp: "^dhcp_domain=*"
-        state: present
-
-    - name: update neutron dhcp_agent.ini to use dnsmasq config file
-      lineinfile:
-        dest: /etc/neutron/dhcp_agent.ini
-        line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
-        regexp: "^dnsmasq_config_file =*"
-        state: present
-
-    - name: update neutron dhcp_agent.ini isolated network values so cloud-init will work when not using a neutron router
-      lineinfile:
-        line: "enable_isolated_metadata = True"
-        dest: /etc/neutron/dhcp_agent.ini
-        regexp: "^enable_isolated_metadata = False"
-        state: present
-
-    - name: "killing dnsmasq"
-      command: killall dnsmasq
-      become: true
-      ignore_errors: yes
-
-
-    - name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
-      service:
-        name: "{{ item }}"
-        state: restarted
-        enabled: yes
-      with_items:
-        - neutron-dhcp-agent
-        - openstack-nova-api
-        - openstack-nova-cert
-        - openstack-nova-consoleauth
-        - openstack-nova-scheduler
-        - openstack-nova-conductor
-        - openstack-nova-novncproxy 
-      become: true
-
-    - name: "Mount nfs share to import glance images"
-      mount:
-        path: "{{ openstack['glance']['image_path'] }}"
-        src: "{{ openstack['glance']['nfs_target'] }}"
-        fstype: nfs
-        opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
-        state: present
-      when: openstack['glance']['mount_nfs']  == "yes"
-
-    - name: "Ensure nfs is mounted"
-      shell: |
-        mount {{ openstack['glance']['image_path'] }}
-      args:
-        chdir: /root
-      become: true
-      when: openstack['glance']['mount_nfs']  == "yes"
-      ignore_errors: yes
-
-    - name: "Import a couple of glance images ..."
-      shell: |
-        . /root/keystonerc_admin
-        NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
-        openstack image list | grep "${NAME}" || /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
-        #/root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
-      args:
-        chdir: /root
-      become: true
-      with_items: "{{ openstack['glance']['image_names'] }}"
-      when: openstack['glance']['import'] == "yes"
-      ignore_errors: yes
-
-    - name: "Create the networks and subnets ..."
-      shell: |
-        . /root/keystonerc_admin
-        projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
-        neutron net-list | grep "{{ item.key }}" || \
-        ( neutron net-create {{ item.key }} --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id {{ item.value.vlanid }} --tenant-id=$projectid && \
-        neutron subnet-create {{ item.key }} {{ item.value.cidr }} --gateway {{ item.value.gateway }} --name "{{ item.value.subnet_name }}" --allocation-pool start={{ item.value.dhcp_start }},end={{ item.value.dhcp_end }} --tenant-id=$projectid --dns-nameserver {{ openstack['dns_server'] }} )
-      args:
-        chdir: /root
-      become: true
-      with_dict: "{{ openstack['networks'] }}"
-
-    - name: "Create the security groups ..."
-      shell: |
-        . /root/keystonerc_{{ openstack['project_user'] }}
-        openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
-        openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
-        openstack security group rule create --protocol icmp {{ openstack['project_name'] }}-sg
-        openstack security group rule create --protocol tcp {{ openstack['project_name'] }}-sg
-        openstack security group rule create --protocol udp {{ openstack['project_name'] }}-sg
-      args:
-        chdir: /root
-      become: true
-      ignore_errors: yes
-
-    - name: "Configure the system for Huge Pages"
-      shell: |
-        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
-        grub2-install {{ openstack['hugepages']['device'] }}
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
-
-    - name: "Create the flavors for huge pages ..."
-      shell: |
-        source /root/keystonerc_admin
-        nova flavor-create m1.medium.performance 6 4096 20 4
-        nova flavor-key m1.medium.performance set hw:mem_page_size=2048
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
-
-    - name: "Update Nova Scheduler to filter on capabilities  ..."
-      shell: |
-        sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
-        systemctl restart openstack-nova-scheduler.service
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
-
-    - name: "Reboot to new settings. Back in 10 mins or so"
-      shell: |
-        shutdown -r +1 && sleep 55
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
-
+#    - name: "Create lab project and user"
+#      shell: |
+#        . /root/keystonerc_admin
+#        openstack project create --description "{{ openstack['project_name'] }}" {{ openstack['project_name'] }}
+#        openstack user create --project {{ openstack['project_name'] }} --password {{ openstack['project_pass'] }} {{ openstack['project_user'] }}
+#      args:
+#        chdir: /root
+#      become: true
+#      ignore_errors: yes
+#      when: openstack['project_name'] not in proj_stat.stdout
+#
+#    - name: "copy over {{ openstack['project_user'] }} keystone file"
+#      template:
+#        src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
+#        dest: "/root/keystonerc_{{ openstack['project_user'] }}"
+#        owner: root
+#        group: root
+#        mode: 0644
+#
+#    - name: "copy over glance import script"
+#      template:
+#        src: openstack/glance-import.sh.j2
+#        dest: /root/glance-import.sh
+#        owner: root
+#        group: root
+#        mode: 0755
+#      when: openstack['glance']['import']  == "yes"
+#        
+#    - name: "make the import directory"
+#      file:
+#        path: "{{ openstack['glance']['image_path'] }}"
+#        state: directory
+#        owner: root
+#        group: root
+#        mode: 0755
+#      when: openstack['glance']['import']  == "yes"
+#
+#    - name: copy over dns script  used by openstack dnsmasq to update the vm's dns entry
+#      template:
+#        src: openstack/dns-updater.sh.j2
+#        dest: /usr/local/bin/dns-updater.sh
+#        owner: root
+#        group: root
+#        mode: 0755
+#
+#    - name: openstack dnsmasq config file to use the dns script and custom mtu settings etc
+#      template:
+#        src: openstack/dnsmasq.conf.j2
+#        dest: /etc/neutron/dnsmasq.conf
+#        owner: root
+#        group: root
+#        mode: 0644
+#
+#    - name: update neutron dhcp_agent.ini dns values
+#      lineinfile: 
+#        line: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
+#        dest: /etc/neutron/dhcp_agent.ini
+#        regexp: "^dnsmasq_dns_servers =*"
+#        state: present
+#
+#    - name: update neutron dhcp_agent.ini domain values
+#      lineinfile: 
+#        line: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
+#        dest: /etc/neutron/dhcp_agent.ini
+#        regexp: "^dhcp_domain =*"
+#        state: present
+#
+#    - name: update neutron neutron.conf domain values
+#      lineinfile: 
+#        line: "dns_domain = {{ openstack['dhcp_domain'] }}"
+#        dest: /etc/neutron/neutron.conf
+#        regexp: "^dns_domain =*"
+#        state: present
+#
+#    - name: update nova.conf domain values
+#      lineinfile:
+#        line: "dhcp_domain={{ openstack['dhcp_domain'] }}"
+#        dest: /etc/nova/nova.conf
+#        regexp: "^dhcp_domain=*"
+#        state: present
+#
+#    - name: update neutron dhcp_agent.ini to use dnsmasq config file
+#      lineinfile:
+#        dest: /etc/neutron/dhcp_agent.ini
+#        line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
+#        regexp: "^dnsmasq_config_file =*"
+#        state: present
+#
+#    - name: update neutron dhcp_agent.ini isolated network values so cloud-init will work when not using a neutron router
+#      lineinfile:
+#        line: "enable_isolated_metadata = True"
+#        dest: /etc/neutron/dhcp_agent.ini
+#        regexp: "^enable_isolated_metadata = False"
+#        state: present
+#
+#    - name: "killing dnsmasq"
+#      command: killall dnsmasq
+#      become: true
+#      ignore_errors: yes
+#
+#
+#    - name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
+#      service:
+#        name: "{{ item }}"
+#        state: restarted
+#        enabled: yes
+#      with_items:
+#        - neutron-dhcp-agent
+#        - openstack-nova-api
+#        - openstack-nova-cert
+#        - openstack-nova-consoleauth
+#        - openstack-nova-scheduler
+#        - openstack-nova-conductor
+#        - openstack-nova-novncproxy 
+#      become: true
+#
+#    - name: "Mount nfs share to import glance images"
+#      mount:
+#        path: "{{ openstack['glance']['image_path'] }}"
+#        src: "{{ openstack['glance']['nfs_target'] }}"
+#        fstype: nfs
+#        opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
+#        state: present
+#      when: openstack['glance']['mount_nfs']  == "yes"
+#
+#    - name: "Ensure nfs is mounted"
+#      shell: |
+#        mount {{ openstack['glance']['image_path'] }}
+#      args:
+#        chdir: /root
+#      become: true
+#      when: openstack['glance']['mount_nfs']  == "yes"
+#      ignore_errors: yes
+#
+#    - name: "Import a couple of glance images ..."
+#      shell: |
+#        . /root/keystonerc_admin
+#        NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
+#        openstack image list | grep "${NAME}" || /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
+#        #/root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
+#      args:
+#        chdir: /root
+#      become: true
+#      with_items: "{{ openstack['glance']['image_names'] }}"
+#      when: openstack['glance']['import'] == "yes"
+#      ignore_errors: yes
+#
+#    - name: "Create the networks and subnets ..."
+#      shell: |
+#        . /root/keystonerc_admin
+#        projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
+#        neutron net-list | grep "{{ item.key }}" || \
+#        ( neutron net-create {{ item.key }} --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id {{ item.value.vlanid }} --tenant-id=$projectid && \
+#        neutron subnet-create {{ item.key }} {{ item.value.cidr }} --gateway {{ item.value.gateway }} --name "{{ item.value.subnet_name }}" --allocation-pool start={{ item.value.dhcp_start }},end={{ item.value.dhcp_end }} --tenant-id=$projectid --dns-nameserver {{ openstack['dns_server'] }} )
+#      args:
+#        chdir: /root
+#      become: true
+#      with_dict: "{{ openstack['networks'] }}"
+#
+#    - name: "Create the security groups ..."
+#      shell: |
+#        . /root/keystonerc_{{ openstack['project_user'] }}
+#        openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
+#        openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
+#        openstack security group rule create --protocol icmp {{ openstack['project_name'] }}-sg
+#        openstack security group rule create --protocol tcp {{ openstack['project_name'] }}-sg
+#        openstack security group rule create --protocol udp {{ openstack['project_name'] }}-sg
+#      args:
+#        chdir: /root
+#      become: true
+#      ignore_errors: yes
+#
+#    - name: "Configure the system for Huge Pages"
+#      shell: |
+#        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+#        grub2-install {{ openstack['hugepages']['device'] }}
+#      args:
+#        chdir: /root
+#      become: true
+#      when: openstack['hugepages']['use']  == "yes"
+#
+#    - name: "Create the flavors for huge pages ..."
+#      shell: |
+#        source /root/keystonerc_admin
+#        nova flavor-create m1.medium.performance 6 4096 20 4
+#        nova flavor-key m1.medium.performance set hw:mem_page_size=2048
+#      args:
+#        chdir: /root
+#      become: true
+#      when: openstack['hugepages']['use']  == "yes"
+#
+#    - name: "Update Nova Scheduler to filter on capabilities  ..."
+#      shell: |
+#        sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
+#        systemctl restart openstack-nova-scheduler.service
+#      args:
+#        chdir: /root
+#      become: true
+#      when: openstack['hugepages']['use']  == "yes"
+#
+#    - name: "Reboot to new settings. Back in 10 mins or so"
+#      shell: |
+#        shutdown -r +1 && sleep 55
+#      args:
+#        chdir: /root
+#      become: true
+#      when: openstack['hugepages']['use']  == "yes"
+#
+#
+- name: "Wait for the reboot"
+  hosts: localhost
+  gather_facts: no
+  tasks:
     - name: Wait for server to come back
       local_action:
         module: wait_for
