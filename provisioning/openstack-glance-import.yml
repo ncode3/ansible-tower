@@ -1,7 +1,6 @@
 ---
 - name: "Customize OSP 10 -  create networks, projects, users, and import glance images from nfs share"
   hosts: 10.55.102.158
-  gather_facts: no
   vars:
     openstack:
       project_name: Redhat_Lab
@@ -252,18 +251,6 @@
 #      when: openstack['hugepages']['use']  == "yes"
 #
 #
-- name: "Wait for the reboot"
-  hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: Wait for server to come back
-      local_action:
-        module: wait_for
-          host={{ ansible_host }}
-          port=22
-          delay=1
-          timeout=660
 
 ## launch ose 3.5 demo
 - name: "Install OSE 3.5"
