@@ -176,15 +176,15 @@
       when: openstack['glance']['mount_nfs']  == "yes"
       ignore_errors: yes
 
-    - name: "Import a couple of glance images ..."
-      shell: |
-        /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
-      args:
-        chdir: /root
-      become: true
-      with_items: "{{ openstack['glance']['image_names'] }}"
-      when: openstack['glance']['import'] == "yes"
-      ignore_errors: yes
+#    - name: "Import a couple of glance images ..."
+#      shell: |
+#        /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
+#      args:
+#        chdir: /root
+#      become: true
+#      with_items: "{{ openstack['glance']['image_names'] }}"
+#      when: openstack['glance']['import'] == "yes"
+#      ignore_errors: yes
 
     - name: "Create the networks and subnets ..."
       shell: |
