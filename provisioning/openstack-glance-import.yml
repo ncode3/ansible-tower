@@ -35,13 +35,13 @@
           dhcp_end: 10.55.105.225
           gateway: 10.55.105.1
   tasks:
-    - name: "Check if project exists"
-      shell: |
-        . /root/keystonerc_admin
-        openstack project list | grep {{ openstack['project_name'] }}
-      ignore_errors: yes
-      register: proj_stat
-    
+#    - name: "Check if project exists"
+#      shell: |
+#        . /root/keystonerc_admin
+#        openstack project list | grep {{ openstack['project_name'] }}
+#      ignore_errors: yes
+#      register: proj_stat
+#    
 #    - name: "Create lab project and user"
 #      shell: |
 #        . /root/keystonerc_admin
