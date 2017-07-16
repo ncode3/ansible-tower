@@ -1,0 +1,211 @@
+---
+# Creates a new instance with provisioning userdata using Cloud-Init
+- name: launch a compute instance
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ## install OSE with Huge Pages flavor
+    vault_os_project: Redhat_Lab
+    vault_os_projectid: ""
+    vault_os_user: dtaylor
+    vault_os_pass: redhat123
+    vault_os_url: "http://10.55.102.158:5000/v2.0"
+    os_create_volume: "yes"
+    os_volume_size: 5
+    os_volume_name: ose-volume
+    os_server:
+      name: "ose-cluster"
+      state: present
+      image: "RHEL 7.3 Cloud"
+      flavor: "m1.medium.performance"
+      network: "Provisioning_102"
+      availability_zone: "nova"
+      region_name: "RegionOne"
+      auto_ip: no
+      key_name: "dtaylor-openstack"
+    ## this calls the install ose playbook
+    host_config_key: 0c4fbc7946308401af78735e800f45e3
+    host_config_server: 10.55.102.248
+    host_config_jobid: 227
+    redhat_insights_key: 990c2493aefba904a89081496fc0319b
+    redhat_insights_jobid: 117
+  environment:
+    OS_TENANT_NAME: "{{ vault_os_project }}"
+    OS_TENANT_ID: "{{ vault_os_projectid }}"
+    OS_USERNAME: "{{ vault_os_user }}"
+    OS_PASSWORD: "{{ vault_os_pass }}"
+    OS_AUTH_URL: "{{ vault_os_url }}"
+  tasks:
+    - name: "create {{ os_volume_size }}g volume for {{ os_server['name'] }} Master"
+      os_volume:
+        state: present
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        size: "{{ os_volume_size }}"
+        display_name: "{{ os_volume_name }}"
+      when: os_create_volume == "yes"
+
+    - name: launch an Atomic instance for node 1
+      os_server:
+        name: "{{ os_server['name'] }}-node-1"
+        state: present
+        image: "RHEL Atomic 7.2.6-1"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          preserve_hostname: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          ssh_pwauth: true
+          runcmd:
+           # this is firstboot configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/8/callback/"
+      register: atomic_node1
+
+    - name: launch an Atomic instance for node 2
+      os_server:
+        name: "{{ os_server['name'] }}-node-2"
+        state: present
+        image: "RHEL Atomic 7.2.6-1"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          preserve_hostname: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          ssh_pwauth: true
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/8/callback/"
+      register: atomic_node2
+
+    - name: launch an OSE instance with volume
+      os_server:
+        name: "{{ os_server['name'] }}-master"
+        state: present
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          write_files:
+              path: /opt/start-install.sh
+              owner: root:root
+              permissions: '0755'
+              -   content: |
+                  #!/bin/bash
+                  curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "$1","extra_vars": "{\"multinode\": \"yes\", \"node1_ip\": \"{{ atomic_node1.server.public_v4 }}\", \"node2_hostname\": \"{{ atomic_node1.server.name  }}\", \"node2_ip\": \"{{ atomic_node2.server.public_v4 }}\", \"node2_hostname\": \"{{ atomic_node2.server.name }}\"}"}' --user admin:ansible http://{{ host_config_server }}:443/api/v1/job_templates/227/launch/
+#          runcmd:
+#            - "/opt/start-install.sh"
+        volumes:
+          - "{{ os_volume_name }}"
+      register: ose_master
+
+    - name: Show OSE Masters IP
+      debug: var=ose_master.server.public_v4
+
+    - name: Atomic Node 1 IP
+      debug: var=atomic_node1.server.public_v4
+
+    - name: Atomic Node 2 IP
+      debug: var=atomic_node2.server.public_v4
+
+    - name: Adding Atomic nodes to inventory
+      add_host: name={{ item.server.public_v4 }}
+                groups=atomic_nodes
+                instance_name={{ item.server.name }}
+      with_items:
+        - "{{ ose_master }}"
+        - "{{ atomic_node1 }}"
+        - "{{ atomic_node2 }}"
+
+    - name: Adding OSE master to inventory
+      add_host: name={{ item.server.public_v4 }}
+                groups=ose_master
+                instance_name="{{ item.server.name }}.{{ dns_domain }}"
+      with_items:
+        - "{{ ose_master }}"
+
+- name: Configure OSE nodes
+  hosts: ose_master
+  gather_facts: false
+  tasks:
+    - name: "Wait for SSH to come up"
+      local_action: wait_for port=22 host="{{ inventory_hostname }}" delay=5
+      become: False
+
+    - name: "Call OSE Install Job"
+      shell: "/opt/start-install.sh {{ inventory_hostname }}"

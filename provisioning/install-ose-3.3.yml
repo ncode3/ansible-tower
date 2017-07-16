@@ -1,9 +1,14 @@
 ---
 - include: firstboot.yml
-# Launches new OSE 3.3 instance with provisioning userdata using Cloud-Init
+# Launches new OSE 3.5 instance with provisioning userdata using Cloud-Init
 - name: launch a compute instance
   hosts: all
   vars:
+    multinode: "no"
+    node1_ip: ""
+    node1_hostname: ""
+    node2_ip: ""
+    node2_hostname: ""
     ose_add_user: "admin"
     ose_add_pass: "redhat123"
     ose_add_project: "redhat-lab"
@@ -43,17 +48,35 @@
         owner: root
         group: root
         mode: 0644
-
-    - template:
-        src: ose/outbound-traffic.json.j2
-        dest: /tmp/outbound-traffic.json
-        owner: root
-        group: root
-        mode: 0644
+      when: multinode == "no"
 
     - template:
         src: ose/hosts.j2
         dest: /root/.config/openshift/hosts
+        owner: root
+        group: root
+        mode: 0644
+      when: multinode == "no"
+
+    - template:
+        src: ose/installer-multi.cfg.yml.j2
+        dest: /root/.config/openshift/installer.cfg.yml
+        owner: root
+        group: root
+        mode: 0644
+      when: multinode == "yes"
+
+    - template:
+        src: ose/hosts-multi.j2
+        dest: /root/.config/openshift/hosts
+        owner: root
+        group: root
+        mode: 0644
+      when: multinode == "yes"
+
+    - template:
+        src: ose/outbound-traffic.json.j2
+        dest: /tmp/outbound-traffic.json
         owner: root
         group: root
         mode: 0644
