@@ -21,6 +21,7 @@
       flavor: "m1.medium"
       network: "Provisioning_102"
       availability_zone: "nova"
+      security_groups: "Redhat_Lab-sg"
       region_name: "RegionOne"
       auto_ip: no
       key_name: "dtaylor-openstack"
@@ -53,6 +54,7 @@
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
         region_name: "{{ os_server['region_name'] }}"
         auto_ip: "{{ os_server['auto_ip'] }}"
         key_name: "{{ os_server['key_name'] }}"
@@ -92,6 +94,7 @@
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
         region_name: "{{ os_server['region_name'] }}"
         auto_ip: "{{ os_server['auto_ip'] }}"
         key_name: "{{ os_server['key_name'] }}"
@@ -131,6 +134,7 @@
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: Redhat_Lab-sg
         region_name: "{{ os_server['region_name'] }}"
         auto_ip: "{{ os_server['auto_ip'] }}"
         key_name: "{{ os_server['key_name'] }}"
