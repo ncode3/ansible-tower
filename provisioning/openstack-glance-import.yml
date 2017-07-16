@@ -11,7 +11,7 @@
       dhcp_domain: stack.openstack.com
       dhcp_mtu: 1454
       hugepages:
-        use: "no"
+        use: "yes"
         device: /dev/sda
       glance:
         mount_nfs: "yes"
@@ -193,7 +193,7 @@
       shell: |
         . /root/keystonerc_admin
         projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
-        neutron net-create {{ item.key }} --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id {{ item.value.vlanid }} --tenant-id=$projectid
+        neutron net-list | grep "{{ item.key }}" || neutron net-create {{ item.key }} --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id {{ item.value.vlanid }} --tenant-id=$projectid && \
         neutron subnet-create {{ item.key }} {{ item.value.cidr }} --gateway {{ item.value.gateway }} --name "{{ item.value.subnet_name }}" --allocation-pool start={{ item.value.dhcp_start }},end={{ item.value.dhcp_end }} --tenant-id=$projectid --dns-nameserver {{ openstack['dns_server'] }}
       args:
         chdir: /root
@@ -211,6 +211,7 @@
       args:
         chdir: /root
       become: true
+      ignore_errors: yes
 
     - name: "Configure the system for Huge Pages"
       shell: |
