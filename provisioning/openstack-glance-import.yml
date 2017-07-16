@@ -281,9 +281,9 @@
         group: root
         mode: 0755
 
-#    - name: "Running Dynatrace script"
-#      shell: |
-#        echo "Running Dynatrace script"
-#        /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
-#      args:
-#        chdir: /root
+    - name: "Running Dynatrace script"
+      shell: |
+        echo "Running Dynatrace script"
+        /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
+      args:
+        chdir: /opt
