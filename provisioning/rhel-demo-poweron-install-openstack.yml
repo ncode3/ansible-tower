@@ -77,3 +77,5 @@
 
 ## customize openstack
 - include: "openstack-glance-import.yml"
+## launch ose 3.5 demo
+- include: "launch-ose-cluster-in-osp10.yml"
