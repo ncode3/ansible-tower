@@ -39,6 +39,7 @@
       shell: |
         . /root/keystonerc_admin
         openstack project show {{ openstack['project_name'] }}
+      ignore_errors: yes
       register: proj_stat
     
     - name: "Create lab project and user"
