@@ -201,23 +201,23 @@
       become: true
       with_dict: "{{ openstack['networks'] }}"
 
-    - name: "Create the security groups ..."
-      shell: |
-        . /root/keystonerc_{{ openstack['project_user'] }}
-        openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
-        openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
-        openstack security group rule create --protocol icmp {{ openstack['project_name'] }}-sg
-        openstack security group rule create --protocol tcp {{ openstack['project_name'] }}-sg
-        openstack security group rule create --protocol udp {{ openstack['project_name'] }}-sg
-      args:
-        chdir: /root
-      become: true
-      ignore_errors: yes
+#    - name: "Create the security groups ..."
+#      shell: |
+#        . /root/keystonerc_{{ openstack['project_user'] }}
+#        openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
+#        openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
+#        openstack security group rule create --protocol icmp {{ openstack['project_name'] }}-sg
+#        openstack security group rule create --protocol tcp {{ openstack['project_name'] }}-sg
+#        openstack security group rule create --protocol udp {{ openstack['project_name'] }}-sg
+#      args:
+#        chdir: /root
+#      become: true
+#      ignore_errors: yes
 
     - name: "Configure the system for Huge Pages"
       shell: |
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
-        grub2-install {{ openstack['hugepages_device'] }}
+        grub2-install {{ openstack['hugepages']['device'] }}
       args:
         chdir: /root
       become: true
