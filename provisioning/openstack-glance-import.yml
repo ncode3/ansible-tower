@@ -1,6 +1,7 @@
 ---
 - name: "Customize OSP 10 -  create networks, projects, users, and import glance images from nfs share"
   hosts: 10.55.102.158
+  gather_facts: no
   vars:
     openstack:
       project_name: Redhat_Lab
