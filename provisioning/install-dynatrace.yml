@@ -15,4 +15,4 @@
         echo "Running Dynatrace script"
         /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
       args:
-        chdir: /root
+        chdir: /opt
