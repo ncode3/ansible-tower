@@ -84,4 +84,7 @@
   tasks:
     - name: "Calling OSE install job"
       shell: |
+        echo "OSE 3.5 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+        echo "Sat 6 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
