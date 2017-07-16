@@ -179,7 +179,7 @@
 #    - name: "Import a couple of glance images ..."
 #      shell: |
 #        . /root/keystonerc_admin
-#        NAME=$(grep -v "_type_name" {{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
+#        NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
 #        openstack image list | grep "${NAME}" || /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
 #        #/root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
 #      args:
