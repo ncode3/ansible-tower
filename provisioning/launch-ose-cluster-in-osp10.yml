@@ -5,6 +5,7 @@
   gather_facts: no
   vars:
     ## install OSE with Huge Pages flavor
+    dns_domain: stack.maskedadmins.com
     vault_os_project: Redhat_Lab
     vault_os_projectid: ""
     vault_os_user: dtaylor
@@ -195,7 +196,7 @@
     - name: Adding OSE master to inventory
       add_host: name={{ item.server.public_v4 }}
                 groups=ose_master
-                instance_name="{{ item.server.name }}.{{ dns_domain }}"
+                instance_name="{{ item.server.name }}"
       with_items:
         - "{{ ose_master }}"
 
@@ -205,7 +206,8 @@
   tasks:
     - name: "Wait for SSH to come up"
       local_action: wait_for port=22 host="{{ inventory_hostname }}" delay=5
-      become: False
+      ignore_errors: yes
 
     - name: "Call OSE Install Job"
       shell: "/opt/start-install.sh {{ inventory_hostname }}"
+      ignore_errors: yes
