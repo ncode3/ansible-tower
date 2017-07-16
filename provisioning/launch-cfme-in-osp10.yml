@@ -1,0 +1,86 @@
+---
+# Creates a new instance with provisioning userdata using Cloud-Init
+- name: launch a compute instance
+  hosts: localhost
+  gather_facts: no
+  vars:
+    vault_os_project: Redhat_Lab
+    vault_os_projectid: ""
+    vault_os_user: dtaylor
+    vault_os_pass: redhat123
+    vault_os_url: "http://10.55.102.158:5000/v2.0"
+    os_create_volume: "no"
+    os_volume_size: 5
+    os_volume_name: ose-volume
+    os_server:
+      name: "cloudforms"
+      state: present
+      image: "CFME 4.5 For RHOSP"
+      flavor: "m1.large"
+      network: "Provisioning_102"
+      availability_zone: "nova"
+      region_name: "RegionOne"
+      auto_ip: no
+      key_name: "dtaylor-openstack"
+    ## this calls the install cmfe playbook
+    host_config_key: a13c2b83876de2e982ab6960bc810318
+    host_config_server: 10.55.102.248
+    host_config_jobid: 260
+  environment:
+    OS_TENANT_NAME: "{{ vault_os_project }}"
+    OS_TENANT_ID: "{{ vault_os_projectid }}"
+    OS_USERNAME: "{{ vault_os_user }}"
+    OS_PASSWORD: "{{ vault_os_pass }}"
+    OS_AUTH_URL: "{{ vault_os_url }}"
+  tasks:
+    - name: launch cloudforms instance
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: present
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+      register: cloudforms
+
+    - name: Show Server's IP
+      debug: var=cloudforms.server.public_v4
