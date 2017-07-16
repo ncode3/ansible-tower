@@ -1,5 +1,6 @@
 ---
-- name: Install Dynatrace Monitoring Agent on Linux
+## copy over the dynatrace install script
+- name: "Install Dynatrace Monitoring Agent for Linux"
   hosts: all
   tasks:
     - name: "Copy over Dynatrace script"
@@ -12,7 +13,14 @@
 
     - name: "Running Dynatrace script"
       shell: |
-        echo "Running Dynatrace script"
         /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
       args:
         chdir: /opt
+
+    - name: "Updating Dynatrace config to allow access to log files"
+      lineinfile: 
+        line: "AppLogContentAccess=true"
+        dest: /var/lib/dynatrace/oneagent/agent/config/ruxitagentloganalytics.conf
+        regexp: "^AppLogContentAccess=false$"
+        state: present
+

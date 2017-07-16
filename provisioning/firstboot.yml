@@ -18,25 +18,8 @@
 #      shell: |
 #         curl -k --data 'host_config_key={{ redhat_insights_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ redhat_insights_jobid }}/callback/"
 
-## copy over the dynatrace install script
-- name: "Install Dynatrace Monitoring Agent"
-  hosts: all
-  tasks:
-    - name: "Copy over Dynatrace script"
-      copy:
-        dest: /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
-        src: "/opt/Dynatrace-OneAgent-Linux-1.121.186.sh"
-        owner: root
-        group: root
-        mode: 0755
-
-    - name: "Running Dynatrace script"
-      shell: |
-        echo "Running Dynatrace script"
-        /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
-      args:
-        chdir: /opt
-
+## copy over the dynatrace monitoring installation and run it
+- include: "install-dynatrace.yml"
 
 ## playbook to install OSP 10 on physical nodes on firstboot
 ## inventory hardcoded to the compute nodes
