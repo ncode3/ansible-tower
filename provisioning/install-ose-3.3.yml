@@ -34,10 +34,14 @@
     - name: "Enabling OSE needed repos"
       shell: |
         subscription-manager repos --enable={{ item }}
+      with_items: "{{ ose_repos }}"
+      become: true
+
+    - name: "Enabling OSE needed repos"
+      shell: |
         ssh root@{{ node1_ip }} 'subscription-manager repos --enable={{ item }}'
         ssh root@{{ node2_ip }} 'subscription-manager repos --enable={{ item }}'
       with_items: "{{ ose_repos }}"
-      become: true
 
     - name: "Install OSE yum packages"
       yum:
