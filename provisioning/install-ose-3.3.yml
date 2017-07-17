@@ -137,15 +137,6 @@
       with_items: "{{ ose_svcs }}"
       become: true
 
-    - name: "Set ntp to true"
-      shell: |
-        timedatectl set-ntp true
-#        sleep 2 && shutdown -r now
-      poll: 0
-      async: 1
-      become: true
-      ignore_errors: yes
-
 #    - name: Wait for server to restart
 #      local_action:
 #        module: wait_for
