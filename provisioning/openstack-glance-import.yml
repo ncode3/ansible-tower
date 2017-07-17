@@ -189,6 +189,15 @@
       when: openstack['glance']['import'] == "yes"
       ignore_errors: yes
 
+    - name: "Ensure nfs is unmounted"
+      shell: |
+        umount {{ openstack['glance']['image_path'] }}
+      args:
+        chdir: /root
+      become: true
+      when: openstack['glance']['mount_nfs']  == "yes"
+      ignore_errors: yes
+
     - name: "Create the networks and subnets ..."
       shell: |
         . /root/keystonerc_admin
