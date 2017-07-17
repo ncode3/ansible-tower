@@ -96,6 +96,7 @@
 - name: "Register to the Red Hat Access Insights Service"
   command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
   when: unreg.stat.exists == false
+  ignore_errors: yes
 
 - name: "update dns with the real hostname given in openstack"
   template:
