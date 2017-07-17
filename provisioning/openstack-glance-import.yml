@@ -246,21 +246,57 @@
       when: openstack['hugepages']['use']  == "yes"
       ignore_errors: yes
 
-#    - name: "Reboot to new settings. Back in 10 mins or so"
-#      shell: |
-#        shutdown -r +1 && sleep 55
-#      args:
-#        chdir: /root
-#      become: true
-#      when: openstack['hugepages']['use']  == "yes"
-#
-#
+    - name: "Creating firstboot script to launch demos"
+      shell: |
+        cat > /etc/systemd/system/firstboot-setup.service <<EOF
+        [Unit]
+        Description=Calls Ansible Tower Firstboot Script
+        After=network.target
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/opt/firstboot-start.sh
+        RemainAfterExit=true
+        ExecStop=/opt/firstboot-stop.sh
+        StandardOutput=journal
+        
+        [Install]
+        WantedBy=multi-user.target
+        EOF
+        
+        cat > /opt/firstboot-start.sh <<EOF
+        #!/bin/bash
+        sleep 60
+        echo "OSE 3.5 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+        echo "Sat 6 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
+        echo "CMFE launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
 
-## launch ose 3.5 demo
-- name: "Install OSE 3.5"
-  hosts: 10.55.102.158
-  tasks:
-    - name: "Calling OSE install job"
+        EOF
+        
+        cat > /opt/firstboot-stop.sh <<EOF
+        #!/bin/bash
+        echo "Removing firstboot service ..."
+        systemctl disable firstboot-setup
+        rm -f /etc/systemd/system/firstboot-setup.service
+        rm -f /opt/firstboot-start.sh /opt/firstboot-stop.sh
+        systemctl daemon-reload
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "yes"
+
+    - name: "Reboot to new settings. Back in 10 mins or so"
+      shell: |
+        shutdown -r +2 && sleep 2
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "yes"
+
+    - name: "Launching demos"
       shell: |
         echo "OSE 3.5 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
@@ -268,4 +304,43 @@
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
         echo "CMFE launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "no"
+
+
+
+
+## Configure compute nodes for hugepages
+- name: "Install OSE 3.5"
+  hosts: 10.55.102.156,10.55.102.157
+  tasks:
+    - name: "Configure the system for Huge Pages"
+      shell: |
+        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+        grub2-install {{ openstack['hugepages']['device'] }}
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "yes"
+      ignore_errors: yes
+
+    - name: "Update Nova Scheduler to filter on capabilities  ..."
+      shell: |
+        sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
+        systemctl restart openstack-nova-compute.service
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "yes"
+      ignore_errors: yes
+
+    - name: "Reboot to new settings. Back in 10 mins or so"
+      shell: |
+        shutdown -r +1 && sleep 2
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "yes"
 

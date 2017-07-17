@@ -9,6 +9,15 @@
     #service network restart
   become: true
 
+- name: "Set ntp to true"
+  shell: |
+    ntpdate server 0.fedora.pool.ntp.org iburst
+    timedatectl set-ntp true
+  poll: 0
+  async: 1
+  become: true
+  ignore_errors: yes
+
 - name: Set authorized key for root
   authorized_key:
     user: root
