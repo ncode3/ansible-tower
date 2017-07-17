@@ -27,10 +27,11 @@
       key_name: "dtaylor-openstack"
     ## this calls the install ose playbook
     host_config_key: 0c4fbc7946308401af78735e800f45e3
-    host_config_server: 10.55.102.248
     host_config_jobid: 227
-    redhat_insights_key: 990c2493aefba904a89081496fc0319b
-    redhat_insights_jobid: 117
+    ## this calls the osp10 firstboot playbook
+    host_config_osp10key: dc7c0b52cd29cacceb8d3571257801ea
+    host_config_osp10jobid: 227
+    host_config_server: 10.55.102.248
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
     OS_TENANT_ID: "{{ vault_os_projectid }}"
@@ -83,7 +84,7 @@
           ssh_pwauth: true
           runcmd:
            # this is firstboot configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/8/callback/"
+           - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
       register: atomic_node1
 
     - name: launch an Atomic instance for node 2
@@ -123,7 +124,7 @@
           ssh_pwauth: true
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/8/callback/"
+           - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
       register: atomic_node2
 
     - name: launch an OSE instance with volume
