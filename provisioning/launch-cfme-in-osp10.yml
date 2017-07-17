@@ -85,4 +85,4 @@
       register: cloudforms
 
     - name: Show Server's IP
-      debug: var=cloudforms.server.public_v4
+      debug: var=cloudforms.server.private_v4

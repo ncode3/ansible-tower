@@ -74,7 +74,7 @@
       register: server_with_volume
 
     - name: Show Server's IP
-      debug: var=server_with_volume.openstack.public_v4
+      debug: var=server_with_volume.server.private_v4
       when: os_create_volume == "yes"
 
     - name: launch an instance with no volume
@@ -131,5 +131,5 @@
       register: server_with_no_volume
 
     - name: Show Server's IP
-      debug: var=server_with_no_volume.openstack.public_v4
+      debug: var=server_with_no_volume.server.private_v4
       when: os_create_volume == "no"
