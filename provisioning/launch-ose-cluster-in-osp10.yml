@@ -172,7 +172,7 @@
               permissions: '0755'
               content: |
                 #!/bin/bash
-                curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)","extra_vars": "{\"multinode\": \"yes\", \"node1_ip\": \"{{ atomic_node1.server.private_v4 }}\", \"node2_hostname\": \"{{ atomic_node1.server.name  }}.{{ dns_domain }}\", \"node2_ip\": \"{{ atomic_node2.server.private_v4 }}\", \"node2_hostname\": \"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/227/launch/
+                curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.private_v4 }}\",\"node2_hostname\":\"{{ atomic_node1.server.name  }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.private_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/launch/
           runcmd:
             - "/opt/start-install.sh"
         volumes:
