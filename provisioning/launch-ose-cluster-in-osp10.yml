@@ -30,7 +30,7 @@
     host_config_jobid: 227
     ## this calls the osp10 firstboot playbook
     host_config_osp10key: dc7c0b52cd29cacceb8d3571257801ea
-    host_config_osp10jobid: 227
+    host_config_osp10jobid: 287
     host_config_server: 10.55.102.248
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
