@@ -3,6 +3,8 @@
 # Launches new OSE 3.3 instance with provisioning userdata using Cloud-Init
 - name: install ansible tower
   hosts: all
+  vars:
+    tower_tarball_location: http://10.55.102.5/ansible-tower-setup-latest.tar.gz
   tasks:
     - name: "Install yum packages"
       yum:
