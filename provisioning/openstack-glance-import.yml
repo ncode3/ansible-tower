@@ -324,21 +324,16 @@
 ## Configure compute nodes for hugepages
 - name: "Install OSE 3.5"
   hosts: 10.55.102.156,10.55.102.157
+  vars:
+    openstack:
+      hugepages:
+        use: "yes"
+        device: /dev/sda
   tasks:
-    - name: "Configure the system for Huge Pages"
+    - name: "Configure compute nodes for Huge Pages"
       shell: |
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
         grub2-install {{ openstack['hugepages']['device'] }}
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
-      ignore_errors: yes
-
-    - name: "Update Nova Scheduler to filter on capabilities  ..."
-      shell: |
-        sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
-        systemctl restart openstack-nova-compute.service
       args:
         chdir: /root
       become: true
