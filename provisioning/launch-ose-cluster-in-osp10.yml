@@ -59,7 +59,8 @@
       os_server:
         name: "{{ os_server['name'] }}-node-1"
         state: present
-        image: "RHEL Atomic 7.2.6-1"
+        #image: "RHEL Atomic 7.2.6-1"
+        image: "RHEL 7.3 Cloud"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -99,7 +100,8 @@
       os_server:
         name: "{{ os_server['name'] }}-node-2"
         state: present
-        image: "RHEL Atomic 7.2.6-1"
+        #image: "RHEL Atomic 7.2.6-1"
+        image: "RHEL 7.3 Cloud"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
