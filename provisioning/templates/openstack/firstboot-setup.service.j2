@@ -1,0 +1,13 @@
+[Unit]
+Description=Calls Ansible Tower Firstboot Script
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/firstboot-start.sh
+RemainAfterExit=true
+ExecStop=/opt/firstboot-stop.sh
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

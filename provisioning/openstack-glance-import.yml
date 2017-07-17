@@ -255,50 +255,36 @@
       when: openstack['hugepages']['use']  == "yes"
       #ignore_errors: yes
 
-    - name: "Creating firstboot script to launch demos"
+    - name: "firstboot.service file"
+      template:
+        src: openstack/firstboot-setup.service.j2
+        dest: /etc/systemd/system/firstboot-setup.service
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: "/opt/firstboot-start.sh file"
+      template:
+        src: openstack/firstboot-start.sh.j2
+        dest: /opt/firstboot-start.sh
+        owner: root
+        group: root
+        mode: 0755
+      when: openstack['hugepages']['use']  == "yes"
+
+    - name: "/opt/firstboot-stop.sh file"
+      template:
+        src: openstack/firstboot-stop.sh.j2
+        dest: /opt/firstboot-stop.sh
+        owner: root
+        group: root
+        mode: 0755
+      when: openstack['hugepages']['use']  == "yes"
+
+    - name: "Reloading systemctl for firstboot script to launch demos"
       shell: |
-        cat > /etc/systemd/system/firstboot-setup.service <<EOF
-        [Unit]
-        Description=Calls Ansible Tower Firstboot Script
-        After=network.target
-        
-        [Service]
-        Type=oneshot
-        ExecStart=/opt/firstboot-start.sh
-        RemainAfterExit=true
-        ExecStop=/opt/firstboot-stop.sh
-        StandardOutput=journal
-        
-        [Install]
-        WantedBy=multi-user.target
-        EOF
-        
-        cat > /opt/firstboot-start.sh <<EOF
-        #!/bin/bash
-        sleep 60
-        echo "OSE 3.5 launch job"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
-        echo "Sat 6 launch job"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
-        echo "CMFE launch job"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
-        echo "CMFE launch job"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-        touch /opt/firstboot.finished
-        EOF
-        
-        cat > /opt/firstboot-stop.sh <<EOF
-        #!/bin/bash
-        if [ -e /opt/firstboot.finished ]
-        then
-          echo "Removing firstboot service ..."
-          systemctl disable firstboot-setup
-          #rm -f /etc/systemd/system/firstboot-setup.service
-          #rm -f /opt/firstboot-start.sh /opt/firstboot-stop.sh
-          systemctl daemon-reload
-        else
-          echo "/opt/firstboot-setup.sh did not run yet."
-        fi
+        systemctl daemon-reload  
+        systemctl enable firstboot-setup.service
       args:
         chdir: /root
       become: true
