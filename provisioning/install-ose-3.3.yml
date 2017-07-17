@@ -33,6 +33,7 @@
         owner: root
         group: root
         mode: 0755
+      become: true
 
     - file:
         path: /opt/ose-mount-host
@@ -40,6 +41,7 @@
         owner: 1001
         group: root
         mode: 0755
+      become: true
 
     - template:
         src: ose/installer.cfg.yml.j2
@@ -48,6 +50,7 @@
         group: root
         mode: 0644
       when: multinode == "no"
+      become: true
 
     - template:
         src: ose/hosts.j2
@@ -56,6 +59,7 @@
         group: root
         mode: 0644
       when: multinode == "no"
+      become: true
 
     - template:
         src: ose/installer-multi.cfg.yml.j2
@@ -64,6 +68,7 @@
         group: root
         mode: 0644
       when: multinode == "yes"
+      become: true
 
     - template:
         src: ose/hosts-multi.j2
@@ -72,6 +77,7 @@
         group: root
         mode: 0644
       when: multinode == "yes"
+      become: true
 
     - template:
         src: ose/outbound-traffic.json.j2
@@ -79,6 +85,7 @@
         owner: root
         group: root
         mode: 0644
+      become: true
 
     - template:
         src: ose/docker-storage-setup.j2
@@ -86,6 +93,7 @@
         owner: root
         group: root
         mode: 0644
+      become: true
 
     - template:
         src: ose/docker.j2
@@ -93,6 +101,7 @@
         owner: root
         group: root
         mode: 0644
+      become: true
 
     - template:
         src: ose/fix-ose-auth.txt.j2
@@ -100,6 +109,7 @@
         owner: root
         group: root
         mode: 0644
+      become: true
 
     ## this is used by openshift dnsmasq to update the applications dns entry
     - template:
@@ -108,6 +118,7 @@
         owner: root
         group: root
         mode: 0755
+      become: true
 
     ## this is needed to update dns with the real hostname given in openstack
     - template:
@@ -116,6 +127,7 @@
         owner: root
         group: root
         mode: 0755
+      become: true
 
     ## this is needed because a search domain will break things, so we update the dhcp script to comment it out
     - template:
@@ -124,10 +136,12 @@
         owner: root
         group: root
         mode: 0755
+      become: true
 
     - name: "Setup docker storage, requires a separate volume on /dev/vdb"
       shell: |
         docker-storage-setup
+      become: true
       ignore_errors: yes
 
     - name: "Enabling and restarting services {{ ose_svcs }}"
