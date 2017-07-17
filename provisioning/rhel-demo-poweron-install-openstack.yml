@@ -63,6 +63,11 @@
         group: root
         mode: 0644
 
+    - name: "Check if cinder-volume exists"
+      shell: "vgdisplay | grep cinder || true"
+      register: cinder
+      ignore_errors: yes
+
     - name: "Add cinder-volumes vol group"
       shell: |
         echo "n
@@ -79,6 +84,7 @@
         vgcreate cinder-volumes /dev/sda3
       ignore_errors: yes
       become: true
+      when: "'cinder' not in cinder.stdout"
 
     - name: "Run packstack against answer file"
       shell: "packstack --answer-file=/root/packstack-answer.txt"
