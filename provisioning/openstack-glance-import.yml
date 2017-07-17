@@ -38,7 +38,7 @@
     - name: "Check if project exists, ignore the failure if it doesn't exist"
       shell: |
         . /root/keystonerc_admin
-        openstack project list | grep {{ openstack['project_name'] }}
+        openstack project list | grep {{ openstack['project_name'] }} || true
       ignore_errors: yes
       register: proj_stat
     
