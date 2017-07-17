@@ -318,11 +318,7 @@
       become: true
       when: openstack['hugepages']['use']  == "no"
 
-
-
-
-## Configure compute nodes for hugepages
-- name: "Install OSE 3.5"
+- name: "Configure compute only nodes for hugepages"
   hosts: 10.55.102.156,10.55.102.157
   vars:
     openstack:
