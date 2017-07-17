@@ -138,7 +138,8 @@
         state: present
 
     - name: "killing dnsmasq, ignore the failure if no process found"
-      command: killall dnsmasq
+      shell: |
+        killall dnsmasq || true
       become: true
       ignore_errors: yes
 
