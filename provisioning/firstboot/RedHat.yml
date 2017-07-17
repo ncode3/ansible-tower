@@ -11,8 +11,9 @@
 
 - name: "Set ntp to true"
   shell: |
-    ntpdate server 0.fedora.pool.ntp.org iburst
+    ntpdate server 10.55.102.5 iburst
     timedatectl set-ntp true
+    systemctl restart chronyd
   poll: 0
   async: 1
   become: true
