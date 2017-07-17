@@ -16,7 +16,10 @@
     ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
     - name: "Enabling OSE needed repos"
-      shell: "subscription-manager repos --enable={{ item }}"
+      shell: |
+        subscription-manager repos --enable={{ item }}
+        ssh root@{{ node1_ip }} 'subscription-manager repos --enable={{ item }}'
+        ssh root@{{ node2_ip }} 'subscription-manager repos --enable={{ item }}'
       with_items: "{{ ose_repos }}"
       become: true
 
