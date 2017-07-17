@@ -35,7 +35,7 @@
           dhcp_end: 10.55.105.225
           gateway: 10.55.105.1
   tasks:
-    - name: "Check if project exists"
+    - name: "Check if project exists, ignore the failure if it doesn't exist"
       shell: |
         . /root/keystonerc_admin
         openstack project list | grep {{ openstack['project_name'] }}
@@ -50,8 +50,8 @@
       args:
         chdir: /root
       become: true
-      ignore_errors: yes
       when: openstack['project_name'] not in proj_stat.stdout
+      #ignore_errors: yes
 
     - name: "copy over {{ openstack['project_user'] }} keystone file"
       template:
@@ -137,7 +137,7 @@
         regexp: "^enable_isolated_metadata = False"
         state: present
 
-    - name: "killing dnsmasq"
+    - name: "killing dnsmasq, ignore the failure if no process found"
       command: killall dnsmasq
       become: true
       ignore_errors: yes
@@ -167,7 +167,7 @@
         state: present
       when: openstack['glance']['mount_nfs']  == "yes"
 
-    - name: "Ensure nfs is mounted"
+    - name: "Ensure nfs is mounted, ignore the failure if it is already mounted"
       shell: |
         mount {{ openstack['glance']['image_path'] }}
       args:
@@ -181,13 +181,12 @@
         . /root/keystonerc_admin
         NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
         openstack image list | grep "${NAME}" || /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
-        #/root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
       args:
         chdir: /root
       become: true
       with_items: "{{ openstack['glance']['image_names'] }}"
       when: openstack['glance']['import'] == "yes"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Ensure nfs is unmounted"
       shell: |
@@ -196,7 +195,7 @@
         chdir: /root
       become: true
       when: openstack['glance']['mount_nfs']  == "yes"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Create the networks and subnets ..."
       shell: |
@@ -209,7 +208,7 @@
         chdir: /root
       become: true
       with_dict: "{{ openstack['networks'] }}"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Create the security groups ..."
       shell: |
@@ -222,7 +221,7 @@
       args:
         chdir: /root
       become: true
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Configure the system for Huge Pages"
       shell: |
@@ -232,7 +231,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Create the flavors for huge pages ..."
       shell: |
@@ -243,7 +242,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Update Nova Scheduler to filter on capabilities  ..."
       shell: |
@@ -253,7 +252,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Creating firstboot script to launch demos"
       shell: |
@@ -334,7 +333,7 @@
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
-      ignore_errors: yes
+      #ignore_errors: yes
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
