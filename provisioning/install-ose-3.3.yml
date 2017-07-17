@@ -23,6 +23,14 @@
         group: root
         mode: 0600
 
+    - name: "installing private key"
+      template:
+        src: openstack/blank.key.j2
+        dest: /home/cloud-user/.ssh/id_rsa
+        owner: cloud-user
+        group: cloud-user
+        mode: 0600
+
     - name: "Enabling OSE needed repos"
       shell: |
         subscription-manager repos --enable={{ item }}
