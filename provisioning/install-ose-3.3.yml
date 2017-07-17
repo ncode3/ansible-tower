@@ -15,6 +15,14 @@
     ose_add_project_displayname: "Redhat Lab Demo Project"
     ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
+    - name: "installing private key"
+      template:
+        src: openstack/blank.key.j2
+        dest: /root/.ssh/id_rsa
+        owner: root
+        group: root
+        mode: 0600
+
     - name: "Enabling OSE needed repos"
       shell: |
         subscription-manager repos --enable={{ item }}
