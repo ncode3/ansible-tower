@@ -97,6 +97,17 @@
   command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
   when: unreg.stat.exists == false
 
+- name: "update dns with the real hostname given in openstack"
+  template:
+    src: vms/dns-updater.sh.j2
+    dest: /usr/sbin/ifup-local
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "Update dns entry"
+  command: /usr/sbin/ifup-local
+
 - name: "Updating MOTD"
   template: 
     src: tiger.ascii.j2
