@@ -22,6 +22,11 @@
     os_network_nodes: "10.55.102.158"
     os_amqp_nodes: "10.55.102.158"
     os_mariadb_nodes: "10.55.102.158"
+    ml2_drivers: "local,vlan"
+    ml2_networks: "local,vlan"
+    ml2_bridge_name: "inter-vlan"
+    ml2_vlan_ranges: "2:120"
+    ovs_bridged_interface: "enp10s0f1"
   tasks:
     - name: "installing private key"
       template:
