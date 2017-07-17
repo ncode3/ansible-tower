@@ -47,7 +47,7 @@
         . /root/keystonerc_admin
         openstack project create --description "{{ openstack['project_name'] }}" {{ openstack['project_name'] }}
         openstack user create --project {{ openstack['project_name'] }} --password {{ openstack['project_pass'] }} {{ openstack['project_user'] }}
-        tenant=$(openstack project list | awk '/tenantName/ {print $2}')
+        tenant=$(openstack project list | awk '/{{ openstack['project_name'] }}/ {print $2}')
         nova quota-update --cores 40 $tenant
       args:
         chdir: /root
