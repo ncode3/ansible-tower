@@ -16,6 +16,7 @@
         /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
       args:
         chdir: /opt
+      creates: /var/lib/dynatrace/oneagent/agent/config/ruxitagentloganalytics.conf
 
     - name: "Updating Dynatrace config to allow access to log files"
       lineinfile: 
