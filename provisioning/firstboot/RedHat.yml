@@ -18,7 +18,7 @@
 - name: "Enabling and restarting services {{ enabled_svcs }}"
   service:
     name: "{{ item }}"
-    state: restarted
+    #state: restarted
     enabled: yes
   with_items: "{{ enabled_svcs }}"
   become: true
