@@ -1,7 +1,7 @@
 ---
 - include: firstboot.yml
 - name: Launches new OSE 3.5 instance with provisioning userdata using Cloud-Init
-  hosts: all
+  hosts: ose-cluster-master.stack.maskedadmins.com
   vars:
     multinode: "no"
     node1_ip: ""
