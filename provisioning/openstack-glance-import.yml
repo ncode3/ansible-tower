@@ -281,6 +281,8 @@
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
         echo "CMFE launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
+        echo "CMFE launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
         touch /opt/firstboot.finished
         EOF
         
@@ -303,6 +305,8 @@
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
+        ssh 10.55.102.156 "shutdown -r +2"
+        ssh 10.55.102.157 "shutdown -r +2"
         shutdown -r +2 && sleep 2
       args:
         chdir: /root
@@ -341,12 +345,4 @@
       become: true
       when: openstack['hugepages']['use']  == "yes"
       #ignore_errors: yes
-
-    - name: "Reboot to new settings. Back in 10 mins or so"
-      shell: |
-        shutdown -r +1 && sleep 2
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
 
