@@ -15,6 +15,11 @@
     ose_add_project_displayname: "Redhat Lab Demo Project"
     ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
+    - name: "call the configure node job"
+      shell: |
+        echo "configuring the nodes"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/393/launch/
+
     - name: "installing private key for root"
       template:
         src: openstack/blank.key.j2
@@ -150,6 +155,14 @@
         mode: 0644
       become: true
 
+    - template:
+        src: ose/selinux.j2
+        dest: /etc/sysconfig/selinux
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
     ## this is used by openshift dnsmasq to update the applications dns entry
     - template:
         src: ose/dns-updater.sh.j2
@@ -201,6 +214,7 @@
 #
     - name: "Install OSE 3.5 - takes 50 mins for 3 nodes"
       shell: |
+        setenforce 0
         atomic-openshift-installer -u install
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
@@ -224,6 +238,7 @@
         #oc login -u {{ ose_add_user }} -p {{ ose_add_pass }}
         oc project {{ ose_add_project }}
         oc create -f /tmp/outbound-traffic.json
+        sleep 120
         echo "calling app deploy because I am lazy"
         curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
       become: true

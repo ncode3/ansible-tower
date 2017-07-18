@@ -138,7 +138,7 @@
            - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
       register: atomic_node2
 
-    - name: launch an OSE instance with volume
+    - name: launch a Master OSE instance with volume
       os_server:
         name: "{{ os_server['name'] }}-master"
         state: present

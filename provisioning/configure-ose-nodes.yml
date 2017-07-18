@@ -1,0 +1,24 @@
+---
+- name: "Customize OSE 3.5 nodes"
+  hosts: ose-cluster-node-1.stack.maskedadmins.com,ose-cluster-node-2.stack.maskedadmins.com
+  tasks:
+    - name: set docker config
+      template:
+        src: ose/docker.j2
+        dest: /etc/sysconfig/docker
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
+    - name: set selinux config
+      template:
+        src: ose/selinux.j2
+        dest: /etc/sysconfig/selinux
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
+    - name: "set selinux to permissive for this run"
+      shell: setenforce 0

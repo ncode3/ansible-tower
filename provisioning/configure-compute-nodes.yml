@@ -1,0 +1,52 @@
+---
+- name: "Customize OSP 10 -  coompute nodes"
+  hosts: 10.55.102.157,10.55.102.156
+  vars:
+    openstack:
+      project_name: Redhat_Lab
+      project_user: dtaylor
+      project_pass: redhat123
+      dns_server: 10.55.102.5
+      dhcp_server: 10.55.102.5
+      dhcp_domain: stack.maskedadmins.com
+      dhcp_mtu: 1454
+      hugepages:
+        use: "no"
+        device: /dev/sda
+      glance:
+        mount_nfs: "yes"
+        import: "yes"
+        image_path: /mnt/compute1/glance-images
+        nfs_target: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
+        image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2','QCI-Template-bare.qcow2']
+      networks:
+        Provisioning_102:
+          cidr: 10.55.102.0/24
+          vlanid: 102
+          subnet_name: NET102
+          dhcp_start: 10.55.102.200
+          dhcp_end: 10.55.102.225
+          gateway: 10.55.102.1
+        Storage_105:
+          cidr: 10.55.105.0/24
+          vlanid: 105
+          subnet_name: NET105
+          dhcp_start: 10.55.105.200
+          dhcp_end: 10.55.105.225
+          gateway: 10.55.105.1
+  tasks:
+    - name: update nova.conf domain values
+      lineinfile:
+        line: "dhcp_domain={{ openstack['dhcp_domain'] }}"
+        dest: /etc/nova/nova.conf
+        regexp: "^dhcp_domain=*"
+        state: present
+
+    - name: "Enabling and restarting services openstack nova "
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - openstack-nova-compute
+      become: true
