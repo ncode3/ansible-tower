@@ -150,6 +150,14 @@
         mode: 0644
       become: true
 
+    - template:
+        src: ose/selinux.j2
+        dest: /etc/sysconfig/selinux
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
     ## this is used by openshift dnsmasq to update the applications dns entry
     - template:
         src: ose/dns-updater.sh.j2
@@ -201,6 +209,7 @@
 #
     - name: "Install OSE 3.5"
       shell: |
+        setenforce 0
         atomic-openshift-installer -u install
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
