@@ -128,3 +128,7 @@
             ( powerstate == "hard" ) or
             ( powerstate == "cycle" ) or
             ( powerstate == "reset" )
+
+    - name: "Server(s) will reinstall. It will be back in 20 mins"
+      debug: var=powerstate
+      when: powerstate == "pxe"

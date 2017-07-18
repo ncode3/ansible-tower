@@ -199,7 +199,7 @@
 #          delay=1
 #          timeout=300
 #
-    - name: "Install OSE 3.5"
+    - name: "Install OSE 3.5 - takes 50 mins for 3 nodes"
       shell: |
         atomic-openshift-installer -u install
         lead='^    method: auto$'
