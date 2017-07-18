@@ -11,7 +11,7 @@
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
       hugepages:
-        use: "yes"
+        use: "no"
         device: /dev/sda
       glance:
         mount_nfs: "yes"
@@ -326,7 +326,7 @@
   vars:
     openstack:
       hugepages:
-        use: "yes"
+        use: "no"
         device: /dev/sda
   tasks:
     - name: "Configure compute nodes for Huge Pages"
