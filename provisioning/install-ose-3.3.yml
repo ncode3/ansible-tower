@@ -15,7 +15,7 @@
     ose_add_project_displayname: "Redhat Lab Demo Project"
     ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
-    - name: "installing private key"
+    - name: "installing private key for root"
       template:
         src: openstack/blank.key.j2
         dest: /root/.ssh/id_rsa
@@ -23,10 +23,26 @@
         group: root
         mode: 0600
 
-    - name: "installing private key"
+    - name: "installing ssh config for root"
+      template:
+        src: vms/ssh-config.j2
+        dest: /root/.ssh/config
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: "installing private key for cloud-user"
       template:
         src: openstack/blank.key.j2
         dest: /home/cloud-user/.ssh/id_rsa
+        owner: cloud-user
+        group: cloud-user
+        mode: 0600
+
+    - name: "installing ssh config for cloud-user"
+      template:
+        src: vms/ssh-config.j2
+        dest: /home/cloud-user/.ssh/config
         owner: cloud-user
         group: cloud-user
         mode: 0600
