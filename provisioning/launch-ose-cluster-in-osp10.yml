@@ -97,9 +97,6 @@
            - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
       register: atomic_node1
 
-    - name: "wait for a min or two"
-      shell: sleep 120
-
     - name: launch an Atomic instance for node 2
       os_server:
         name: "{{ os_server['name'] }}-node-2"
@@ -141,10 +138,7 @@
            - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
       register: atomic_node2
 
-    - name: "wait for a min or two"
-      shell: sleep 120
-
-    - name: launch an OSE instance with volume
+    - name: launch a Master OSE instance with volume
       os_server:
         name: "{{ os_server['name'] }}-master"
         state: present
@@ -196,9 +190,6 @@
         volumes:
           - "{{ os_volume_name }}"
       register: ose_master
-
-    - name: "wait for a min or two"
-      shell: sleep 120
 
     - name: Show OSE Masters IP
       debug: var=ose_master.server.private_v4
