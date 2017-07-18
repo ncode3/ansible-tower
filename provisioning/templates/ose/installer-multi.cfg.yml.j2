@@ -16,19 +16,19 @@ deployment:
     - node
     - storage
   - connect_to: {{ node1_ip }}
-    hostname: {{ node1_hostname }}.{{ dns_domain }}
+    hostname: {{ node1_hostname }}
     ip: {{ node1_ip }}
     node_labels: '{''region'': ''infra''}'
-    public_hostname: {{ node1_hostname }}.{{ dns_domain }}
+    public_hostname: {{ node1_hostname }}
     public_ip: {{ node1_ip }} 
     roles:
     - node
     containerized: true
   - connect_to: {{ node2_ip }}
-    hostname: {{ node2_hostname }}.{{ dns_domain }}
+    hostname: {{ node2_hostname }}
     ip: {{ node2_ip }}
     node_labels: '{''region'': ''infra''}'
-    public_hostname: {{ node2_hostname }}.{{ dns_domain }}
+    public_hostname: {{ node2_hostname }}
     public_ip: {{ node2_ip }} 
     roles:
     - node
