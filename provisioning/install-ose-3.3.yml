@@ -15,11 +15,6 @@
     ose_add_project_displayname: "Redhat Lab Demo Project"
     ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
-    - name: "call the configure node job"
-      shell: |
-        echo "configuring the nodes"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/393/launch/
-
     - name: "installing private key for root"
       template:
         src: openstack/blank.key.j2
@@ -212,7 +207,7 @@
 #          delay=1
 #          timeout=300
 #
-    - name: "Install OSE 3.5"
+    - name: "Install OSE 3.5 - takes 50 mins for 3 nodes"
       shell: |
         setenforce 0
         atomic-openshift-installer -u install

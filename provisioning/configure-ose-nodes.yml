@@ -2,8 +2,8 @@
 - name: "Customize OSE 3.5 nodes"
   hosts: ose-cluster-node-1.stack.maskedadmins.com,ose-cluster-node-2.stack.maskedadmins.com
   tasks:
-    - template:
-      name: set docker config
+    - name: set docker config
+      template:
         src: ose/docker.j2
         dest: /etc/sysconfig/docker
         owner: root
@@ -11,8 +11,8 @@
         mode: 0644
       become: true
 
-    - template:
-      name: set selinux config
+    - name: set selinux config
+      template:
         src: ose/selinux.j2
         dest: /etc/sysconfig/selinux
         owner: root
