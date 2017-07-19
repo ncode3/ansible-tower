@@ -15,11 +15,6 @@
     ose_add_project_displayname: "Redhat Lab Demo Project"
     ose_outbound_network_cidr: "10.55.0.0/16"
   tasks:
-    - name: "call the configure node job"
-      shell: |
-        echo "configuring the nodes"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/393/launch/
-
     - name: "installing private key for root"
       template:
         src: openstack/blank.key.j2

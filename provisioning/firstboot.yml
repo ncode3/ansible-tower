@@ -24,3 +24,6 @@
 ## playbook to install OSP 10 on physical nodes on firstboot
 ## inventory hardcoded to the compute nodes
 - include: "rhel-demo-poweron-install-openstack.yml"
+## playbook to install OSE on nodes
+## inventory hardcoded to the ose nodes
+- include: "configure-ose-nodes.yml"
