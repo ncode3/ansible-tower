@@ -15,6 +15,7 @@ update delete ${reverse}.in-addr.arpa. PTR
 update add ${reverse}.in-addr.arpa. 300 IN PTR ${hostname}.${zone}.
 send
 zone ${zone}
+update delete ${hostname}.${zone}. A
 update add ${hostname}.${zone}. 300 IN A {{ ansible_default_ipv4['address'] }}
 send
 EOF
