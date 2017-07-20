@@ -96,7 +96,7 @@
     mode: 0755
 
 - name: "Update dns entry"
-  command: /usr/sbin/ifup-local
+  shell: "/usr/sbin/ifup-local || true"
   become: true
 
 - name: "Updating MOTD"
