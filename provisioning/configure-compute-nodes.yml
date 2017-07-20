@@ -42,6 +42,7 @@
       shell: |
         grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
         grub2-install {{ openstack['hugepages']['device'] }}
+        echo 'vm.nr_hugepages=6144' >> /etc/sysctl.conf
       args:
         chdir: /root
       become: true
