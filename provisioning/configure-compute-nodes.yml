@@ -10,6 +10,9 @@
       dhcp_server: 10.55.102.5
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
+      cpupinning:
+        use: "yes"
+        device: /dev/sda
       hugepages:
         use: "yes"
         device: /dev/sda
@@ -35,6 +38,49 @@
           dhcp_end: 10.55.105.225
           gateway: 10.55.105.1
   tasks:
+    - name: "Configure compute nodes for Huge Pages"
+      shell: |
+        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+        grub2-install {{ openstack['hugepages']['device'] }}
+      args:
+        chdir: /root
+      become: true
+      when: openstack['hugepages']['use']  == "yes"
+      #ignore_errors: yes
+
+    - name: "Installing numactl"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "numactl"
+      become: true
+      when: openstack['cpupinning']['use']  == "yes"
+
+    - name: get the guest cpus we isolate for guest images
+      shell: |
+        numactl --hardware | grep 'node 0 cpus' | cut -d\: -f2| sed -e 's/ 0 1 //g' | sed -e 's/ /,/g'
+      become: true
+      register: guestcpus
+      when: openstack['cpupinning']['use']  == "yes"
+
+    - name: update nova.conf cpu pinning values
+      lineinfile:
+        line: "vcpu_pin_set={{ guestcpus.stdout }}"
+        dest: /etc/nova/nova.conf
+        regexp: "^vcpu_pin_set=*"
+        state: present
+      when: openstack['cpupinning']['use']  == "yes"
+
+    - name: "Configure the system for cpu pinning"
+      shell: |
+        grubby --update-kernel=ALL --args="isolcpus={{ guestcpus.stdout }}"
+        grub2-install {{ openstack['cpupinning']['device'] }}
+      args:
+        chdir: /root
+      become: true
+      when: openstack['cpupinning']['use']  == "yes"
+      #ignore_errors: yes
+
     - name: update nova.conf domain values
       lineinfile:
         line: "dhcp_domain={{ openstack['dhcp_domain'] }}"

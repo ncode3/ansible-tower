@@ -10,6 +10,9 @@
       dhcp_server: 10.55.102.5
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
+      cpupinning:
+        use: "no"
+        device: /dev/sda
       hugepages:
         use: "yes"
         device: /dev/sda
@@ -237,16 +240,128 @@
       when: openstack['hugepages']['use']  == "yes"
       #ignore_errors: yes
 
-    - name: "Create the flavors for huge pages ..."
+    - name: "Installing numactl"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "numactl"
+      become: true
+      when: openstack['cpupinning']['use']  == "yes"
+
+    - name: get the guest cpus we isolate for guest images
+      shell: |
+        numactl --hardware | grep 'node 0 cpus' | cut -d\: -f2| sed -e 's/ 0 1 //g' | sed -e 's/ /,/g'
+      become: true
+      register: guestcpus
+      when: openstack['cpupinning']['use']  == "yes"
+
+    - name: update nova.conf cpu pinning values
+      lineinfile:
+        line: "vcpu_pin_set={{ guestcpus.stdout }}"
+        dest: /etc/nova/nova.conf
+        regexp: "^vcpu_pin_set=*"
+        state: present
+      when: openstack['cpupinning']['use']  == "yes"
+
+    - name: "Configure the system for cpu pinning"
+      shell: |
+        grubby --update-kernel=ALL --args="isolcpus={{ guestcpus.stdout }}"
+        grub2-install {{ openstack['cpupinning']['device'] }}
+      args:
+        chdir: /root
+      become: true
+      when: openstack['cpupinning']['use']  == "yes"
+      #ignore_errors: yes
+
+    - name: "Enabling and restarting services openstack nova "
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - openstack-nova-compute
+
+      become: true
+    - name: "Setting the flavors for non performance ..."
+      shell: |
+        source /root/keystonerc_admin
+        for FLAVOR in `nova flavor-list | cut -f 2 -d ' ' | grep -o [0-9]*`
+        do
+          nova flavor-key ${FLAVOR} set "aggregate_instance_extra_specs:pinned"="false";
+        done
+      args:
+        chdir: /root
+      become: true
+      when: openstack['cpupinning']['use']  == "yes"
+      #ignore_errors: yes
+
+    - name: "Create the performance flavor to use later..."
       shell: |
         source /root/keystonerc_admin
         nova flavor-create m1.medium.performance 6 4096 20 4
+      args:
+        chdir: /root
+      become: true
+      #ignore_errors: yes
+
+    - name: "Set the metadata for huge pages flavor ..."
+      shell: |
+        source /root/keystonerc_admin
         nova flavor-key m1.medium.performance set hw:mem_page_size=2048
       args:
         chdir: /root
       become: true
       when: openstack['hugepages']['use']  == "yes"
       #ignore_errors: yes
+
+    - name: "Set the metadata for cpu pinning flavor ..."
+      shell: |
+        source /root/keystonerc_admin
+        nova flavor-key m1.medium.performance set hw:cpu_policy=dedicated
+        nova flavor-key m1.medium.performance set aggregate_instance_extra_specs:pinned=true
+      args:
+        chdir: /root
+      become: true
+      when: openstack['cpupinning']['use']  == "yes"
+      #ignore_errors: yes
+
+    - name: "Create the normal and performance availability zones ..."
+      shell: |
+        source /root/keystonerc_admin
+        nova aggregate-create performance
+        nova aggregate-set-metadata 1 pinned=true
+        nova aggregate-create normal
+        nova aggregate-set-metadata 2 pinned=false
+      args:
+        chdir: /root
+      become: true
+      when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+      #ignore_errors: yes
+      
+    - name: "Add the compute nodes to the performance zone ..."
+      shell: |
+        source /root/keystonerc_admin
+        nova aggregate-add-host 1 {{ item }}
+      args:
+        chdir: /root
+      become: true
+      when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+      #ignore_errors: yes
+      with_items:
+        - "compute2.maskedadmins.com"
+        - "compute3.maskedadmins.com"
+
+    - name: "Add the compute nodes to the normal zone ..."
+      shell: |
+        source /root/keystonerc_admin
+        nova aggregate-add-host 2 {{ item }}
+      args:
+        chdir: /root
+      become: true
+      when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+      #ignore_errors: yes
+      with_items:
+        - "compute4.maskedadmins.com"
 
     - name: "Update Nova Scheduler to filter on capabilities  ..."
       shell: |
@@ -255,7 +370,7 @@
       args:
         chdir: /root
       become: true
-      when: openstack['hugepages']['use']  == "yes"
+      when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
       #ignore_errors: yes
 
     - name: "firstboot.service file"
@@ -301,7 +416,7 @@
       args:
         chdir: /root
       become: true
-      when: openstack['hugepages']['use']  == "yes"
+      when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
 
     - name: "Launching demos"
       shell: |
@@ -320,27 +435,7 @@
         sleep 600
         echo "Tower launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-        
       args:
         chdir: /root
       become: true
-      when: openstack['hugepages']['use']  == "no"
-
-- name: "Configure compute only nodes for hugepages"
-  hosts: 10.55.102.156,10.55.102.157
-  vars:
-    openstack:
-      hugepages:
-        use: "no"
-        device: /dev/sda
-  tasks:
-    - name: "Configure compute nodes for Huge Pages"
-      shell: |
-        grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
-        grub2-install {{ openstack['hugepages']['device'] }}
-      args:
-        chdir: /root
-      become: true
-      when: openstack['hugepages']['use']  == "yes"
-      #ignore_errors: yes
-
+      when: ( openstack['hugepages']['use']  == "no" ) and ( openstack['cpupinning']['use']  == "no" )

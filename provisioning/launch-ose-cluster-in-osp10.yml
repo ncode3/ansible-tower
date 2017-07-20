@@ -18,10 +18,11 @@
       name: "ose-cluster"
       state: present
       image: "RHEL 7.3 Cloud"
-      flavor: "m1.medium"
-      #flavor: "m1.medium.performance"
+      #flavor: "m1.medium"
+      flavor: "m1.medium.performance"
       network: "Provisioning_102"
-      availability_zone: "nova"
+      #availability_zone: "nova"
+      availability_zone: "performance"
       security_groups: "Redhat_Lab-sg"
       region_name: "RegionOne"
       auto_ip: no
