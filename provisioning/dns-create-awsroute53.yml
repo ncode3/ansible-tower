@@ -12,7 +12,8 @@
     ttl: "60"
     type: "A"
   tasks:
-    - route53:
+    - name: "Get record if it exists already, ignore any errors"
+      route53:
           command: get
           zone: "{{ zone }}"
           record: "{{ fqdn }}"
@@ -20,7 +21,8 @@
       register: rec
       ignore_errors: yes
 
-    - route53:
+    - name: "Delete record if it exists already, ignore any errors"
+      route53:
           command: delete
           zone: "{{ zone }}"
           record: "{{ rec.set.record }}"
@@ -28,6 +30,7 @@
           type: "{{ rec.set.type }}"
           value: "{{ rec.set.value }}"
       ignore_errors: yes
+      when: rec.set.record
 
     - route53:
           command: create

@@ -28,6 +28,8 @@ send
 EOF
         nsupdate -v ${temp}
         echo "$*" >> /tmp/dnsmasq.updater.txt
+        extravars="{\"fqdn\":\"${hostname}.${zone}\",\"zone\":\"$zone\"}"
+curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/655/launch/
 elif [ "$op" == "del" ]
 then
 cat > ${temp} <<EOF
@@ -42,6 +44,8 @@ send
 EOF
         nsupdate -v ${temp}
         echo "$*" >> /tmp/dnsmasq.updater.txt
+        extravars="{\"fqdn\":\"${hostname}.${zone}\",\"zone\":\"$zone\"}"
+curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/656/launch/
  fi
 rm -f ${temp}
 

@@ -225,13 +225,24 @@
         oadm policy add-role-to-user system:image-builder {{ ose_add_user }}
         oadm policy add-role-to-user admin {{ ose_add_user }} -n openshift
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
+        grep dns-updater /usr/lib/systemd/system/dnsmasq.service || \
+        sed -i -e 's/^ExecStart=/usr/sbin/dnsmasq -k/ExecStart=/usr/sbin/dnsmasq -k --dhcp-script=/opt/dns-updater.sh/g' \
+        /usr/lib/systemd/system/dnsmasq.service
+        systemctl daemon-reload
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
-        /opt/dns-updater.sh add mac $(hostname --short) {{ ansible_default_ipv4['address'] }}
+        /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} $(hostname --short)
         # create outbound policy rule
         #oc login -u {{ ose_add_user }} -p {{ ose_add_pass }}
         oc project {{ ose_add_project }}
         oc create -f /tmp/outbound-traffic.json
+        # creating workshopper app
+        oc new-app samueltauil/workshopper -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/samueltauil/openshiftv3-workshop/master" -e WORKSHOPS_URLS="https://raw.githubusercontent.com/samueltauil/openshiftv3-workshop/master/_module_groups.yml"
+        oc expose service/workshopper
+        /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} workshopper-{{ ose_add_project }}
+        oc new-app https://github.com/syspimp/simplephp
+        oc expose service/simplephp
+        /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} simplephp-{{ ose_add_project }}
         # this command will make the master a scheduled node. since we are launching multinode, lets use those and comment this out
         #oadm manage-node ose-cluster-master.stack.maskedadmins.com --schedulable
         sleep 120
