@@ -40,6 +40,33 @@
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
   tasks:
+    - name: delete the old nodes
+      os_server:
+        name: "{{ os_server['name'] }}-node-{{ item }}"
+        state: absent
+        image: "RHEL 7.3 Cloud"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+      with_items:
+        - 1
+        - 2
+
+    - name: delete the old master
+      os_server:
+        name: "{{ os_server['name'] }}-master"
+        state: absent
+        image: "RHEL 7.3 Cloud"
+        flavor: "m1.medium"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+
     - name: "destroy old {{ os_volume_size }}g volume for {{ os_server['name'] }} Master, ignore errors"
       os_volume:
         state: absent
