@@ -235,7 +235,8 @@
         oadm manage-node ose-cluster-master.stack.maskedadmins.com --schedulable
         sleep 120
         echo "calling app deploy because I am lazy"
-        curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
+        #curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/239/launch/
       become: true
       ignore_errors: yes
 
