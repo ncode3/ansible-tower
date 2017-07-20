@@ -56,6 +56,7 @@
   become: true
   register: rhsm_status
   when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
+  retries: 10
 
 - name: Register and subscribe to multiple pools for physical hosts
   redhat_subscription:
@@ -67,6 +68,7 @@
   become: true
   register: rhsm_status
   when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
+  retries: 10
 
 - name: "Disabling all repos"
   shell: "subscription-manager repos --disable={{ item }}"
@@ -97,6 +99,7 @@
   command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
   when: unreg.stat.exists == false
   ignore_errors: yes
+  retries: 10
 
 - name: "update dns with the real hostname given in openstack"
   template:
