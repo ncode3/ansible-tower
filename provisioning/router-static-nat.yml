@@ -17,9 +17,8 @@
     debug: var=staticnat
 
   - name: "Remove and add the static entry"
-    ios_command:
-      commands:
-        - "config t"
+    ios_config:
+      lines:
         - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
         - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
     register: results
