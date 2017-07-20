@@ -86,7 +86,7 @@
       become: true
       when: "'cinder' not in cinder.stdout"
 
-    - name: "Run packstack against answer file"
+    - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
       shell: "packstack --answer-file=/root/packstack-answer.txt"
       become: true
 #      when: os_packstack_use_answerfile == "yes"

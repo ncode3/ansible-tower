@@ -19,6 +19,7 @@
         image_path: /mnt/compute1/glance-images
         nfs_target: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
         image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2','QCI-Template-bare.qcow2']
+        #image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
       networks:
         Provisioning_102:
           cidr: 10.55.102.0/24
@@ -179,7 +180,7 @@
       when: openstack['glance']['mount_nfs']  == "yes"
       ignore_errors: yes
 
-    - name: "Import a couple of glance images ..."
+    - name: "Import a couple of glance images ... takes 10 mins"
       shell: |
         . /root/keystonerc_admin
         NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
@@ -304,17 +305,21 @@
 
     - name: "Launching demos"
       shell: |
+        # we sleep to allow time for the inventory to update between launching vms
+        echo "Configure compute nodes"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
+        sleep 120
         echo "Sat 6 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
         sleep 120
         echo "CMFE launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
         sleep 120
-        echo "Tower launch job"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-        sleep 120
         echo "OSE 3.5 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+        sleep 600
+        echo "Tower launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
         
       args:
         chdir: /root
@@ -326,7 +331,7 @@
   vars:
     openstack:
       hugepages:
-        use: "yes"
+        use: "no"
         device: /dev/sda
   tasks:
     - name: "Configure compute nodes for Huge Pages"

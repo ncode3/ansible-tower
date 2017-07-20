@@ -13,7 +13,7 @@
     vault_os_url: "http://10.55.102.158:5000/v2.0"
     os_create_volume: "yes"
     os_volume_size: 5
-    os_volume_name: ose-volume
+    os_volume_name: ose-volume-cluster
     os_server:
       name: "ose-cluster"
       state: present
@@ -139,7 +139,7 @@
            - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
       register: atomic_node2
 
-    - name: launch an OSE instance with volume
+    - name: launch a Master OSE instance with volume
       os_server:
         name: "{{ os_server['name'] }}-master"
         state: present

@@ -150,6 +150,14 @@
         mode: 0644
       become: true
 
+    - template:
+        src: ose/selinux.j2
+        dest: /etc/sysconfig/selinux
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
     ## this is used by openshift dnsmasq to update the applications dns entry
     - template:
         src: ose/dns-updater.sh.j2
@@ -199,8 +207,9 @@
 #          delay=1
 #          timeout=300
 #
-    - name: "Install OSE 3.5"
+    - name: "Install OSE 3.5 - takes 50 mins for 3 nodes"
       shell: |
+        setenforce 0
         atomic-openshift-installer -u install
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
@@ -218,12 +227,13 @@
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
         systemctl restart dnsmasq
         systemctl restart atomic-openshift-master
-        /usr/sbin/ifup-local
         /opt/dns-updater.sh add mac $(hostname --short) {{ ansible_default_ipv4['address'] }}
         # create outbound policy rule
         #oc login -u {{ ose_add_user }} -p {{ ose_add_pass }}
         oc project {{ ose_add_project }}
         oc create -f /tmp/outbound-traffic.json
+        oadm manage-node ose-cluster-master.stack.maskedadmins.com --schedulable
+        sleep 120
         echo "calling app deploy because I am lazy"
         curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
       become: true

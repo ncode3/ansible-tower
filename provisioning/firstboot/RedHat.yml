@@ -108,6 +108,7 @@
 
 - name: "Update dns entry"
   command: /usr/sbin/ifup-local
+  become: true
 
 - name: "Updating MOTD"
   template: 

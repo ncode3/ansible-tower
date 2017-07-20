@@ -23,7 +23,7 @@ deployment:
     public_ip: {{ node1_ip }} 
     roles:
     - node
-    containerized: true
+    containerized: false
   - connect_to: {{ node2_ip }}
     hostname: {{ node2_hostname }}
     ip: {{ node2_ip }}
@@ -32,7 +32,7 @@ deployment:
     public_ip: {{ node2_ip }} 
     roles:
     - node
-    containerized: true
+    containerized: false
   master_routingconfig_subdomain: 'ose.maskedadmins.com'
   proxy_exclude_hosts: ''
   proxy_http: ''
@@ -43,5 +43,5 @@ deployment:
     node: {}
     storage: {}
 variant: openshift-enterprise
-variant_version: '3.5'
+variant_version: '3.3'
 version: v2
