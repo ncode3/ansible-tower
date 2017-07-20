@@ -1,6 +1,6 @@
 ---
 # Creates a new instance with provisioning userdata using Cloud-Init
-- name: launch a compute instance
+- name: launch Openshift 3.3 three node cluster with nodes in high performance zones
   hosts: localhost
   gather_facts: no
   vars:
