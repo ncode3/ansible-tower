@@ -21,8 +21,7 @@
       #flavor: "m1.medium"
       flavor: "m1.medium.performance"
       network: "Provisioning_102"
-      #availability_zone: "nova"
-      availability_zone: "performance"
+      availability_zone: "nova"
       security_groups: "Redhat_Lab-sg"
       region_name: "RegionOne"
       auto_ip: no
