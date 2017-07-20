@@ -11,7 +11,7 @@
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
       cpupinning:
-        use: "no"
+        use: "yes"
         device: /dev/sda
       hugepages:
         use: "yes"
@@ -423,7 +423,7 @@
         # we sleep to allow time for the inventory to update between launching vms
         echo "Configure compute nodes"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
-        sleep 120
+        sleep 600
         echo "Sat 6 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
         sleep 120

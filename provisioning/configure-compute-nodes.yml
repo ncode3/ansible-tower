@@ -96,3 +96,11 @@
       with_items:
         - openstack-nova-compute
       become: true
+
+    - name: "Reboot to new settings. Back in 10 mins or so"
+      shell: |
+        shutdown -r +2 && sleep 2
+      args:
+        chdir: /root
+      become: true
+      when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
