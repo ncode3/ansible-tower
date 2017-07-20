@@ -99,4 +99,4 @@
 
 ## customize openstack
 - include: "openstack-glance-import.yml"
-
+- include: "configure-compute-nodes.yml"
