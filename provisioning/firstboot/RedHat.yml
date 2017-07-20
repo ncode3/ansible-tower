@@ -98,6 +98,7 @@
 - name: "Update dns entry"
   shell: "/usr/sbin/ifup-local || true"
   become: true
+  ignore_errors: yes
 
 - name: "Updating MOTD"
   template: 
