@@ -99,7 +99,7 @@
   command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
   when: unreg.stat.exists == false
   ignore_errors: yes
-  retries: 10
+  retries: 2
 
 - name: "update dns with the real hostname given in openstack"
   template:
