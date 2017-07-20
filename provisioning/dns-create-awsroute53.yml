@@ -1,0 +1,40 @@
+---
+- name: "Creates a new DNS entry in AWS Route 53"
+  hosts: localhost
+  gather_facts: no
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+    AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
+  vars:
+    public_ip: "1.1.1.1,2.2.2.2,3.3.3.3"
+    fqdn: "host.foo.com"
+    zone: "foo.com"
+    ttl: "60"
+    type: "A"
+  tasks:
+    - route53:
+          command: get
+          zone: "{{ zone }}"
+          record: "{{ fqdn }}"
+          type: "{{ type }}"
+      register: rec
+      ignore_errors: yes
+
+    - route53:
+          command: delete
+          zone: "{{ zone }}"
+          record: "{{ rec.set.record }}"
+          ttl: "{{ rec.set.ttl }}"
+          type: "{{ rec.set.type }}"
+          value: "{{ rec.set.value }}"
+      ignore_errors: yes
+
+    - route53:
+          command: create
+          zone: "{{ zone }}"
+          record: "{{ fqdn }}"
+          type: "{{ type }}"
+          ttl: "{{ ttl }}"
+          value: "{{ public_ip }}"
+          wait: yes
+

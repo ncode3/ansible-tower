@@ -1,0 +1,25 @@
+---
+- name: "Removes a DNS entry from AWS Route 53"
+  hosts: localhost
+  gather_facts: no
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+    AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
+  vars:
+    fqdn: "host.foo.com"
+    zone: "foo.com"
+  tasks:
+    - route53:
+          command: get
+          zone: "{{ zone }}"
+          record: "{{ fqdn }}"
+          type: "{{ type }}"
+      register: rec
+
+    - route53:
+          command: delete
+          zone: "{{ zone }}"
+          record: "{{ rec.set.record }}"
+          ttl: "{{ rec.set.ttl }}"
+          type: "{{ rec.set.type }}"
+          value: "{{ rec.set.value }}"
