@@ -74,11 +74,11 @@
               #ssh_pwauth: true
               lock-passwd: false
               expire: false
-          #ssh_pwauth: true
-          #chpasswd:
-          #  list: |
-          #    root:redhat123
-          #    cloud-user:redhat123
+          ssh_pwauth: true
+          chpasswd:
+            list: |
+              root:redhat123
+              cloud-user:redhat123
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
