@@ -1,0 +1,26 @@
+---
+- name: "Create static nat entry in cisco router for public access to internal ip"
+  vars:
+    int_ip: "1.1.1.1"
+    int_port: "80"
+    ext_ip: "2.2.2.2"
+    ext_port: "80"
+  hosts: 10.55.2.1
+  tasks:
+  - name: "Get all the static nat entries for logging"
+    command: sho run | i static
+    register: staticnat
+
+  - name: "Get all the static nat entries for logging"
+    debug: var=staticnat
+
+  - name: "Remove and add the static entry"
+    shell: |
+      config t
+      no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable
+      ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable
+    register: results
+
+  - name: "Dump the output of the command"
+    debug: var=results
+
