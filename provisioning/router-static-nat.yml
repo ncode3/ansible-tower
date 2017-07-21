@@ -5,25 +5,27 @@
     int_port: "80"
     ext_ip: "2.2.2.2"
     ext_port: "80"
-    host: "{{ inventory_hostname }}"
-    username: "root"
-    password: !vault |
-        $ANSIBLE_VAULT;1.1;AES256
-        37303366306134636136623764366161623236396535353062633462323931646466396162323233
-        3833316233626666353439616266336461396264383033620a613535333761356236356238633037
-        66356138306534393064303336653665313636316563363533386236633838313437353037613132
-        3532613733346463360a323362393564333930333966623435616163376365373632373765363431
-        6233
+    auth:
+      host: "{{ inventory_hostname }}"
+      username: "root"
+      password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37303366306134636136623764366161623236396535353062633462323931646466396162323233
+          3833316233626666353439616266336461396264383033620a613535333761356236356238633037
+          66356138306534393064303336653665313636316563363533386236633838313437353037613132
+          3532613733346463360a323362393564333930333966623435616163376365373632373765363431
+          6233
   hosts: 10.55.2.1
   gather_facts: no
   connection: local
   tasks:
   - name: "Get all the static nat entries for logging"
     ios_command:
-      username: "{{ username }}"
-      password: "{{ password }}"
+      provider: "{{ auth }}"
+      #username: "{{ username }}"
+      #password: "{{ password }}"
       commands:
-        - sho run 
+        - show run 
     register: staticnat
 
   - name: "Get all the static nat entries for logging"
@@ -31,8 +33,9 @@
 
   - name: "Remove and add the static entry"
     ios_config:
-      username: "{{ username }}"
-      password: "{{ password }}"
+      provider: "{{ auth }}"
+      #username: "{{ username }}"
+      #password: "{{ password }}"
       lines:
         - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
         - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
