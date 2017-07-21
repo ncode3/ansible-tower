@@ -19,9 +19,16 @@
   gather_facts: no
   connection: local
   tasks:
+  - name: DEFINE PROVIDER
+    set_fact:
+      provider:
+        host: "{{ inventory_hostname }}"
+        username: "{{ auth['username'] }}"
+        password: "{{ auth['password'] }}"
+
   - name: "Get all the static nat entries for logging"
     ios_command:
-      provider: "{{ auth }}"
+      provider: "{{ provider }}"
       #username: "{{ username }}"
       #password: "{{ password }}"
       commands:
@@ -33,7 +40,7 @@
 
   - name: "Remove and add the static entry"
     ios_config:
-      provider: "{{ auth }}"
+      provider: "{{ provider }}"
       #username: "{{ username }}"
       #password: "{{ password }}"
       lines:
