@@ -23,7 +23,7 @@
     ios_command:
       provider: "{{ auth }}"
       commands:
-        - sho run | i static
+        - sho run 
     register: staticnat
 
   - name: "Get all the static nat entries for logging"
