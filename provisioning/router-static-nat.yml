@@ -21,7 +21,8 @@
   tasks:
   - name: "Get all the static nat entries for logging"
     ios_command:
-      provider: "{{ auth }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
       commands:
         - sho run 
     register: staticnat
