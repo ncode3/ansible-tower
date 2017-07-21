@@ -5,9 +5,10 @@
     int_port: "80"
     ext_ip: "2.2.2.2"
     ext_port: "80"
-    router: "10.55.2.1"
-    router_user: "root"
-    router_pass: !vault |
+    auth:
+      host: "{{ inventory_hostname }}"
+      username: "root"
+      password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           37303366306134636136623764366161623236396535353062633462323931646466396162323233
           3833316233626666353439616266336461396264383033620a613535333761356236356238633037
@@ -20,9 +21,7 @@
   tasks:
   - name: "Get all the static nat entries for logging"
     ios_command:
-      host: "{{ router }}"
-      username: "{{ router_user }}"
-      password: "{{ router_pass }}"
+      provider: "{{ auth }}"
       commands:
         - sho run | i static
     register: staticnat
@@ -32,9 +31,7 @@
 
   - name: "Remove and add the static entry"
     ios_config:
-      host: "{{ router }}"
-      username: "{{ router_user }}"
-      password: "{{ rouer_pass }}"
+      provider: "{{ auth }}"
       lines:
         - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
         - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
