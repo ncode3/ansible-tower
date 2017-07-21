@@ -26,14 +26,14 @@
         username: "{{ auth['username'] }}"
         password: "{{ auth['password'] }}"
 
-  - name: "Get all the static nat entries for logging"
-    ios_command:
-      provider: "{{ provider }}"
-      #username: "{{ username }}"
-      #password: "{{ password }}"
-      commands:
-        - show run 
-    register: staticnat
+#  - name: "Get all the static nat entries for logging"
+#    ios_command:
+#      provider: "{{ provider }}"
+#      #username: "{{ username }}"
+#      #password: "{{ password }}"
+#      commands:
+#        - show run 
+#    register: staticnat
 
   - name: "Get all the static nat entries for logging"
     debug: var=staticnat
