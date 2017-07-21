@@ -22,7 +22,7 @@
     ios_command:
       host: "{{ router }}"
       username: "{{ router_user }}"
-      password: "{{ rouer_pass }}"
+      password: "{{ router_pass }}"
       commands:
         - sho run | i static
     register: staticnat
