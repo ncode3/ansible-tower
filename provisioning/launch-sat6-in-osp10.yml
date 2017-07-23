@@ -38,6 +38,19 @@
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
   tasks:
+    - name: delete the old sat server
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: absent
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+      ignore_errors: yes
+
     - name: "create {{ os_volume_size }}g test volume"
       os_volume:
         state: present
