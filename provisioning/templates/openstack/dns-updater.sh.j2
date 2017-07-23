@@ -11,6 +11,7 @@ reversezone=$(echo ${3} | awk -F. '{print $3"." $2"."$1}')
 hostip=$(ip addr list em1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
 temp=/tmp.$$
 touch $temp
+extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
 
 if [ "$op" == "add" ]
 then
@@ -28,8 +29,7 @@ send
 EOF
         nsupdate -v ${temp}
         echo "$*" >> /tmp/dnsmasq.updater.txt
-        extravars="{\"fqdn\":\"${hostname}.${zone}\",\"zone\":\"$zone\"}"
-curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/655/launch/
+        curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/655/launch/
 elif [ "$op" == "del" ]
 then
 cat > ${temp} <<EOF
@@ -44,8 +44,7 @@ send
 EOF
         nsupdate -v ${temp}
         echo "$*" >> /tmp/dnsmasq.updater.txt
-        extravars="{\"fqdn\":\"${hostname}.${zone}\",\"zone\":\"$zone\"}"
-curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/656/launch/
+        curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/656/launch/
  fi
 rm -f ${temp}
 
