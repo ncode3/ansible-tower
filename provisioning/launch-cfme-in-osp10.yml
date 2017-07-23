@@ -16,7 +16,7 @@
       name: "cloudforms"
       state: present
       image: "CFME 4.5 For RHOSP"
-      flavor: "m1.large"
+      flavor: "m1.medium.performance"
       network: "Provisioning_102"
       availability_zone: "nova"
       security_groups: Redhat_Lab-sg
