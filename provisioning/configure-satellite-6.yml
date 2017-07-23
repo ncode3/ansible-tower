@@ -30,7 +30,8 @@
       cat fusor-installer.stdout
       cat fusor-installer.stderr
     become: true
-    creates: /root/fusor-installer.stdout
+    args:
+      creates: /root/fusor-installer.stdout
 
 #  - name: "Enabling needed repos for updates"
 #    shell: "subscription-manager repos --enable=rhel-7-server-satellite-tools-6.2-rpms"
