@@ -24,6 +24,11 @@
   tasks:
   - name: "Run fusor-installer to setup Sat6"
     shell: |
+        echo "calling update firewall port for workshopper"
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "localhost","extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+
+  - name: "Run fusor-installer to setup Sat6"
+    shell: |
       echo -e "8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
       --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
       cat fusor-installer.stdout
