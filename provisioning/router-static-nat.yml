@@ -6,7 +6,8 @@
     ext_ip: "2.2.2.2"
     ext_port: "80"
     auth:
-      host: "{{ inventory_hostname }}"
+      #host: "{{ inventory_hostname }}"
+      host: "10.55.2.1"
       username: "root"
       password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -15,7 +16,8 @@
           66356138306534393064303336653665313636316563363533386236633838313437353037613132
           3532613733346463360a323362393564333930333966623435616163376365373632373765363431
           6233
-  hosts: 10.55.2.1
+  #hosts: 10.55.2.1
+  hosts: localhost
   gather_facts: no
   connection: local
   tasks:
@@ -34,20 +36,25 @@
 #      commands:
 #        - show run 
 #    register: staticnat
+#
+#  - name: "Get all the static nat entries for logging"
+#    debug: var=staticnat
+#
+#  - name: "Remove and add the static entry"
+#    ios_config:
+#      provider: "{{ provider }}"
+#      #username: "{{ username }}"
+#      #password: "{{ password }}"
+#      lines:
+#        - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
+#        - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
+#    register: results
+#
+#  - name: "Dump the output of the command"
+#    debug: var=results
 
-  - name: "Get all the static nat entries for logging"
-    debug: var=staticnat
-
-  - name: "Remove and add the static entry"
-    ios_config:
-      provider: "{{ provider }}"
-      #username: "{{ username }}"
-      #password: "{{ password }}"
-      lines:
-        - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
-        - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
-    register: results
-
-  - name: "Dump the output of the command"
-    debug: var=results
-
+  - name: "Use script to update router"
+    shell: |
+      /opt/addnat.py -u {{ username }} -p {{ password }} -x {{ host }} \
+      --int-ip {{ int_ip }} --int-port {{ int_port }} \
+      --ext-ip {{ ext_ip }} --ext-port {{ ext_port }}   
