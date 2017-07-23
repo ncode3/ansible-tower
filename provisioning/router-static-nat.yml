@@ -58,3 +58,4 @@
       /opt/addnat.py -u {{ auth['username'] }} -p {{ auth['password'] }} -x {{ auth['host'] }} \
       --int-ip {{ int_ip }} --int-port {{ int_port }} \
       --ext-ip {{ ext_ip }} --ext-port {{ ext_port }}   
+    become: true
