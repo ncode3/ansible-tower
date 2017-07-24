@@ -20,7 +20,7 @@
     sat6_user: "admin"
     sat6_pass: "redhat123"
     fusor_installer_lease_from: 10.55.102.200
-    fusor_installer_lease_to: 10.55.102.212
+    fusor_installer_lease_to: 10.55.102.211
     dns_domain: "sat6.maskedadmins.com"
   tasks:
   - name: "Update firewall port for Sat6"
