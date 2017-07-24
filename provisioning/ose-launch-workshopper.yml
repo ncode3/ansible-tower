@@ -1,0 +1,17 @@
+---
+- name: "Launch Openshift Workshop jboss app"
+  hosts: all
+  vars:
+    ose_project: "redhat-lab"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+  tasks:
+    - name: "Create the app and expose the service to the internet"
+      shell: |
+        oc project {{ ose_add_project }}
+        oc new-app samueltauil/workshopper -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/samueltauil/openshiftv3-workshop/master" -e WORKSHOPS_URLS="https://raw.githubusercontent.com/samueltauil/openshiftv3-workshop/master/_module_groups.yml"
+        oc expose service/workshopper
+
+    - name: "Run the dns update script"
+      shell: |
+        /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} workshopper-{{ ose_add_project }}

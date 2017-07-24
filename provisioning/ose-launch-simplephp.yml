@@ -1,0 +1,17 @@
+---
+- name: "Launch Openshift Simple PHP Web app"
+  hosts: all
+  vars:
+    ose_project: "redhat-lab"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+  tasks:
+    - name: "Create the app and expose the service to the internet"
+      shell: |
+        oc project {{ ose_add_project }}
+        oc new-app https://github.com/syspimp/simplephp
+        oc expose service/simplephp
+
+    - name: "Run the dns update script"
+      shell: |
+        /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} simplephp-{{ ose_add_project }}
