@@ -30,7 +30,7 @@
 
   - name: "Run fusor-installer to setup Sat6"
     shell: |
-      echo -e "8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
+      echo -e "8\n{{ fusor_installer_lease_from }}\n9\n{{ fusor_installer_lease_to }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
       --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
       cat fusor-installer.stdout
       cat fusor-installer.stderr
