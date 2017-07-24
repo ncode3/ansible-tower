@@ -87,15 +87,13 @@
         --name='10.55.103.0/24'  --tftp-id=1 --network='10.55.103.0' \
         --dns-primary='10.55.102.5'  --name 'Sat 6 Subnet' --organization "{{ sat6_org }}"
         hammer organization add-subnet --subnet-id=1 --name '{{ sat6_domain }}'
-        hammer organization add-domain --domain-id=1 --name '{{ sat6_domain }}'
-        touch /root/.setup/step1
+        hammer organization add-domain --domain-id=1 --name '{{ sat6_domain }}' && touch /root/.setup/step1
     args:
       creates: /root/.setup/step1
 
   - name: "Provisioning Satellite 6 - upload manifest"
     shell: |
-        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}"
-        touch /root/.setup/step2
+        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_org }}" && touch /root/.setup/step2
     args:
       creates: /root/.setup/step2
 
@@ -112,16 +110,14 @@
         hammer repository-set enable \
         --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
         --basearch "x86_64" --product "Red Hat Enterprise Linux Server" \
-        --organization "{{ sat6_org }}"
-        touch /root/.setup/step3
+        --organization "{{ sat6_org }}" && touch /root/.setup/step3
     args:
       creates: /root/.setup/step3
 
   - name: "Provisioning Satellite 6 - Syncing Content"
     shell: |
         hammer product synchronize --name "Red Hat Enterprise Linux Server" \
-        --organization "{{ sat6_org }}"
-        touch /root/.setup/step4
+        --organization "{{ sat6_org }}" && touch /root/.setup/step4
     args:
       creates: /root/.setup/step4
 
@@ -131,8 +127,7 @@
         hammer host-collection create --name='RHEL 7 x86_64' --organization "{{ sat6_org }}"
         hammer lifecycle-environment create --name "{{ sat6_environments_base }}" \
         --description "Environment for {{ sat6_org }}'s {{ sat6_environments_base }} Team" \
-        --prior "Library" --organization "{{ sat6_org }}"
-        touch /root/.setup/step5
+        --prior "Library" --organization "{{ sat6_org }}" && touch /root/.setup/step5
     args:
       creates: /root/.setup/step5
 
@@ -164,8 +159,7 @@
         --organization "{{ sat6_org }}"
         hammer content-view publish --name "Base" \
         --description "Initial content view for our operating system" \
-        --organization "{{ sat6_org }}"
-        touch /root/.setup/step7
+        --organization "{{ sat6_org }}" && touch /root/.setup/step7
     args:
       creates: /root/.setup/step7
 
@@ -251,14 +245,14 @@
 
   - name: "Create host-collection for RHEL 7"
     shell: |
-      hammer host-collection create --name='RHEL 7 x86_64' --organization={{ sat6_org }}
+      hammer host-collection create --name='RHEL 7 x86_64 Collection' --organization={{ sat6_org }} && \
       touch /root/.setup/step13
     args:
       creates: /root/.setup/step13
 
   - name: "Adding host collection to activation keys"
     shell: |
-      hammer activation-key add-host-collection --name='{{ sat6_org }}-{{ item }}-key' --host-collection='RHEL 7 x86_64' --organization={{ sat6_org }}
+      hammer activation-key add-host-collection --name='{{ sat6_org }}-{{ item }}-key' --host-collection='RHEL 7 x86_64 Collection' --organization={{ sat6_org }}
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
@@ -273,7 +267,7 @@
 
   - name: "Add all subscriptions to activation keys"
     shell: |
-      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do for j in $(hammer --csv subscription list --organization=fite.cat.lab  | awk -F, {'print $8'} | grep -vi '^ID'); do hammer   activation-key add-subscription --id ${i} --subscription-id ${j}; done; done
+      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do for j in $(hammer --csv subscription list --organization=fite.cat.lab  | awk -F, {'print $8'} | grep -vi '^ID'); do hammer   activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
       touch /root/.setup/step15
 
   - name: "Add partition table to OS"
@@ -282,7 +276,7 @@
       for i in $(hammer --csv os list | awk -F, {'print $1'} | grep -vi '^ID')
       do
       hammer partition-table add-operatingsystem --id="${PARTID}" --operatingsystem-id="${i}"  
-      done
+      done && \
       touch /root/.setup/step16
     args:
       creates: /root/.setup/step16
@@ -297,7 +291,7 @@
       hammer os set-default-template --id="${i}" --config-template-id="${PXEID}"
       hammer os add-config-template --id="${i}" --config-template-id="${SATID}"
       hammer os set-default-template --id="${i}" --config-template-id="${SATID}"
-      done
+      done && \
       touch /root/.setup/step17
     args:
       creates: /root/.setup/step17
@@ -310,5 +304,5 @@
       OSID=$(hammer --csv os list | grep 'RedHat 7.0' | awk -F, {'print $1'})
       CAID=1
       PROXYID=1
-      hammer hostgroup create --architecture="x86_64" --domain="${DOM}" --environment-id="${ENVID}" --medium-id="${MEDID}" --name="${HGRHEL6DEV}" --subnet="${NETNAME}" --ptable-id="${PARTID}" --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}"
+      hammer hostgroup create --architecture="x86_64" --domain="${DOM}" --environment-id="${ENVID}" --medium-id="${MEDID}" --name="RHEL 7 x86_64 Hostgroup" --subnet="Sat 6 Subnet" --ptable-id="${PARTID}" --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" && \
       touch /root/.setup/step18
