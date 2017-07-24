@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+# usage
+#  ./python addnat.py --int-port x --int-ip x --ext-port x --ext-ip
+import sys, time
+import logging
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-x", "--connect", type="string", dest="HOST", help="Host device to connect to.", default="{{ auth['host'] }}")
+parser.add_option("-u", "--user", type="string", dest="USER", help="User to use to login", default="{{ auth['username'] }}")
+parser.add_option("-p", "--pass", type="string", dest="PASS", help="Password to use.", default="{{ auth['password'] }}")
+parser.add_option("-t", "--type", type="string", dest="TYPE", help="Device type that Host is, options are ciscoswitch,ciscoasa,bigip,arista,hp. default ciscoswitch", default="ciscorouter")
+parser.add_option("-i", "--int-ip",  type="string", dest="int_ip", help="Internal IP of host to expose", default=False)
+parser.add_option("-j", "--int-port",  type="string", dest="int_port", help="Internal Port of host to expose", default=False)
+parser.add_option("-k", "--ext-ip",  type="string", dest="ext_ip", help="External IP to expose", default=False)
+parser.add_option("-l", "--ext-port",  type="string", dest="ext_port", help="External Port to expose", default=False)
+
+# global debug switch
+bigbadbug=True
+        
+if __name__=='__main__':
+  try:
+    (options, args) = parser.parse_args()
+    # check the basic info
+    print options
+    if options.USER and options.HOST:
+      pass
+    else:
+      raise Exception("Usage: python addnat.py --int-port x --int-ip x --ext-port x --ext-ip")
+    print "Adding nat entry for host %s:%s to external ip:port %s:%s ... " % (options.int_ip,options.int_port,options.ext_ip,options.ext_port)
+    try:
+      import paramiko
+      client = paramiko.SSHClient()
+      client.set_missing_host_key_policy(
+      paramiko.AutoAddPolicy())
+      client.connect(options.HOST,
+              username=options.USER,
+              password=options.PASS,
+              timeout=5,allow_agent=False,look_for_keys=False)                               
+      shell=client.invoke_shell()
+      fixterm="terminal length 0\n"
+      shell.send(fixterm)
+      time.sleep(1)
+      checknat="sho run | i ip nat inside source\n"
+      shell.send(checknat)
+      time.sleep(1)
+      data=shell.recv(9999)
+      target= "%s %s extendable" % (options.ext_ip,options.ext_port)
+      newentry="ip nat inside source static tcp %s %s %s %s extendable\n" % (options.int_ip,options.int_port,options.ext_ip,options.ext_port)
+      for line in data.splitlines():
+        print "checking line %s" % line
+        if target in line:
+          print "target %s already in config, removing it" % target
+          shell.send("config t\n")
+          time.sleep(1)
+          shell.send("no %s\n" % line)
+          time.sleep(1)
+          shell.send("exit\n")
+          time.sleep(1)
+          print shell.recv(9999)
+      shell.send("config t\n")
+      time.sleep(1)
+      shell.send(newentry)
+      time.sleep(1)
+      shell.send("exit\n")
+      time.sleep(1)
+      shell.send("wr mem\n")
+      time.sleep(3)
+      print shell.recv(9999)
+    except Exception as e:
+      for i in e:
+        print "Exception adding nat entry: %s" % i
+  except Exception as e:
+    print "yo, exception: %s" % e

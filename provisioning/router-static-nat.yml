@@ -17,17 +17,17 @@
           3532613733346463360a323362393564333930333966623435616163376365373632373765363431
           6233
   #hosts: 10.55.2.1
-  hosts: localhost
+  hosts: 10.55.102.158
   gather_facts: no
-  connection: local
+  #connection: local
   tasks:
-  - name: DEFINE PROVIDER
-    set_fact:
-      provider:
-        host: "{{ inventory_hostname }}"
-        username: "{{ auth['username'] }}"
-        password: "{{ auth['password'] }}"
-
+#  - name: DEFINE PROVIDER
+#    set_fact:
+#      provider:
+#        host: "{{ inventory_hostname }}"
+#        username: "{{ auth['username'] }}"
+#        password: "{{ auth['password'] }}"
+#
 #  - name: "Get all the static nat entries for logging"
 #    ios_command:
 #      provider: "{{ provider }}"
@@ -52,6 +52,14 @@
 #
 #  - name: "Dump the output of the command"
 #    debug: var=results
+
+   - name: "Copy over addnat.py script"
+     template:
+       src: network/addnat.py.j2
+       dest: /opt/addnat.py
+       owner: root
+       group: root
+       mode: 0755
 
   - name: "Use script to update router"
     shell: |
