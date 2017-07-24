@@ -8,6 +8,8 @@
     grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
     #service network restart
   become: true
+  args:
+    creates: /opt/.firstboot
 
 - name: "Set ntp to true"
   shell: |
@@ -18,6 +20,8 @@
   async: 1
   become: true
   ignore_errors: yes
+  args:
+    creates: /opt/.firstboot
 
 - name: Set authorized key for root
   authorized_key:
@@ -74,11 +78,15 @@
   shell: "subscription-manager repos --disable={{ item }}"
   with_items: "{{ rh_disabled_repos }}"
   become: true
+  args:
+    creates: /opt/.firstboot
 
 - name: "Enabling needed repos"
   shell: "subscription-manager repos --enable={{ item }}"
   with_items: "{{ rh_enabled_repos }}"
   become: true
+  args:
+    creates: /opt/.firstboot
 
 - name: "Installing rpms {{ redhat_packages }}"
   yum:
@@ -99,6 +107,8 @@
   shell: "/usr/sbin/ifup-local || true"
   become: true
   ignore_errors: yes
+  args:
+    creates: /opt/.firstboot
 
 - name: "Updating MOTD"
   template: 
@@ -107,3 +117,9 @@
     owner: root 
     group: root 
     mode: 0644
+
+- name: "Create firstboot file"
+  shell: "touch /opt/.firstboot"
+  become: true
+  args:
+    creates: /opt/.firstboot
