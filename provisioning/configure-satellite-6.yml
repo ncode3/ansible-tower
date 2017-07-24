@@ -90,7 +90,7 @@
         touch /root/.setup/step1
     args:
       creates: /root/.setup/step1
-    ignore_errors: yes
+    #ignore_errors: yes
 
   - name: "Provisioning Satellite 6 - upload manifest"
     shell: |
