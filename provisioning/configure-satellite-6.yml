@@ -82,10 +82,10 @@
         --description "Our example organization for managing content."
         hammer location create --name "{{ sat6_org }}"
         hammer location add-organization --name "{{ sat6_org }}" --organization "{{ sat6_org }}"
-        hammer domain create --name "{{ sat6_domain }}" --organization "{{ sat6_org }}"
+        hammer domain create --name "{{ sat6_domain }}"
         hammer subnet create --domain-ids=1 --gateway='10.55.103.1' --mask='255.255.255.0' \
         --name='10.55.103.0/24'  --tftp-id=1 --network='10.55.103.0' \
-        --dns-primary='10.55.102.5'  --name 'Sat 6 Subnet' --organization "{{ sat6_org }}"
+        --dns-primary='10.55.102.5'  --name 'Sat 6 Subnet'
         hammer organization add-subnet --subnet-id=1 --name '{{ sat6_domain }}'
         hammer organization add-domain --domain-id=1 --name '{{ sat6_domain }}' && touch /root/.setup/step1
     args:
