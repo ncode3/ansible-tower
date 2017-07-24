@@ -53,13 +53,13 @@
 #  - name: "Dump the output of the command"
 #    debug: var=results
 
-   - name: "Copy over addnat.py script"
-     template:
-       src: network/addnat.py.j2
-       dest: /opt/addnat.py
-       owner: root
-       group: root
-       mode: 0755
+  - name: "Copy over addnat.py script"
+    template:
+      src: network/addnat.py.j2
+      dest: /opt/addnat.py
+      owner: root
+      group: root
+      mode: 0755
 
   - name: "Use script to update router"
     shell: |
