@@ -252,9 +252,9 @@
         #curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/239/launch/
         echo "calling update firewall port for ose"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "localhost","extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"8443\",\"ext_port\":\"8443\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"8443\",\"ext_port\":\"8443\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
         echo "calling update firewall port for workshopper"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "localhost","extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
       become: true
       ignore_errors: yes
 

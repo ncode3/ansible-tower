@@ -28,7 +28,7 @@
         sed -i -e "s/pg_password=''/pg_password='ansible'/g" inventory
         sed -i -e "s/rabbitmq_password=''/rabbitmq_password='ansible'/g" inventory
         echo "calling update firewall port for tower"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "localhost","extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8446\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8446\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
       args:
         chdir: /opt
 
