@@ -23,10 +23,10 @@
     fusor_installer_lease_to: 10.55.102.212
     dns_domain: "sat6.maskedadmins.com"
   tasks:
-  - name: "Run fusor-installer to setup Sat6"
+  - name: "Update firewall port for Sat6"
     shell: |
-        echo "calling update firewall port for workshopper"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "localhost","extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+        echo "calling update firewall port for sat6"
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
 
   - name: "Run fusor-installer to setup Sat6"
     shell: |
