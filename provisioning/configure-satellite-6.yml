@@ -179,7 +179,7 @@
   - name: "Creating activation keys for environments"
     shell: |
       hammer activation-key create --name "{{ sat6_org}}-{{ item }}-key" \
-      --unlimited-hosts true --description "Example activation key" \
+      --unlimited-hosts --description "Example activation key" \
       --lifecycle-environment "{{ item }}" --content-view "Base" \
       --organization "{{ sat6_org }}"
 #      touch /root/.setup/step9
