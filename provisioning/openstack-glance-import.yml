@@ -299,7 +299,7 @@
     - name: "Create the performance flavor to use later..."
       shell: |
         source /root/keystonerc_admin
-        nova flavor-create m1.medium.performance 6 4096 40 4
+        nova flavor-create m1.medium.performance 6 8192 80 4
       args:
         chdir: /root
       become: true
