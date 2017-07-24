@@ -19,6 +19,7 @@
     sat6_url: "https://{{ ansible_fqdn }}/"
     sat6_user: "admin"
     sat6_pass: "redhat123"
+    sat6_domain: "sat6.maskedadmins.com"
     fusor_installer_lease_from: 10.55.102.200
     fusor_installer_lease_to: 10.55.102.211
     dns_domain: "sat6.maskedadmins.com"
@@ -81,16 +82,15 @@
         --description "Our example organization for managing content."
         hammer location create --name "{{ sat6_org }}"
         hammer location add-organization --name "{{ sat6_org }}" --organization "{{ sat6_org }}"
-        hammer domain create --name "{{ dns_domain }}"
+        hammer domain create --name "{{ sat6_domain }}"
         hammer subnet create --domain-ids=1 --gateway='10.55.103.1' --mask='255.255.255.0' \
         --name='10.55.103.0/24'  --tftp-id=1 --network='10.55.103.0' \
-        --dns-primary='10.55.102.5'
-        hammer organization add-subnet --subnet-id=1 --name '{{ dns_domain }}'
-        hammer organization add-domain --domain-id=1 --name '{{ dns_domain }}'
+        --dns-primary='10.55.102.5'  --name 'Sat 6 Subnet'
+        hammer organization add-subnet --subnet-id=1 --name '{{ sat6_domain }}'
+        hammer organization add-domain --domain-id=1 --name '{{ sat6_domain }}'
         touch /root/.setup/step1
     args:
       creates: /root/.setup/step1
-    #ignore_errors: yes
 
   - name: "Provisioning Satellite 6 - upload manifest"
     shell: |
@@ -142,10 +142,14 @@
         hammer lifecycle-environment create --name "{{ item }}" \
         --description "Environment for {{ sat6_org }}'s {{ item }} Team" \
         --prior "Library" --organization "{{ sat6_org }}"
-#        touch /root/.setup/step6
     with_items: "{{ sat6_environments }}"
-#    args:
-#      creates: /root/.setup/step6
+    args:
+      creates: /root/.setup/step6
+
+  - name: "Step Complete"
+    shell: touch /root/.setup/step6
+    args:
+      creates: /root/.setup/step6
 
   - name: "Creating Base Content View"
     shell: |
@@ -169,12 +173,16 @@
     shell: |
         hammer content-view version promote --content-view "Base" --version 1 \
         --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
-        #touch /root/.setup/step8
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
-#    args:
-#      creates: /root/.setup/step8
+    args:
+      creates: /root/.setup/step8
+
+  - name: "Step Complete"
+    shell: touch /root/.setup/step8
+    args:
+      creates: /root/.setup/step8
 
   - name: "Creating activation keys for environments"
     shell: |
@@ -182,45 +190,125 @@
       --unlimited-hosts --description "Example activation key" \
       --lifecycle-environment "{{ item }}" --content-view "Base" \
       --organization "{{ sat6_org }}"
-#      touch /root/.setup/step9
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
-#    args:
-#      creates: /root/.setup/step9
+    args:
+      creates: /root/.setup/step9
+
+  - name: "Step Complete"
+    shell: touch /root/.setup/step9
+    args:
+      creates: /root/.setup/step9
 
   - name: "Adding subs to activation keys for environments"
     shell: |
       hammer activation-key add-subscription --name "{{ sat6_org}}-{{ item[0] }}-key" \
       --subscription-id {{ item[1] }} \
       --organization "{{ sat6_org }}"
-#      touch /root/.setup/step10
     with_nested:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_pool_ids }}"
-#    args:
-#      creates: /root/.setup/step10
+    args:
+      creates: /root/.setup/step10
+
+  - name: "Step Complete"
+    shell: touch /root/.setup/step10
+    args:
+      creates: /root/.setup/step10
 
   - name: "Adding subs to activation keys for environments"
     shell: |
       hammer activation-key add-subscription --name "{{ sat6_org}}-{{ item[0] }}-key" \
       --subscription-id {{ item[1] }} \
       --organization "{{ sat6_org }}"
-#      touch /root/.setup/setup11
     with_nested:
       - "{{ sat6_environments }}"
       - "{{ sat6_pool_ids }}"
-#    args:
-#      creates: /root/.setup/step11
+    args:
+      creates: /root/.setup/step11
 
-  - name: "Enableing sat tools repo in the keys"
+  - name: "Step Complete"
+    shell: touch /root/.setup/step11
+    args:
+      creates: /root/.setup/step11
+
+  - name: "Enabling sat tools repo in the keys"
     shell: |
-      hammer activation-key content-override --name "{{ sat6_org}}-{{item }}-key" \
+      hammer activation-key content-override --name "{{ sat6_org }}-{{ item }}-key" \
       --content-label rhel-7-server-satellite-tools-6.2-rpms \
       --value 1 --organization "{{ sat6_org }}"
-#      touch /root/.setup/step12
     with_items:
       - "{{ sat6_environments_base }}"
       - "{{ sat6_environments }}"
-#    args:
-#      creates: /root/.setup/step12
+    args:
+      creates: /root/.setup/step12
+
+  - name: "Step Complete"
+    shell: touch /root/.setup/step12
+    args:
+      creates: /root/.setup/step12
+
+  - name: "Create host-collection for RHEL 7"
+    shell: |
+      hammer host-collection create --name='RHEL 7 x86_64' --organization={{ sat6_org }}
+      touch /root/.setup/step13
+    args:
+      creates: /root/.setup/step13
+
+  - name: "Adding host collection to activation keys"
+    shell: |
+      hammer activation-key add-host-collection --name='{{ sat6_org }}-{{ item }}-key' --host-collection='RHEL 7 x86_64' --organization={{ sat6_org }}
+    with_items:
+      - "{{ sat6_environments_base }}"
+      - "{{ sat6_environments }}"
+    args:
+      creates: /root/.setup/step14
+
+
+  - name: "Step Complete"
+    shell: touch /root/.setup/step14
+    args:
+      creates: /root/.setup/step14
+
+  - name: "Add all subscriptions to activation keys"
+    shell: |
+      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do for j in $(hammer --csv subscription list --organization=fite.cat.lab  | awk -F, {'print $8'} | grep -vi '^ID'); do hammer   activation-key add-subscription --id ${i} --subscription-id ${j}; done; done
+      touch /root/.setup/step15
+
+  - name: "Add partition table to OS"
+    shell: |
+      PARTID=$(hammer --csv partition-table list | grep 'Kickstart default' | awk -F, {'print $1'})
+      for i in $(hammer --csv os list | awk -F, {'print $1'} | grep -vi '^ID')
+      do
+      hammer partition-table add-operatingsystem --id="${PARTID}" --operatingsystem-id="${i}"  
+      done
+      touch /root/.setup/step16
+    args:
+      creates: /root/.setup/step16
+
+  - name: "Add kickstart pxe template to OS"
+    shell: |
+      PXEID=$(hammer --csv template list | grep 'Kickstart default PXELinux' | awk -F, {'print $1'})
+      SATID=$(hammer --csv template list | grep 'Satellite Kickstart Default' | awk -F, {'print $1'})
+      for i in $(hammer --csv os list | awk -F, {'print $1'} | grep -vi '^ID')
+      do
+      hammer template add-operatingsystem --id="${PXEID}" --operatingsystem-id="${i}"
+      hammer os set-default-template --id="${i}" --config-template-id="${PXEID}"
+      hammer os add-config-template --id="${i}" --config-template-id="${SATID}"
+      hammer os set-default-template --id="${i}" --config-template-id="${SATID}"
+      done
+      touch /root/.setup/step17
+    args:
+      creates: /root/.setup/step17
+
+  - name: "Add RHEL7 host group"
+    shell: |
+      MEDID=$(hammer --csv medium list | grep 'Red_Hat_7_Server_Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+      ENVID=$(hammer --csv environment list | grep rhel_7_server_x86_64  | grep -i dev | grep -v epel | awk -F, {'print $1'})
+      PARTID=$(hammer --csv partition-table list | grep 'Kickstart default' | awk -F, {'print $1'})
+      OSID=$(hammer --csv os list | grep 'RedHat 7.0' | awk -F, {'print $1'})
+      CAID=1
+      PROXYID=1
+      hammer hostgroup create --architecture="x86_64" --domain="${DOM}" --environment-id="${ENVID}" --medium-id="${MEDID}" --name="${HGRHEL6DEV}" --subnet="${NETNAME}" --ptable-id="${PARTID}" --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}"
+      touch /root/.setup/step18
