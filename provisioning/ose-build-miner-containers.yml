@@ -1,5 +1,5 @@
 ---
-- name: "Build miner and etcd containers"
+- name: "Launch orchestrated cpuminer and etcd containers"
   hosts: all
   vars:
     ose_project: "redhat-lab"

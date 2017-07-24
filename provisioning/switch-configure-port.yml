@@ -1,0 +1,70 @@
+---
+- name: "Configure switch port"
+  vars:
+    port: "1.1.1.1"
+    description: ""
+    trunk_settings: "80"
+    vlan_settings: ""
+    auth:
+      #host: "{{ inventory_hostname }}"
+      host: "10.55.2.3"
+      username: "root"
+      password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37303366306134636136623764366161623236396535353062633462323931646466396162323233
+          3833316233626666353439616266336461396264383033620a613535333761356236356238633037
+          66356138306534393064303336653665313636316563363533386236633838313437353037613132
+          3532613733346463360a323362393564333930333966623435616163376365373632373765363431
+          6233
+      enable: ""
+  #hosts: 10.55.2.1
+  hosts: 10.55.102.158
+  gather_facts: no
+  #connection: local
+  tasks:
+#  - name: DEFINE PROVIDER
+#    set_fact:
+#      provider:
+#        host: "{{ inventory_hostname }}"
+#        username: "{{ auth['username'] }}"
+#        password: "{{ auth['password'] }}"
+#
+#  - name: "Get all the static nat entries for logging"
+#    ios_command:
+#      provider: "{{ provider }}"
+#      #username: "{{ username }}"
+#      #password: "{{ password }}"
+#      commands:
+#        - show run 
+#    register: staticnat
+#
+#  - name: "Get all the static nat entries for logging"
+#    debug: var=staticnat
+#
+#  - name: "Remove and add the static entry"
+#    ios_config:
+#      provider: "{{ provider }}"
+#      #username: "{{ username }}"
+#      #password: "{{ password }}"
+#      lines:
+#        - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
+#        - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
+#    register: results
+#
+#  - name: "Dump the output of the command"
+#    debug: var=results
+
+  - name: "Copy over switchport.py script"
+    template:
+      src: network/switchport.py.j2
+      dest: /opt/switchport.py
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: "Use script to update switch port {{ port }}"
+    shell: |
+      /opt/switchport.py -u {{ auth['username'] }} -p {{ auth['password'] }} -x {{ auth['host'] }} \
+      --int-ip {{ int_ip }} --int-port {{ int_port }} \
+      --ext-ip {{ ext_ip }} --ext-port {{ ext_port }}   
+    become: true
