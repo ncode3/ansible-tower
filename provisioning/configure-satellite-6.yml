@@ -267,8 +267,13 @@
 
   - name: "Add all subscriptions to activation keys"
     shell: |
-      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do for j in $(hammer --csv subscription list --organization={{ sat6_org }}  | awk -F, {'print $1'} | grep -vi '^ID'); do hammer   activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
+      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do \
+      for j in $(hammer --csv subscription list --organization={{ sat6_org }}  | awk -F, {'print $1'} | grep -vi '^ID'); do \
+      hammer activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
       touch /root/.setup/step15
+    args:
+      creates: /root/.setup/step15
+    ignore_errors: yes
 
   - name: "Add partition table to OS"
     shell: |
@@ -298,11 +303,14 @@
 
   - name: "Add RHEL7 host group"
     shell: |
-      MEDID=$(hammer --csv medium list | grep 'Red_Hat_7_Server_Kickstart_x86_64_7Server' | awk -F, {'print $1'})
-      ENVID=$(hammer --csv environment list | grep rhel_7_server_x86_64  | grep -i dev | grep -v epel | awk -F, {'print $1'})
+      MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+      #ENVID=$(hammer --csv environment list | grep rhel_7_server_x86_64  | grep -i dev | grep -v epel | awk -F, {'print $1'})
       PARTID=$(hammer --csv partition-table list | grep 'Kickstart default' | awk -F, {'print $1'})
       OSID=$(hammer --csv os list | grep 'RedHat 7.0' | awk -F, {'print $1'})
       CAID=1
       PROXYID=1
-      hammer hostgroup create --architecture="x86_64" --domain="${DOM}" --environment-id="${ENVID}" --medium-id="${MEDID}" --name="RHEL 7 x86_64 Hostgroup" --subnet="Sat 6 Subnet" --ptable-id="${PARTID}" --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" && \
+      #hammer hostgroup create --architecture="x86_64" --domain="${DOM}" --environment-id="${ENVID}" --medium-id="${MEDID}" --name="RHEL 7 x86_64 Hostgroup" --subnet="Sat 6 Subnet" --ptable-id="${PARTID}" --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" && \
+      hammer hostgroup create --architecture="x86_64" --domain="{{ sat6_domain }}"  --medium-id="${MEDID}" \
+      --name="RHEL 7 x86_64 Hostgroup" --subnet="Sat 6 Subnet" --ptable-id="${PARTID}" \
+      --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" && \
       touch /root/.setup/step18
