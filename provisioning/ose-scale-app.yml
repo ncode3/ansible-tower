@@ -2,14 +2,13 @@
 - name: "Scale an Openshift app to the desired size"
   hosts: all
   vars:
-    ose:
-      app: "simplephp"
-      user: "admin"
-      pass: "redhat123"
-      project: Redhat_Lab
-      replicas: 3
+    ose_app: "simplephp"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+    ose_project: Redhat_Lab
+    ose_replicas: 3
   tasks:
     - name: "Scale {{ ose['app'] }} to {{ ose['replicas'] }} replicas"
       shell: |
-        oc login -u {{ ose['user'] }} -p {{ ose['pass'] }} -n {{ ose['project'] }}
-        oc scale dc {{ ose['app'] }} --replicas={{ ose['replicas'] }}
+        oc login -u {{ ose_user }} -p {{ ose_pass }} -n {{ ose_project }}
+        oc scale dc {{ ose_app }} --replicas={{ ose_replicas }}
