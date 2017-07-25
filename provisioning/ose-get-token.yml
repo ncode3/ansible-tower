@@ -1,0 +1,17 @@
+---
+- name: "Grab an OSE authorization token"
+  hosts: all
+  vars:
+    ose:
+      user: "admin"
+      pass: "redhat123"
+      project: Redhat_Lab
+  tasks:
+    - name: "Log into OSE"
+      shell: |
+        oc login -u {{ ose['user'] }} -p {{ ose['pass'] }} -n {{ ose['project'] }}
+        oc whoami -t
+      register: token
+    
+    - name: "Display OSE authorization token"
+      debug: var=token
