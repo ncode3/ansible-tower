@@ -25,5 +25,7 @@
         -o "{{ sat6['org'] }}" \
         -L {{ sat6['location'] }} \
         -g "{{ sat6['hostgroup'] }}" \
-        -a {{ sat6['activation_key'] }}
+        -a {{ sat6['activation_key'] }} \
+        --rex \
+        --rex-user root
       become: true
