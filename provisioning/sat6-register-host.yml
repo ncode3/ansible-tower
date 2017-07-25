@@ -18,7 +18,7 @@
       args:
         chdir: /opt
 
-    - name: "Run the dns update script"
+    - name: "Run the satellite bootstrap script"
       shell: |
         /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
         -s {{ sat6['url'] }} \
