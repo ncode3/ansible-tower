@@ -1,0 +1,29 @@
+---
+- name: "Register a host with Satellite 6"
+  hosts: all
+  vars:
+    sat6:
+      url: "satellite-6-demo.stack.maskedadmins.com"
+      user: "admin"
+      pass: "redhat123"
+      org: Redhat_Lab
+      hostgroup: "RHEL 7 x86_64 Hostgroup"
+      location: Redhat_Lab
+      activation_key: "Redhat_Lab-Development-key"
+  tasks:
+    - name: "Get the bootstrap python script"
+      shell: |
+        wget http://{{ sat6['url'] }}/pub/bootstrap.py
+        chmod +x /opt/bootstrap.py
+      args:
+        chdir: /opt
+
+    - name: "Run the dns update script"
+      shell: |
+        /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
+        -s {{ sat6['url'] }} \
+        -o "{{ sat6['org'] }}" \
+        -L {{ sat6['location'] }} \
+        -g "{{ sat6['hostgroup'] }}" \
+        -a {{ sat6['activation_key'] }}
+      become: true
