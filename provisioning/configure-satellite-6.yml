@@ -11,6 +11,13 @@
 - name: "Configure Satellite 6"
   hosts: all
   vars:
+    sat6:
+      subnet:
+        name: "10.55.103.0/24"
+        gw: "10.55.103.1"
+        network: "10.55.103.0"
+        mask: "255.255.255.0"
+        dns: "10.55.102.5"
     sat6_org: Redhat_Lab
     sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
     sat6_pool_ids: ['']
@@ -20,6 +27,7 @@
     sat6_user: "admin"
     sat6_pass: "redhat123"
     sat6_domain: "sat6.maskedadmins.com"
+    sat6_hostgroup: "RHEL 7 x86_64 Hostgroup"
     fusor_installer_lease_from: 10.55.102.200
     fusor_installer_lease_to: 10.55.102.211
     dns_domain: "sat6.maskedadmins.com"
@@ -83,9 +91,12 @@
         hammer location create --name "{{ sat6_org }}"
         hammer location add-organization --name "{{ sat6_org }}" --organization "{{ sat6_org }}"
         hammer domain create --name "{{ sat6_domain }}"
-        hammer subnet create --domain-ids=1 --gateway='10.55.103.1' --mask='255.255.255.0' \
-        --name='10.55.103.0/24'  --tftp-id=1 --network='10.55.103.0' \
-        --dns-primary='10.55.102.5'  --name 'Sat 6 Subnet'
+        hammer subnet create --domain-ids=1 \
+        --gateway='{{ sat6['subnet']['gw'] }}' \
+        --mask='{{ sat6['subnet']['mask'] }}' \
+        --name='{{ sat6['subnet']['name'] }}' \
+        --tftp-id=1 --network='{{ sat6['subnet']['network'] }}' \
+        --dns-primary='{{ sat6['subnet']['dns'] }}'
         hammer organization add-subnet --subnet-id=1 --name '{{ sat6_org }}'
         hammer organization add-domain --domain-id=1 --name '{{ sat6_org }}' && touch /root/.setup/step1
     args:
@@ -311,6 +322,6 @@
       PROXYID=1
       #hammer hostgroup create --architecture="x86_64" --domain="${DOM}" --environment-id="${ENVID}" --medium-id="${MEDID}" --name="RHEL 7 x86_64 Hostgroup" --subnet="Sat 6 Subnet" --ptable-id="${PARTID}" --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" && \
       hammer hostgroup create --architecture="x86_64" --domain="{{ sat6_domain }}"  --medium-id="${MEDID}" \
-      --name="RHEL 7 x86_64 Hostgroup" --subnet="Sat 6 Subnet" --ptable-id="${PARTID}" \
+      --name="{{ sat6_hostgroup" --subnet="{{ sat6['subnet']['name'] }}" --ptable-id="${PARTID}" \
       --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" && \
       touch /root/.setup/step18
