@@ -4,11 +4,11 @@
   vars:
     ose_user: "admin"
     ose_pass: "redhat123"
-    ose_project: Redhat_Lab
+    ose_project: redhat-lab
   tasks:
     - name: "Log into OSE"
       shell: |
-        oc login -u {{ ose_user }} -p {{ ose_pass }} -n {{ ose_project }}
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc whoami -t
       register: token
       become: true
