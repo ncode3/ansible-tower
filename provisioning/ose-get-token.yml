@@ -11,6 +11,7 @@
         oc login -u {{ ose_user }} -p {{ ose_pass }} -n {{ ose_project }}
         oc whoami -t
       register: token
+      become: true
     
     - name: "Display OSE authorization token"
       debug: var=token
