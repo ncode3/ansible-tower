@@ -1,0 +1,12 @@
+---
+- name: "Configure Cloudforms Management Engine"
+  hosts: all
+  vars:
+    ose_user: "admin"
+    ose_pass: "redhat123"
+    ose_project: redhat-lab
+  tasks:
+    - name: "Configure CFME"
+      shell: |
+        appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password smartvm
+      become: true
