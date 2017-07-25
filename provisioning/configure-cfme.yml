@@ -9,5 +9,5 @@
   tasks:
     - name: "Configure CFME"
       shell: |
-        appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
+        TERM=vt100 appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
       become: true
