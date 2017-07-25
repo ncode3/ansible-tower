@@ -1,5 +1,5 @@
 ---
-#- include: firstboot.yml
+- include: firstboot.yml
 - name: "Configure Cloudforms Management Engine"
   hosts: all
   vars:
@@ -10,4 +10,5 @@
     - name: "Configure CFME"
       shell: |
         TERM=vt100 appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
+        shutdown -r +1 && true
       become: true
