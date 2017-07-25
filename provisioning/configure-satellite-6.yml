@@ -267,7 +267,7 @@
 
   - name: "Add all subscriptions to activation keys"
     shell: |
-      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do for j in $(hammer --csv subscription list --organization={{ sat6_org }}  | awk -F, {'print $8'} | grep -vi '^ID'); do hammer   activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
+      for i in $(hammer --csv activation-key list --organization={{ sat6_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do for j in $(hammer --csv subscription list --organization={{ sat6_org }}  | awk -F, {'print $1'} | grep -vi '^ID'); do hammer   activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
       touch /root/.setup/step15
 
   - name: "Add partition table to OS"
