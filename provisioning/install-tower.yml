@@ -5,6 +5,9 @@
   hosts: all
   vars:
     tower_tarball_location: http://10.55.102.5/ansible-tower-setup-latest.tar.gz
+    restore_backup: "yes"
+    backup_file_src: "/opt/ansible-tower-setup-3.1.3/tower-backup-latest.tar.gz"
+    backup_file_dest: "/opt/tower-backup-latest.tar.gz"
   tasks:
     - name: "Install yum packages"
       yum:
@@ -39,3 +42,22 @@
       args:
         chdir: /opt
       become: true
+
+    - name: "Copy over backup file {{ backup_file_src }}"
+      copy:
+        dest: "{{ backup_file_dest }}"
+        src: "{{ backup_file_src }}"
+        owner: root
+        group: root
+        mode: 0755
+      when: restore_backup == "yes"
+
+    - name: "Restore Backup"
+      shell: |
+        cd ansible-tower-setup-*
+        ./setup.sh -e 'restore_backup_file={{ backup_file_dest }}' -r
+      args:
+        chdir: /opt
+      become: true
+      when: restore_backup == "yes"
+
