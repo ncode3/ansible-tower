@@ -1,0 +1,23 @@
+---
+- name: "Rollback an Openshift app to last deployment"
+  hosts: all
+  vars:
+    ose_app: "simplephp"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+    ose_project: redhat-lab
+  tasks:
+    - name: "Describe deployment config and rollout history for {{ ose_app }}"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc rollout history dc/{ ose_app }}
+        oc describe dc { ose_app }}
+      become: true
+
+    - name: "Rollback to previous release"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc rollout undo dc/{ ose_app }}
+      become: true

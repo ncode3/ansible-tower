@@ -1,0 +1,16 @@
+---
+- name: "Redeploy Openshift app"
+  hosts: all
+  vars:
+    ose_app: "simplephp"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+    ose_project: redhat-lab
+    ose_replicas: 3
+  tasks:
+    - name: "Redeploy {{ ose_app }}"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc deploy --retry dc/{{ ose_app }}
+      become: true
