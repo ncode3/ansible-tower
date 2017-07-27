@@ -51,6 +51,7 @@
         . /root/keystonerc_admin
         openstack project create --description "{{ openstack['project_name'] }}" {{ openstack['project_name'] }}
         openstack user create --project {{ openstack['project_name'] }} --password {{ openstack['project_pass'] }} {{ openstack['project_user'] }}
+        openstack role add --project {{ openstack['project_name'] }} --user {{ openstack['project_user'] }} admin
         tenant=$(openstack project list | awk '/{{ openstack['project_name'] }}/ {print $2}')
         nova quota-update --cores 40 $tenant
       args:
@@ -299,7 +300,7 @@
     - name: "Create the performance flavor to use later..."
       shell: |
         source /root/keystonerc_admin
-        nova flavor-create m1.medium.performance 6 4096 60 4
+        nova flavor-create m1.medium.performance 6 6144 60 4
       args:
         chdir: /root
       become: true
@@ -430,14 +431,17 @@
         echo "Sat 6 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
         sleep 120
-        #echo "CMFE launch job"
-        #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
-        #sleep 120
+        echo "CMFE launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
+        sleep 120
         echo "OSE 3.5 launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
-        #sleep 600
-        #echo "Tower launch job"
-        #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
+        sleep 600
+        echo "Tower launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
+        sleep 300
+        echo "OSE 3.5 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
       args:
         chdir: /root
       become: true

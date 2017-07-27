@@ -1,9 +1,9 @@
 ---
 - include: firstboot.yml
 - name: "Configure Cloudforms Management Engine"
-  hosts: all
+  hosts: cloudforms.stack.maskedadmins.com
   vars:
-    cfme_user: "root"
+    cfme_user: "admin"
     cfme_pass: "smartvm"
     cfme_project: redhat-lab
   tasks:
@@ -12,3 +12,61 @@
         TERM=vt100 appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
         shutdown -r +1 && true
       become: true
+
+     - name: "Wait for the cfme console to become availabe"
+       wait_for:
+         port: 443
+         delay: 300
+
+- include: ose-get-token.yml
+
+
+- name: "Add providers to CFME"
+  hosts: cloudforms.stack.maskedadmins.com
+  vars:
+    cfme_user: "admin"
+    cfme_pass: "smartvm"
+    cfme_pass: "{{ ansible_hostname }}"
+    cfme_project: redhat-lab
+    osp10_name: "OSP10"
+    osp10_server: compute4.maskedadmins.com
+    osp10_security: non-ssl
+    osp10_user: "dtaylor"
+    osp10_pass: "redhat123"
+    ose_server: compute4.maskedadmins.com
+    ose_security: ssl
+    ose_name: "OSE3-3"
+    ose_server: "ose-cluster-master.stack.maskedadmins.com"
+    ose_user: "admin"
+    - name: "Add OSP10 provider"
+      shell: |
+        curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
+        -i -X POST -H "Accept: application/json" \
+        -d '{
+              "type"      : "ManageIQ::Providers::Openstack::CloudManager",
+              "name"      : "{{ osp10_name }}",
+              "hostname"  : "{{ osp10_server }}",
+              "ipaddress" : "$(host {{ osp10_server }} | awk '{print $4}')",
+              "security_protocol"      : "{{ osp10_security }}",
+              "credentials" : {
+                "userid"   : "{{ osp10_user }}",
+                "password" : "{{ osp10_pass }}"
+              }
+        }' \
+        https://{{ ansible_hostname }}/api/providers
+
+    - name: "Add Openshift provider"
+      shell: |
+        curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
+        -i -X POST -H "Accept: application/json" \
+        -d '{
+              "type"      : "ManageIQ::Providers::Openshift::ContainerManager",
+              "name"      : "{{ ose_name }}",
+              "hostname"  : "{{ ose_server }}",
+              "security_protocol"      : "{{ ose_security }}",
+              "credentials" : {
+                "userid"   : "{{ ose_user }}",
+                "password" : "{{ hostvars['ose-cluster-master.stack.maskedadmins.com']['token']['stdout'] }}"
+              }
+        }' \
+        https://{{ ansible_hostname }}/api/providers

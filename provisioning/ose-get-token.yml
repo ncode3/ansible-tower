@@ -1,6 +1,6 @@
 ---
 - name: "Grab an OSE authorization token"
-  hosts: all
+  hosts: ose-cluster-master.stack.maskedadmins.com
   vars:
     ose_user: "admin"
     ose_pass: "redhat123"
@@ -8,7 +8,7 @@
   tasks:
     - name: "Log into OSE"
       shell: |
-        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc login -u {{ ose_user }} -p {{ ose_pass }} > /dev/null 2>&1
         oc whoami -t
       register: token
       become: true

@@ -6,7 +6,6 @@
     ose_user: "admin"
     ose_pass: "redhat123"
     ose_project: redhat-lab
-    ose_replicas: 3
   tasks:
     - name: "Redeploy {{ ose_app }}"
       shell: |

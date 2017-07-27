@@ -12,7 +12,7 @@ curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https
 sleep 120
 echo "CMFE launch job"
 curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-sleep 120
+sleep 300
 echo "OSE 3.5 launch job"
 curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
 touch /opt/firstboot.finished
