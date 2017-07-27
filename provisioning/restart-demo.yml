@@ -11,7 +11,7 @@
     - name: "update all the ansible tower osp10 repos and sleep 5 mins"
       shell: |
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/350/update/
-        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/226/update/
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/1141/update/
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/349/update/
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/310/update/
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/719/update/
