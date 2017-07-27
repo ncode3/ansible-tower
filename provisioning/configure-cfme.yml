@@ -44,9 +44,8 @@
     osp10_user: "dtaylor"
     osp10_pass: "redhat123"
     ose_name: "OSE3-3"
-    ose_server: compute4.maskedadmins.com
-    ose_security: ssl
     ose_server: "ose-cluster-master.stack.maskedadmins.com"
+    ose_security: ssl
     ose_user: "admin"
   tasks:
     - name: "Add OSP10 provider"
