@@ -1,0 +1,22 @@
+---
+- name: "Reimage demo servers"
+  gather_facts: no
+  hosts: localhost
+  ignore_errors: yes
+  connection: local
+  vars:
+    ipmi_target:
+      - 10.55.101.158
+      - 10.55.101.157
+      - 10.55.101.156
+    powerstate: "pxe"
+  tasks:
+    - name: "reboot to pxe boot for {{ ipmi_targets }} and reimage"
+      shell: ipmiutil reset -p -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      when: powerstate == "pxe"
+      with_items:
+        - "{{ ipmi_targets }}"
+
+    - name: "Server(s) will reinstall. It will be back in 20 mins"
+      debug: var=powerstate
+      when: powerstate == "pxe"

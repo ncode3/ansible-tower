@@ -1,0 +1,19 @@
+---
+- name: "reset everything and rebuild environmnet"
+  hosts: 10.55.102.158
+  task:
+    - name: "delete all the vms off of osp10"
+      shell: |
+        source /root/keystonerc_dtaylor
+        for i in $(openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID') ; do openstack server delete $i ; done
+
+    - name: "update all the ansible tower osp10 repos and sleep 5 mins"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/350/update/
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/226/update/
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/349/update/
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/310/update/
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/719/update/
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/720/update/ 
+        sleep 300
+- include: reimage-servers.yml
