@@ -14,7 +14,7 @@
       become: true
 
      - name: "Wait 90 secs for the host to become availabe"
-     - local_action:
+       local_action:
          wait_for:
            port: 22
            host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
@@ -22,7 +22,7 @@
            delay: 90
 
      - name: "Wait 4 mins for the cfme console to become availabe"
-     - local_action:
+       local_action:
          wait_for:
            port: 443
            host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
