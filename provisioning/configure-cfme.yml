@@ -1,5 +1,5 @@
 ---
-- include: firstboot.yml
+#- include: firstboot.yml
 - name: "Configure Cloudforms Management Engine"
   hosts: cloudforms.stack.maskedadmins.com
   vars:
@@ -13,7 +13,7 @@
         shutdown -r +1 && true
       become: true
 
-    - name: "Wait 90 secs for the host to become availabe"
+    - name: "Wait 90 secs for the host to become available"
       local_action:
         wait_for:
           port: 22
@@ -21,7 +21,7 @@
           search_regex: OpenSSH
           delay: 90
 
-    - name: "Wait 4 mins for the cfme console to become availabe"
+    - name: "Wait 4 mins for the cfme console to become available"
       local_action:
         wait_for:
           port: 443
