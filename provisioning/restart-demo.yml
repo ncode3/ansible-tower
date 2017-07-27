@@ -1,7 +1,7 @@
 ---
 - name: "reset everything and rebuild environmnet"
   hosts: 10.55.102.158
-  task:
+  tasks:
     - name: "delete all the vms off of osp10"
       shell: |
         source /root/keystonerc_dtaylor
