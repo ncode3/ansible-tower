@@ -6,6 +6,7 @@
       shell: |
         source /root/keystonerc_dtaylor
         for i in $(openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID') ; do openstack server delete $i ; done
+      become: true
 
     - name: "update all the ansible tower osp10 repos and sleep 5 mins"
       shell: |
