@@ -5,7 +5,7 @@
   ignore_errors: yes
   connection: local
   vars:
-    ipmi_target:
+    ipmi_targets:
       - 10.55.101.158
       - 10.55.101.157
       - 10.55.101.156
