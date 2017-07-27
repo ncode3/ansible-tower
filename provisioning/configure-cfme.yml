@@ -13,18 +13,20 @@
         shutdown -r +1 && true
       become: true
 
-    - local_action:
-        wait_for:
-          port: 22
-          host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
-          search_regex: OpenSSH
-          delay: 90
-
-    - local_action:
-        wait_for:
-          port: 443
-          host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
-          delay: 240
+    - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
+    - local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=300
+#    - local_action:
+#        wait_for:
+#          port: 22
+#          host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+#          search_regex: OpenSSH
+#          delay: 90
+#
+#    - local_action:
+#        wait_for:
+#          port: 443
+#          host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+#          delay: 240
 
 - include: ose-get-token.yml
 
