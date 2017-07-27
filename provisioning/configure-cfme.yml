@@ -13,20 +13,20 @@
         shutdown -r +1 && true
       become: true
 
-     - name: "Wait 90 secs for the host to become availabe"
-       local_action:
-         wait_for:
-           port: 22
-           host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
-           search_regex: OpenSSH
-           delay: 90
+    - name: "Wait 90 secs for the host to become availabe"
+      local_action:
+        wait_for:
+          port: 22
+          host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+          search_regex: OpenSSH
+          delay: 90
 
-     - name: "Wait 4 mins for the cfme console to become availabe"
-       local_action:
-         wait_for:
-           port: 443
-           host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
-           delay: 240
+    - name: "Wait 4 mins for the cfme console to become availabe"
+      local_action:
+        wait_for:
+          port: 443
+          host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+          delay: 240
 
 - include: ose-get-token.yml
 
@@ -36,18 +36,19 @@
   vars:
     cfme_user: "admin"
     cfme_pass: "smartvm"
-    cfme_pass: "{{ ansible_hostname }}"
+    cfme_server: "{{ ansible_hostname }}"
     cfme_project: redhat-lab
     osp10_name: "OSP10"
     osp10_server: compute4.maskedadmins.com
     osp10_security: non-ssl
     osp10_user: "dtaylor"
     osp10_pass: "redhat123"
+    ose_name: "OSE3-3"
     ose_server: compute4.maskedadmins.com
     ose_security: ssl
-    ose_name: "OSE3-3"
     ose_server: "ose-cluster-master.stack.maskedadmins.com"
     ose_user: "admin"
+  tasks:
     - name: "Add OSP10 provider"
       shell: |
         curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
@@ -63,7 +64,7 @@
                 "password" : "{{ osp10_pass }}"
               }
         }' \
-        https://{{ ansible_hostname }}/api/providers
+        https://{{ cfme_server }}/api/providers
 
     - name: "Add Openshift provider"
       shell: |
@@ -79,4 +80,4 @@
                 "password" : "{{ hostvars['ose-cluster-master.stack.maskedadmins.com']['token']['stdout'] }}"
               }
         }' \
-        https://{{ ansible_hostname }}/api/providers
+        https://{{ cfme_server }}/api/providers
