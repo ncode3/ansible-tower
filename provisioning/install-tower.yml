@@ -43,6 +43,18 @@
         chdir: /opt
       become: true
 
+    - name: "Disable PRoot to allow local_actions"
+      lineinfile: 
+        line: "AWX_PROOT_ENABLED=False"
+        dest: /etc/tower/settings.py
+        regexp: "^AWX_PROOT_ENABLED=*"
+        state: present
+
+    - name: "Restart Tower"
+      shell: |
+        ansible-tower-service restart
+      become: true
+
     - name: "Copy over backup file {{ backup_file_src }}"
       copy:
         dest: "{{ backup_file_dest }}"

@@ -11,10 +11,12 @@
       shell: |
         TERM=vt100 appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
         shutdown -r +1 && true
+      args:
+        creates: /var/run/httpd/httpd.pid
       become: true
 
     - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
-    - local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=300
+    - local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=240
 #    - local_action:
 #        wait_for:
 #          port: 22
