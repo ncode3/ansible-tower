@@ -1,0 +1,27 @@
+---
+- include: ose-get-token.yml
+- name: "Add Openshift provider to CFME"
+  hosts: cloudforms.stack.maskedadmins.com
+  vars:
+    cfme_user: "admin"
+    cfme_pass: "smartvm"
+    cfme_server: "{{ ansible_hostname }}"
+    cfme_project: redhat-lab
+    ose_name: "OSE3-3"
+    ose_server: "ose-cluster-master.stack.maskedadmins.com"
+    ose_security: ssl
+    ose_user: "admin"
+  tasks:
+    - name: "Add Openshift provider using the token acquired earlier"
+      shell: |
+        curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
+        -i -X POST -H "Accept: application/json" \
+        -d '{
+              "type"      : "ManageIQ::Providers::Openshift::ContainerManager",
+              "name"      : "{{ ose_name }}",
+              "hostname"  : "{{ ose_server }}",
+              "security_protocol"      : "{{ ose_security }}",
+              "credentials" : {
+                "userid"   : "{{ ose_user }}",
+                "password" : "{{ hostvars['ose-cluster-master.stack.maskedadmins.com']['token']['stdout'] }}"
+              }
