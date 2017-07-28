@@ -15,7 +15,7 @@
     
     - name: "Set fact for later use"
       set_fact:
-        ose_token: token.stdout
+        ose_token: "{{ token.stdout }}"
 
     - name: "Display OSE authorization token"
       debug: var=token
