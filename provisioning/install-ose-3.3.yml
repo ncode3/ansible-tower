@@ -226,7 +226,7 @@
         oadm policy add-role-to-user admin {{ ose_add_user }} -n openshift
         sed -i -e 's/^#dhcp-script=\/bin\/echo/dhcp-script=\/opt\/dns-updater.sh/g' /etc/dnsmasq.conf
         grep dns-updater /usr/lib/systemd/system/dnsmasq.service || \
-        sed -i -e 's/^ExecStart=/usr/sbin/dnsmasq -k/ExecStart=/usr/sbin/dnsmasq -k --dhcp-script=/opt/dns-updater.sh/g' \
+        sed -i -e 's/^ExecStart=\/usr\/sbin\/dnsmasq -k/ExecStart=\/usr\/sbin\/dnsmasq -k --dhcp-script=\/opt\/dns-updater.sh/g' \
         /usr/lib/systemd/system/dnsmasq.service
         systemctl daemon-reload
         systemctl restart dnsmasq
