@@ -210,7 +210,7 @@
     - name: "Install OSE 3.5 - takes 50 mins for 3 nodes"
       shell: |
         setenforce 0
-        atomic-openshift-installer -u install
+        atomic-openshift-installer -u install && touch /root/.setupcomplete
         lead='^    method: auto$'
         tail='^  masterCA: ca-bundle.crt$'
         sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
