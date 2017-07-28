@@ -125,12 +125,12 @@
     args:
       creates: /root/.setup/step3
 
-#  - name: "Provisioning Satellite 6 - Syncing Content"
-#    shell: |
-#        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
-#        --organization "{{ sat6_org }}" && touch /root/.setup/step4
-#    args:
-#      creates: /root/.setup/step4
+  - name: "Provisioning Satellite 6 - Syncing Content"
+    shell: |
+        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
+        --organization "{{ sat6_org }}" && touch /root/.setup/step4
+    args:
+      creates: /root/.setup/step4
 
   - name: "Provisioning Satellite 6 Lifecycle Base"
     shell: |
