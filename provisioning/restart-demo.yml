@@ -5,7 +5,7 @@
     - name: "delete all the vms off of osp10"
       shell: |
         source /root/keystonerc_dtaylor
-        for i in $(openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID') ; do openstack server delete $i ; done
+        for i in $(openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID') ; do openstack server delete $i ; sleep 60 ; done
       become: true
 
     - name: "update all the ansible tower osp10 repos and sleep 5 mins"
