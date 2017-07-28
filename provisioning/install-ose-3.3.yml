@@ -243,18 +243,17 @@
         oc new-app https://github.com/syspimp/simplephp
         oc expose service/simplephp
         /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} simplephp-{{ ose_add_project }}
+        echo "calling update firewall port for workshopper"
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
         # this command will make the master a scheduled node. since we are launching multinode, lets use those and comment this out
         echo -e '#!/bin/bash\noadm manage-node ose-cluster-master.stack.maskedadmins.com --schedulable\noc project default\noc deploy router --retry\noc deploy registry-console --retry' > /root/fix-demo.sh
         chmod +x /root/fix-demo.sh
         /root/fix-demo.sh
         sleep 120
         echo "calling app deploy because I am lazy"
-        #curl -k --data "host_config_key=5c5caa7a4325b078220f10512d1f851c" https://10.55.102.248:443/api/v1/job_templates/239/callback/
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/239/launch/
+        #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/239/launch/
         echo "calling update firewall port for ose"
         curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"8443\",\"ext_port\":\"8443\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
-        echo "calling update firewall port for workshopper"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
       args:
         creates: /root/.setupcomplete
       become: true
