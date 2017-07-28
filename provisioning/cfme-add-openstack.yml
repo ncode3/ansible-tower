@@ -17,15 +17,15 @@
       shell: |
         curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
         -i -X POST -H "Accept: application/json" \
-        -d '{
-              "type"      : "ManageIQ::Providers::Openstack::CloudManager",
-              "name"      : "{{ osp10_name }}",
-              "hostname"  : "{{ osp10_server }}",
-              "ipaddress" : "$(host {{ osp10_server }} | awk '{print $4}')",
-              "security_protocol"      : "{{ osp10_security }}",
-              "credentials" : {
-                "userid"   : "{{ osp10_user }}",
-                "password" : "{{ osp10_pass }}"
+        -d "{
+              \"type\"      : \"ManageIQ::Providers::Openstack::CloudManager\",
+              \"name\"      : \"{{ osp10_name }}\",
+              \"hostname\"  : \"{{ osp10_server }}\",
+              \"ipaddress\" : \"$(host {{ osp10_server }} | awk '{print $4}')\",
+              \"security_protocol\"      : \"{{ osp10_security }}\",
+              \"credentials\" : {
+                \"userid\"   : \"{{ osp10_user }}\",
+                \"password\" : \"{{ osp10_pass }}\"
               }
-        }' \
+        }" \
         https://{{ cfme_server }}/api/providers
