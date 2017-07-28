@@ -1,7 +1,7 @@
 ---
 - include: ose-get-token.yml
 - name: "Add Openshift provider to CFME"
-  hosts: cloudforms.stack.maskedadmins.com
+  hosts: ose-cluster-master.stack.maskedadmins.com
   vars:
     cfme_user: "admin"
     cfme_pass: "smartvm"
