@@ -215,7 +215,7 @@
               permissions: '0755'
               content: |
                 #!/bin/bash
-                curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.private_v4 }}\",\"node1_hostname\":\"{{ atomic_node1.server.name }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.private_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/launch/
+                curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.public_v4 }}\",\"node1_hostname\":\"{{ atomic_node1.server.name }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.public_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/launch/
           runcmd:
             - "/opt/start-install.sh"
         volumes:
@@ -223,16 +223,16 @@
       register: ose_master
 
     - name: Show OSE Masters IP
-      debug: var=ose_master.server.private_v4
+      debug: var=ose_master.server.public_v4
 
     - name: Atomic Node 1 IP
-      debug: var=atomic_node1.server.private_v4
+      debug: var=atomic_node1.server.public_v4
 
     - name: Atomic Node 2 IP
-      debug: var=atomic_node2.server.private_v4
+      debug: var=atomic_node2.server.public_v4
 
     - name: Adding Atomic nodes to inventory
-      add_host: name={{ item.server.private_v4 }}
+      add_host: name={{ item.server.public_v4 }}
                 groups=atomic_nodes
                 instance_name={{ item.server.name }}
       with_items:
@@ -241,7 +241,7 @@
         - "{{ atomic_node2 }}"
 
     - name: Adding OSE master to inventory
-      add_host: name={{ item.server.private_v4 }}
+      add_host: name={{ item.server.public_v4 }}
                 groups=ose_master
                 instance_name="{{ item.server.name }}"
       with_items:
