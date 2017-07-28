@@ -23,5 +23,5 @@
               "security_protocol"      : "{{ ose_security }}",
               "credentials" : {
                 "userid"   : "{{ ose_user }}",
-                "password" : "{{ hostvars['ose-cluster-master.stack.maskedadmins.com']['token']['stdout'] }}"
+                "password" : "{{ ose_token }}"
               }
