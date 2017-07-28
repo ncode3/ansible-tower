@@ -7,7 +7,7 @@
     cfme_pass: "smartvm"
     cfme_creds: "admin:smartvm"
     cfme_type: "ManageIQ::Providers::Openshift::ContainerManager"
-    cfme_server: "{{ ansible_hostname }}"
+    cfme_server: "cloudforms.stack.maskedadmins.com"
     cfme_project: redhat-lab
     ose_name: "OSE3-3"
     ose_server: "ose-cluster-master.stack.maskedadmins.com"
