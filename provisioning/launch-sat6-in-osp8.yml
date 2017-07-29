@@ -1,0 +1,101 @@
+---
+- name: launch a satellite 6 instance in osp8
+  hosts: localhost
+  gather_facts: no
+  vars:
+    os_create_volume: "no"
+    os_server:
+      name: "satellite 6 in osp8"
+      state: present
+      image: "QCI Template"
+      flavor: "m1.large"
+      network: "Provisioning_102"
+      availability_zone: "nova"
+      security_groups: "default"
+      region_name: "RegionOne"
+      auto_ip: no
+      key_name: "dtaylor-openstack"
+    ## this calls the install satellite playbook
+    host_config_key: dc7c0b52cd29cacceb8d3571257801ea
+    host_config_server: 10.55.102.248
+    host_config_jobid: 246
+  environment:
+    OS_TENANT_NAME: "{{ vault_os_project }}"
+    OS_TENANT_ID: "{{ vault_os_projectid }}"
+    OS_USERNAME: "{{ vault_os_user }}"
+    OS_PASSWORD: "{{ vault_os_pass }}"
+    OS_AUTH_URL: "{{ vault_os_url }}"
+  tasks:
+    - name: delete the old sat server
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: absent
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+      ignore_errors: yes
+
+    - name: sleep for a min to allow the vm to be destroyed
+      command: sleep 60
+
+    - name: launch an instance with no volume
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: present
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          # for reference:
+          # http://cloudinit.readthedocs.org/en/latest/topics/examples.html
+          # https://access.redhat.com/articles/rhel-atomic-cloud-init-faq
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+          ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+      when: os_create_volume == "no"
+      register: server_with_no_volume
+
+    - name: Show Server's IP
+      debug: var=server_with_no_volume.server.public_v4
+      when: os_create_volume == "no"
