@@ -1,0 +1,17 @@
+---
+- name: "Backup Ansible Tower"
+  gather_facts: no
+  hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: "copy over backup script"
+      template:
+        src: tower/backup-tower.sh.j2
+        dest: /opt/backup-tower.sh
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: "Run backup script"
+      shell: /opt/backup-tower.sh

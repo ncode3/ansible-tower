@@ -1,0 +1,11 @@
+#!/bin/bash -x
+today=$(date +%F)
+offsite_backupdir="root@10.55.2.155:/mnt/backups/tower/"
+cd /opt/ansible-tower-setup-3.1.3/
+./setup.sh -b
+rm -f tower-backup-latest.tar.gz 
+latest=$(ls -1 *tar.gz | tail -n 1)
+mv $latest tower-backup-${today}.tar.gz
+cp -f tower-backup-${today}.tar.gz tower-backup-latest.tar.gz
+tar zcf /root/tower-backup-${today}-etc-opt-dirs.tar.gz /etc/ansible /etc/tower /opt
+rsync -avz /root/tower-backup-${today}-etc-opt-dirs.tar.gz ${offsite_backupdir}
