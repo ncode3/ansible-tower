@@ -15,7 +15,7 @@
       OSP8:
         description: 'Openstack 8 Redhat Lab'
         user: dtaylor
-        pass: redhat123
+        pass: "{{ ipmi_pass }}"
         tenant: ""
         url: "http://10.55.2.155:5000/v2.0/tokens"
       OSP8:
