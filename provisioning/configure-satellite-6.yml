@@ -180,11 +180,13 @@
         hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
         --description "{{ item.description }}"
     with_items: "{{ sat6.orgs }}"
+    ignore_errors: yes
 
   - name: "Creating Locations for Satellite 6"
     shell: |
         hammer location create --name "{{ item }}"
     with_items: "{{ sat6.locations }}"
+    ignore_errors: yes
 
   - name: "Adding Orgs to Locations"
     shell: |
@@ -192,6 +194,7 @@
     with_subelements:
       - "{{ sat6.orgs }}"
       - locations
+    ignore_errors: yes
 
   - name: "Setting default org and location Satellite 6"
     shell: |
@@ -207,6 +210,7 @@
     shell: |
         hammer domain create --name "{{ item }}"
     with_items: "{{ sat6.domains }}"
+    ignore_errors: yes
 
   - name: "Creating subnets and adding to domains"
     shell: |
@@ -218,6 +222,7 @@
         --tftp-id=1 --network='{{ item.network }}' \
         --dns-primary='{{ item.dns }}'
     with_items: "{{ sat6.subnets }}"
+    ignore_errors: yes
 
   - name: "Adding Domains to Orgs and Locations"
     shell: |
@@ -226,6 +231,7 @@
     with_subelements:
       - "{{ sat6.orgs }}"
       - domains
+    ignore_errors: yes
 
   - name: "Adding Subnets to Orgs"
     shell: |
@@ -234,6 +240,7 @@
     with_subelements:
       - "{{ sat6.orgs }}"
       - subnets
+    ignore_errors: yes
 
   - name: "Adding Domains to Locations"
     shell: |
