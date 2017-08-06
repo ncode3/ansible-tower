@@ -196,15 +196,15 @@
       - locations
     ignore_errors: yes
 
-  - name: "Setting default org and location Satellite 6"
-    shell: |
-        defaultorg=$(hammer organization list  | grep {{ sat6_default_org }} | awk '{print $1}')
-        defaultloc=$(hammer location list  | grep {{ sat6_default_location }} | awk '{print $1}')
-        hammer defaults add --param-name organization_id --param-value $defaultorg
-        hammer defaults add --param-name location_id --param-value $defaultloc && touch /root/.setup/step1
-    args:
-      creates: /root/.setup/step1
-    ignore_errors: yes
+#  - name: "Setting default org and location Satellite 6"
+#    shell: |
+#        defaultorg=$(hammer organization list  | grep {{ sat6_default_org }} | awk '{print $1}')
+#        defaultloc=$(hammer location list  | grep {{ sat6_default_location }} | awk '{print $1}')
+#        hammer defaults add --param-name organization_id --param-value $defaultorg
+#        hammer defaults add --param-name location_id --param-value $defaultloc && touch /root/.setup/step1
+#    args:
+#      creates: /root/.setup/step1
+#    ignore_errors: yes
 
   - name: "Creating domains"
     shell: |
