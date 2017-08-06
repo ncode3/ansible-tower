@@ -1,125 +1,138 @@
 ---
-- name: "Set up /etc/hosts file and hostname"
+- name: "Firstboot check"
   shell: |
-    shortname=$(hostname --short)
-    hostname=${shortname}.{{ dns_domain }}
-    echo "${hostname}" > /etc/hostname
-    hostnamectl set-hostname ${hostname}
-    grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
-    #service network restart
-  become: true
-  args:
-    creates: /opt/.firstboot
+    if [ -e "/opt/.firstboot" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: firstbootcheck
 
-- name: "Set ntp to true"
-  shell: |
-    ntpdate server 10.55.102.5 iburst
-    timedatectl set-ntp true
-    systemctl restart chronyd
-  poll: 0
-  async: 1
-  become: true
-  ignore_errors: yes
-  args:
-    creates: /opt/.firstboot
-
-- name: Set authorized key for root
-  authorized_key:
-    user: root
-    state: present
-    key: "{{ cloud_user_pub_key }}"
-
-- name: "Enabling and restarting services {{ enabled_svcs }}"
-  service:
-    name: "{{ item }}"
-    #state: restarted
-    enabled: yes
-  with_items: "{{ enabled_svcs }}"
-  become: true
-
-- name: "Stopping and disabling services {{ disabled_svcs }}"
-  service:
-    name: "{{ item }}"
-    state: stopped
-    enabled: no
-  with_items: "{{ disabled_svcs }}"
-  ignore_errors: yes
-  become: true
-
-- name: "Check if we are registered"
-  shell: "subscription-manager status || true"
-  register: rhsm_reg
-
-- name: Register and subscribe to multiple pools for virtual hosts
-  redhat_subscription:
-    state: present
-    username: "{{ rh_satellite_user }}"
-    password: "{{ rh_satellite_pass }}"
-    pool_ids: "{{ rh_subscription_pool_ids }}"
-#    pools: "{{ rh_subscription_pools }}"
-  become: true
-  register: rhsm_status
-  when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
-  retries: 10
-
-- name: Register and subscribe to multiple pools for physical hosts
-  redhat_subscription:
-    state: present
-    username: "{{ rh_satellite_user }}"
-    password: "{{ rh_satellite_pass }}"
-    pool_ids: "{{ rh_subscription_pool_physical_ids }}"
-#    pools: "{{ rh_subscription_pools }}"
-  become: true
-  register: rhsm_status
-  when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
-  retries: 10
-
-- name: "Disabling all repos"
-  shell: "subscription-manager repos --disable={{ item }}"
-  with_items: "{{ rh_disabled_repos }}"
-  become: true
-  args:
-    creates: /opt/.firstboot
-
-- name: "Enabling needed repos"
-  shell: "subscription-manager repos --enable={{ item }}"
-  with_items: "{{ rh_enabled_repos }}"
-  become: true
-  args:
-    creates: /opt/.firstboot
-
-- name: "Installing rpms {{ redhat_packages }}"
-  yum:
-    name: "{{ item }}"
-    state: latest
-  with_items: "{{ redhat_packages }}"
-  become: true
-
-- name: "update dns with the real hostname given in openstack"
-  template:
-    src: vms/dns-updater.sh.j2
-    dest: /usr/sbin/ifup-local
-    owner: root
-    group: root
-    mode: 0755
-
-- name: "Update dns entry"
-  shell: "/usr/sbin/ifup-local || true"
-  become: true
-  ignore_errors: yes
-  args:
-    creates: /opt/.firstboot
-
-- name: "Updating MOTD"
-  template: 
-    src: tiger.ascii.j2
-    dest: /etc/motd 
-    owner: root 
-    group: root 
-    mode: 0644
-
-- name: "Create firstboot file"
-  shell: "touch /opt/.firstboot"
-  become: true
-  args:
-    creates: /opt/.firstboot
+- name: "First boot configuration block"
+  block:
+    - name: "Set up /etc/hosts file and hostname"
+      shell: |
+        shortname=$(hostname --short)
+        hostname=${shortname}.{{ dns_domain }}
+        echo "${hostname}" > /etc/hostname
+        hostnamectl set-hostname ${hostname}
+        grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
+        #service network restart
+      become: true
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Set ntp to true"
+      shell: |
+        ntpdate server 10.55.102.5 iburst
+        timedatectl set-ntp true
+        systemctl restart chronyd
+      poll: 0
+      async: 1
+      become: true
+      ignore_errors: yes
+      args:
+        creates: /opt/.firstboot
+    
+    - name: Set authorized key for root
+      authorized_key:
+        user: root
+        state: present
+        key: "{{ cloud_user_pub_key }}"
+    
+    - name: "Enabling and restarting services {{ enabled_svcs }}"
+      service:
+        name: "{{ item }}"
+        #state: restarted
+        enabled: yes
+      with_items: "{{ enabled_svcs }}"
+      become: true
+    
+    - name: "Stopping and disabling services {{ disabled_svcs }}"
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      with_items: "{{ disabled_svcs }}"
+      ignore_errors: yes
+      become: true
+    
+    - name: "Check if we are registered"
+      shell: "subscription-manager status || true"
+      register: rhsm_reg
+    
+    - name: Register and subscribe to multiple pools for virtual hosts
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_subscription_pool_ids }}"
+    #    pools: "{{ rh_subscription_pools }}"
+      become: true
+      register: rhsm_status
+      when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
+      retries: 10
+    
+    - name: Register and subscribe to multiple pools for physical hosts
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_subscription_pool_physical_ids }}"
+    #    pools: "{{ rh_subscription_pools }}"
+      become: true
+      register: rhsm_status
+      when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
+      retries: 10
+    
+    - name: "Disabling all repos"
+      shell: "subscription-manager repos --disable={{ item }}"
+      with_items: "{{ rh_disabled_repos }}"
+      become: true
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Enabling needed repos"
+      shell: "subscription-manager repos --enable={{ item }}"
+      with_items: "{{ rh_enabled_repos }}"
+      become: true
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Installing rpms {{ redhat_packages }}"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ redhat_packages }}"
+      become: true
+    
+    - name: "update dns with the real hostname given in openstack"
+      template:
+        src: vms/dns-updater.sh.j2
+        dest: /usr/sbin/ifup-local
+        owner: root
+        group: root
+        mode: 0755
+    
+    - name: "Update dns entry"
+      shell: "/usr/sbin/ifup-local || true"
+      become: true
+      ignore_errors: yes
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Updating MOTD"
+      template: 
+        src: tiger.ascii.j2
+        dest: /etc/motd 
+        owner: root 
+        group: root 
+        mode: 0644
+    
+    - name: "Create firstboot file"
+      shell: "touch /opt/.firstboot"
+      become: true
+      args:
+        creates: /opt/.firstboot
+  when: firstbootcheck.stdout == "false"
