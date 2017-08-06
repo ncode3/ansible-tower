@@ -24,6 +24,13 @@
         image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2','QCI-Template-bare.qcow2']
         #image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
       networks:
+        Management_101:
+          cidr: 10.55.101.0/24
+          vlanid: 101
+          subnet_name: NET101
+          dhcp_start: 10.55.101.10
+          dhcp_end: 10.55.101.50
+          gateway: 10.55.101.1
         Provisioning_102:
           cidr: 10.55.102.0/24
           vlanid: 102
@@ -31,6 +38,20 @@
           dhcp_start: 10.55.102.200
           dhcp_end: 10.55.102.225
           gateway: 10.55.102.1
+        Dev_103:
+          cidr: 10.55.103.0/24
+          vlanid: 103
+          subnet_name: NET103
+          dhcp_start: 10.55.103.200
+          dhcp_end: 10.55.103.225
+          gateway: 10.55.103.1
+        Test_104:
+          cidr: 10.55.104.0/24
+          vlanid: 104
+          subnet_name: NET104
+          dhcp_start: 10.55.104.200
+          dhcp_end: 10.55.104.225
+          gateway: 10.55.104.1
         Storage_105:
           cidr: 10.55.105.0/24
           vlanid: 105
@@ -38,6 +59,13 @@
           dhcp_start: 10.55.105.200
           dhcp_end: 10.55.105.225
           gateway: 10.55.105.1
+        Prod_106:
+          cidr: 10.55.106.0/24
+          vlanid: 106
+          subnet_name: NET106
+          dhcp_start: 10.55.106.200
+          dhcp_end: 10.55.106.225
+          gateway: 10.55.106.1
   tasks:
     - name: "Check if project exists, ignore the failure if it doesn't exist"
       shell: |

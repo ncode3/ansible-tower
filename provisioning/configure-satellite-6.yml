@@ -119,8 +119,8 @@
     sat6_url: "https://{{ ansible_fqdn }}/"
     sat6_user: "admin"
     sat6_pass: "redhat123"
-    fusor_installer_lease_from: 10.55.102.200
-    fusor_installer_lease_to: 10.55.102.211
+    fusor_installer_lease_from: 10.55.101.200
+    fusor_installer_lease_to: 10.55.101.211
   tasks:
   - name: "Update firewall port for Sat6"
     shell: |

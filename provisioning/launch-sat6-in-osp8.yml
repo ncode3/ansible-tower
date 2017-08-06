@@ -9,7 +9,8 @@
       state: present
       image: "QCI Template"
       flavor: "m1.large"
-      network: "Provisioning_102"
+      network: "IMPI_101"
+      #network: "Provisioning_102"
       availability_zone: "nova"
       security_groups: "default"
       region_name: "RegionOne"

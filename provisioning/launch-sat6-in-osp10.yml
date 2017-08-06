@@ -17,7 +17,8 @@
       state: present
       image: "QCI Template"
       flavor: "m1.large"
-      network: "Provisioning_102"
+      network: "Management_101"
+      #network: "Provisioning_102"
       availability_zone: "nova"
       security_groups: Redhat_Lab-sg
       region_name: "RegionOne"
