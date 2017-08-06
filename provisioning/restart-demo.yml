@@ -8,6 +8,7 @@
         openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID'
       become: true
       register: vms
+      ignore_errors: yes
 
     - name: "delete all the vms off of osp10"
       shell: |
@@ -16,6 +17,7 @@
         sleep 30
       become: true
       with_items: "{{ vms.stdout.split() }}"
+      ignore_errors: yes
 
     - name: "update all the ansible tower osp10 repos and sleep 5 mins"
       shell: |
@@ -28,4 +30,5 @@
         - 310
         - 719
         - 720
+      ignore_errors: yes
 - include: reimage-servers.yml
