@@ -247,13 +247,14 @@
         domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
         hammer location add-domain --domain-id=${domainid} --name '{{ item.location }}'
     with_items: "{{ sat6.subnets }}"
+    ignore_errors: yes
 
   - name: "Adding Subnets to Locations"
     shell: |
         subnetid=$(hammer subnet list  | grep {{ item.name }} | awk '{print $1}')
         hammer location add-subnet --subnet-id=${subnetid} --name '{{ item.location }}'
     with_items: "{{ sat6.subnets }}"
-
+    ignore_errors: yes
 
   - name: "Provisioning Satellite 6 - upload manifest"
     shell: |
