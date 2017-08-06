@@ -98,4 +98,4 @@
 #      when: os_packstack_use_answerfile == "no"
 
 ## customize openstack
-- include: "openstack-glance-import.yml"
+- include: "configure-osp10.yml"
