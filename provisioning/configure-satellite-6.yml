@@ -12,37 +12,31 @@
   hosts: all
   vars:
     compute_resources:
-      OSP8:
+      - name: 'OSP8 Redhat Lab'
         description: 'Openstack 8 Redhat Lab'
-        user: dtaylor
+        user: 'dtaylor'
         pass: "{{ ipmi_pass }}"
         tenant: ""
         url: "http://10.55.2.155:5000/v2.0/tokens"
-      OSP8:
+      - name: 'OSP8 Masked Admins'
         description: 'Openstack 8 Masked_Admins'
         user: dtaylor
         pass: redhat123
         tenant: Masked_Admins
         url: "http://10.55.2.155:5000/v2.0/tokens"
-      OSP10:
+      - name: 'OSP10'
         description: 'Openstack 10'
         user: dtaylor
         pass: redhat123
         tenant: ""
         url: "http://10.55.102.158:5000/v2.0/tokens"
     sat6:
-      subnet:
-        name: "10.55.103.0/24"
-        gw: "10.55.103.1"
-        network: "10.55.103.0"
-        mask: "255.255.255.0"
-        dns: "10.55.102.5"
       environments:
-        Development:
+        - name: 'Development'
           prior: 'Library'
-        Testing:
+        - name: 'Testing'
           prior: 'Development'
-        Production:
+        - name: 'Production'
           prior: 'Testing'
       locations:
         - "Legacy_Servers"
@@ -116,7 +110,6 @@
     sat6_default_location: Private_Cloud
     sat6_default_hostcollection: RHEL 7 x86_64
     sat6_default_hostgroup: "RHEL 7 x86_64 Hostgroup"
-    sat6_domain: "sat6.maskedadmins.com"
     sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
     sat6_pool_ids: ['']
     sat6_enabled_repos:
@@ -126,10 +119,8 @@
     sat6_url: "https://{{ ansible_fqdn }}/"
     sat6_user: "admin"
     sat6_pass: "redhat123"
-    sat6_domain: "sat6.maskedadmins.com"
     fusor_installer_lease_from: 10.55.102.200
     fusor_installer_lease_to: 10.55.102.211
-    dns_domain: "sat6.maskedadmins.com"
   tasks:
   - name: "Update firewall port for Sat6"
     shell: |
@@ -221,11 +212,11 @@
     shell: |
         domainid=$(hammer domain list  | grep {{ item.value.domain }} | awk '{print $1}')
         hammer subnet create --domain-ids=${domainid} \
-        --gateway="{{ item.value.gw }}" \
-        --mask="{{ item.value.mask }}" \
-        --name='{{ item.value.name }}' \
-        --tftp-id=1 --network='{{ item.value.network }}' \
-        --dns-primary='{{ item.value.dns }}'
+        --gateway="{{ item.gw }}" \
+        --mask="{{ item.mask }}" \
+        --name='{{ item.name }}' \
+        --tftp-id=1 --network='{{ item.network }}' \
+        --dns-primary='{{ item.dns }}'
     with_items: "{{ sat6.subnets }}"
 
   - name: "Adding Domains to Orgs and Locations"
@@ -246,15 +237,15 @@
 
   - name: "Adding Domains to Locations"
     shell: |
-        domainid=$(hammer domain list  | grep {{ item.value.domain }} | awk '{print $1}')
-        hammer location add-domain --domain-id=${domainid} --name '{{ item.value.location }}'
-    with_dict: "{{ sat6.subnets }}"
+        domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
+        hammer location add-domain --domain-id=${domainid} --name '{{ item.location }}'
+    with_items: "{{ sat6.subnets }}"
 
   - name: "Adding Subnets to Locations"
     shell: |
-        subnetid=$(hammer subnet list  | grep {{ item.value.name }} | awk '{print $1}')
-        hammer location add-subnet --subnet-id=${subnetid} --name '{{ item.value.location }}'
-    with_dict: "{{ sat6.subnets }}"
+        subnetid=$(hammer subnet list  | grep {{ item.name }} | awk '{print $1}')
+        hammer location add-subnet --subnet-id=${subnetid} --name '{{ item.location }}'
+    with_items: "{{ sat6.subnets }}"
 
 
   - name: "Provisioning Satellite 6 - upload manifest"
@@ -290,10 +281,10 @@
   - name: "Provisioning Satellite 6 Lifecycle"
     shell: |
         # Create our application life cycle
-        hammer lifecycle-environment create --name "{{ item.key }}" \
+        hammer lifecycle-environment create --name "{{ item.name }}" \
         --description "Environment for {{ sat6_default_org }}'s {{ item.key }} Team" \
-        --prior "{{ item.value.prior }}" --organization "{{ sat6_default_org }}" && touch /root/.setup/step6
-    with_dict: "{{ sat6.environments }}"
+        --prior "{{ item.prior }}" --organization "{{ sat6_default_org }}" && touch /root/.setup/step6
+    with_items: "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step6
 
@@ -315,8 +306,8 @@
   - name: "Promoting Environments {{ sat6.environments }}"
     shell: |
         hammer content-view version promote --content-view "Base" --version 1 \
-        --to-lifecycle-environment "{{ item.key }}" --organization "{{ sat6_default_org }}"
-    with_dict: "{{ sat6.environments }}"
+        --to-lifecycle-environment "{{ item.name }}" --organization "{{ sat6_default_org }}"
+    with_items: "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step8
 
@@ -327,11 +318,11 @@
 
   - name: "Creating activation keys for environments"
     shell: |
-      hammer activation-key create --name "{{ sat6_default_org }}-{{ item.key }}-key" \
-      --unlimited-hosts --description "Example activation key for {{ item.key }}" \
-      --lifecycle-environment "{{ item.key }}" --content-view "Base" \
+      hammer activation-key create --name "{{ sat6_default_org }}-{{ item.name }}-key" \
+      --unlimited-hosts --description "Example activation key for {{ item.name }}" \
+      --lifecycle-environment "{{ item.name }}" --content-view "Base" \
       --organization "{{ sat6_default_org }}"
-    with_dict: "{{ sat6.environments }}"
+    with_items: "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step9
 
@@ -359,11 +350,10 @@
 
   - name: "Enabling sat tools repo in the keys"
     shell: |
-      hammer activation-key content-override --name "{{ sat6_default_org }}-{{ item.value.key }}-key" \
+      hammer activation-key content-override --name "{{ sat6_default_org }}-{{ item.name }}-key" \
       --content-label rhel-7-server-satellite-tools-6.2-rpms \
       --value 1 --organization "{{ sat6_default_org }}"
-    with_dict:
-      - "{{ sat6.environments }}"
+    with_items: "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step12
 
@@ -374,8 +364,8 @@
 
   - name: "Adding host collection to activation keys"
     shell: |
-      hammer activation-key add-host-collection --name='{{ sat6_default_org }}-{{ item.value.key }}-key' --host-collection='{{ sat6_default_hostcollection }}' --organization={{ sat6_default_org }}
-    with_dict: "{{ sat6.environments }}"
+      hammer activation-key add-host-collection --name='{{ sat6_default_org }}-{{ item.name }}-key' --host-collection='{{ sat6_default_hostcollection }}' --organization={{ sat6_default_org }}
+    with_items: "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step14
 
@@ -443,16 +433,16 @@
   - name: "Add Openstack Compute Resources"
     shell: |
       hammer compute-resource create \
-      --name "{{ item.key }}" \
-      --description "{{ item.value.description }}" \
+      --name "{{ item.name }}" \
+      --description "{{ item.description }}" \
       --locations "{{ sat6_default_location }}" \
       --organizations "{{ sat6_default_org }}" \
       --provider  Openstack \
-      --user {{ item.value.user }}\
-      --password {{ item.value.pass }} \
-      --tenant="{{ item.value.tenant }}" \
-      --url {{ item.value.url }}
-    with_dict: "{{ compute_resources }}"
+      --user {{ item.user }}\
+      --password {{ item.pass }} \
+      --tenant="{{ item.tenant }}" \
+      --url {{ item.url }}
+    with_items: "{{ compute_resources }}"
     args:
       creates: /root/.setup/step19
 
