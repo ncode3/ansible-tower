@@ -186,9 +186,9 @@
 
   - name: "Creating Orgs for Satellite 6"
     shell: |
-        hammer organization create --name "{{ item.value.name }}" --label "{{ item.value.label }}" \
-        --description "{{ item.value.description }}"
-    with_dict: "{{ sat6.orgs }}"
+        hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
+        --description "{{ item.description }}"
+    with_items: "{{ sat6.orgs }}"
 
   - name: "Creating Locations for Satellite 6"
     shell: |
@@ -226,7 +226,7 @@
         --name='{{ item.value.name }}' \
         --tftp-id=1 --network='{{ item.value.network }}' \
         --dns-primary='{{ item.value.dns }}'
-    with_dict: "{{ sat6.subnets }}"
+    with_items: "{{ sat6.subnets }}"
 
   - name: "Adding Domains to Orgs and Locations"
     shell: |
@@ -359,10 +359,10 @@
 
   - name: "Enabling sat tools repo in the keys"
     shell: |
-      hammer activation-key content-override --name "{{ sat6_default_org }}-{{ item.key }}-key" \
+      hammer activation-key content-override --name "{{ sat6_default_org }}-{{ item.value.key }}-key" \
       --content-label rhel-7-server-satellite-tools-6.2-rpms \
       --value 1 --organization "{{ sat6_default_org }}"
-    with_items:
+    with_dict:
       - "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step12
@@ -374,9 +374,8 @@
 
   - name: "Adding host collection to activation keys"
     shell: |
-      hammer activation-key add-host-collection --name='{{ sat6_default_org }}-{{ item.key }}-key' --host-collection='{{ sat6_default_hostcollection }}' --organization={{ sat6_default_org }}
-    with_items:
-      - "{{ sat6.environments }}"
+      hammer activation-key add-host-collection --name='{{ sat6_default_org }}-{{ item.value.key }}-key' --host-collection='{{ sat6_default_hostcollection }}' --organization={{ sat6_default_org }}
+    with_dict: "{{ sat6.environments }}"
     args:
       creates: /root/.setup/step14
 
@@ -429,12 +428,12 @@
       OSID=$(hammer --csv os list | grep 'RedHat 7' | awk -F, {'print $1'})
       CAID=1
       PROXYID=1
-      hammer hostgroup create --architecture="x86_64" --domain="{{ item.value.domain }}"  --medium-id="${MEDID}" --locations="{{ item.value.location }}" \
-      --organization="{{ item.0.name }}" --name="{{ sat6_hostgroup }} for {{ item.value.domain }}" --subnet="{{ item.subnet.name }}" --partition-table-id="${PARTID}" \
+      hammer hostgroup create --architecture="x86_64" --domain="{{ item.domain }}"  --medium-id="${MEDID}" --locations="{{ item.location }}" \
+      --organization="{{ item.name }}" --name="{{ sat6_hostgroup }} for {{ item.domain }}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" && \
     args:
       creates: /root/.setup/step18
-    with_dict: "{{ sat6.subnets }}"
+    with_items: "{{ sat6.subnets }}"
 
   - name: "Compute Resources Complete"
     shell: touch /root/.setup/step18
