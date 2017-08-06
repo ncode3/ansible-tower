@@ -164,53 +164,53 @@
         group: root
         mode: 0644
 
-  - name: "Copy over manifest"
-    #template:
-    copy:
-        dest: /tmp/manifest.zip
-        #src: "satellite/{{ sat6_manifest }}"
-        src: "/opt/satellite/{{ sat6_manifest }}"
-        owner: root
-        group: root
-        mode: 0644
-
-
-  - name: "Creating Orgs for Satellite 6"
-    shell: |
-        hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
-        --description "{{ item.description }}"
-    with_items: "{{ sat6.orgs }}"
-
-  - name: "Creating Locations for Satellite 6"
-    shell: |
-        hammer location create --name "{{ item }}"
-    with_items: "{{ sat6.locations }}"
-
-  - name: "Adding Orgs to Locations"
-    shell: |
-        hammer location add-organization --name "{{ item.1 }}" --organization "{{ item.0.name }}"
-    with_subelements:
-      - "{{ sat6.orgs }}"
-      - locations
-
-  - name: "Setting default org and location Satellite 6"
-    shell: |
-        defaultorg=$(hammer organization list  | grep {{ sat6_default_org }} | awk '{print $1}')
-        defaultloc=$(hammer location list  | grep {{ sat6_default_location }} | awk '{print $1}')
-        hammer defaults add --param-name organization_id --param-value $defaultorg
-        hammer defaults add --param-name location_id --param-value $defaultloc && touch /root/.setup/step1
-    args:
-      creates: /root/.setup/step1
-    ignore_errors: yes
-
-  - name: "Creating domains"
-    shell: |
-        hammer domain create --name "{{ item }}"
-    with_items: "{{ sat6.domains }}"
+#  - name: "Copy over manifest"
+#    #template:
+#    copy:
+#        dest: /tmp/manifest.zip
+#        #src: "satellite/{{ sat6_manifest }}"
+#        src: "/opt/satellite/{{ sat6_manifest }}"
+#        owner: root
+#        group: root
+#        mode: 0644
+#
+#
+#  - name: "Creating Orgs for Satellite 6"
+#    shell: |
+#        hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
+#        --description "{{ item.description }}"
+#    with_items: "{{ sat6.orgs }}"
+#
+#  - name: "Creating Locations for Satellite 6"
+#    shell: |
+#        hammer location create --name "{{ item }}"
+#    with_items: "{{ sat6.locations }}"
+#
+#  - name: "Adding Orgs to Locations"
+#    shell: |
+#        hammer location add-organization --name "{{ item.1 }}" --organization "{{ item.0.name }}"
+#    with_subelements:
+#      - "{{ sat6.orgs }}"
+#      - locations
+#
+#  - name: "Setting default org and location Satellite 6"
+#    shell: |
+#        defaultorg=$(hammer organization list  | grep {{ sat6_default_org }} | awk '{print $1}')
+#        defaultloc=$(hammer location list  | grep {{ sat6_default_location }} | awk '{print $1}')
+#        hammer defaults add --param-name organization_id --param-value $defaultorg
+#        hammer defaults add --param-name location_id --param-value $defaultloc && touch /root/.setup/step1
+#    args:
+#      creates: /root/.setup/step1
+#    ignore_errors: yes
+#
+#  - name: "Creating domains"
+#    shell: |
+#        hammer domain create --name "{{ item }}"
+#    with_items: "{{ sat6.domains }}"
 
   - name: "Creating subnets and adding to domains"
     shell: |
-        domainid=$(hammer domain list  | grep {{ item.value.domain }} | awk '{print $1}')
+        domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
         hammer subnet create --domain-ids=${domainid} \
         --gateway="{{ item.gw }}" \
         --mask="{{ item.mask }}" \
