@@ -122,57 +122,71 @@
     fusor_installer_lease_from: 10.55.102.200
     fusor_installer_lease_to: 10.55.102.211
   tasks:
-  - name: "Update firewall port for Sat6"
+  - name: "Setup check"
     shell: |
-        echo "calling update firewall port for sat6"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
-
-  - name: "Run fusor-installer to setup Sat6"
-    shell: |
-      echo -e "8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
-      --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
-      cat fusor-installer.stdout
-      cat fusor-installer.stderr
+      if [ -e "/opt/satellite/{{ sat6_manifest }}" ]
+      then
+        echo "true"
+      else
+        echo "false"
+      fi
+    register: initialsetup
     become: true
-    args:
-      creates: /root/fusor-installer.stdout
 
-#  - name: "Enabling needed repos for updates"
-#    shell: "subscription-manager repos --enable=rhel-7-server-satellite-tools-6.2-rpms"
-#
-#  - name: "yum update this bad boy"
-#    shell: |
-#      yum -y update
-
-  - name: "make hammer config dir"
-    file:
-      path: /root/.hammer
-      state: directory
-      mode: 0755
-
-  - name: "make setup tracking dir"
-    file:
-      path: /root/.setup
-      state: directory
-      mode: 0755
-
-  - name: "Configure hammer cli tool"
-    template:
-        dest: /etc/hammer/cli_config.yml
-        src: satellite/cli_config.yml.j2
-        owner: root
-        group: root
-        mode: 0644
-
-  - name: "Copy over manifest"
-    #template:
-    copy:
-        dest: /tmp/manifest.zip
-        #src: "satellite/{{ sat6_manifest }}"
-        src: "/opt/satellite/{{ sat6_manifest }}"
-        owner: root
-        group: root
-        mode: 0644
+  - name: "Block to perform initial setup"
+    block:
+      - name: "Update firewall port for Sat6"
+        shell: |
+            echo "calling update firewall port for sat6"
+            curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+    
+      - name: "Run fusor-installer to setup Sat6"
+        shell: |
+          echo -e "8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
+          --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
+          cat fusor-installer.stdout
+          cat fusor-installer.stderr
+        become: true
+        args:
+          creates: /root/fusor-installer.stdout
+    
+    #  - name: "Enabling needed repos for updates"
+    #    shell: "subscription-manager repos --enable=rhel-7-server-satellite-tools-6.2-rpms"
+    #
+    #  - name: "yum update this bad boy"
+    #    shell: |
+    #      yum -y update
+    
+      - name: "make hammer config dir"
+        file:
+          path: /root/.hammer
+          state: directory
+          mode: 0755
+    
+      - name: "make setup tracking dir"
+        file:
+          path: /root/.setup
+          state: directory
+          mode: 0755
+    
+      - name: "Configure hammer cli tool"
+        template:
+            dest: /etc/hammer/cli_config.yml
+            src: satellite/cli_config.yml.j2
+            owner: root
+            group: root
+            mode: 0644
+    
+      - name: "Copy over manifest"
+        #template:
+        copy:
+            dest: /tmp/manifest.zip
+            #src: "satellite/{{ sat6_manifest }}"
+            src: "/opt/satellite/{{ sat6_manifest }}"
+            owner: root
+            group: root
+            mode: 0644
+    when: initialsetup.stdout == "false"
 
 
   - name: "Creating Orgs for Satellite 6"
@@ -180,13 +194,25 @@
         hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
         --description "{{ item.description }}"
     with_items: "{{ sat6.orgs }}"
-    ignore_errors: yes
+    args:
+      creates: /root/.setup/step1
+
+  - name: "Org creation Complete"
+    shell: touch /root/.setup/step1
+    args:
+      creates: /root/.setup/step1
 
   - name: "Creating Locations for Satellite 6"
     shell: |
         hammer location create --name "{{ item }}"
     with_items: "{{ sat6.locations }}"
-    ignore_errors: yes
+    args:
+      creates: /root/.setup/step2
+
+  - name: "Location creation Complete"
+    shell: touch /root/.setup/step2
+    args:
+      creates: /root/.setup/step2
 
   - name: "Adding Orgs to Locations"
     shell: |
@@ -194,7 +220,13 @@
     with_subelements:
       - "{{ sat6.orgs }}"
       - locations
-    ignore_errors: yes
+    args:
+      creates: /root/.setup/step3
+
+  - name: "Org to Location creation Complete"
+    shell: touch /root/.setup/step3
+    args:
+      creates: /root/.setup/step3
 
 #  - name: "Setting default org and location Satellite 6"
 #    shell: |
@@ -206,61 +238,115 @@
 #      creates: /root/.setup/step1
 #    ignore_errors: yes
 
-  - name: "Creating domains"
+  - name: "Subnet and Domain check"
     shell: |
-        hammer domain create --name "{{ item }}"
-    with_items: "{{ sat6.domains }}"
-    ignore_errors: yes
+      if [ -e "/root/.setup/step9" ]
+      then
+        echo "true"
+      else
+        echo "false"
+      fi
+    register: subnetstep
+    become: true
 
-  - name: "Creating subnets and adding to domains"
-    shell: |
-        domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
-        hammer subnet create --domain-ids=${domainid} \
-        --gateway="{{ item.gw }}" \
-        --mask="{{ item.mask }}" \
-        --name='{{ item.name }}' \
-        --tftp-id=1 --network='{{ item.network }}' \
-        --dns-primary='{{ item.dns }}'
-    with_items: "{{ sat6.subnets }}"
-    ignore_errors: yes
-
-  - name: "Adding Domains to Orgs and Locations"
-    shell: |
-        domainid=$(hammer domain list  | grep {{ item.1 }} | awk '{print $1}')
-        hammer organization add-domain --domain-id=${domainid} --name '{{ item.0.name }}'
-    with_subelements:
-      - "{{ sat6.orgs }}"
-      - domains
-    ignore_errors: yes
-
-  - name: "Adding Subnets to Orgs"
-    shell: |
-        subnetid=$(hammer subnet list  | grep {{ item.1 }} | awk '{print $1}')
-        hammer organization add-subnet --subnet-id=${subnetid} --name '{{ item.0.name }}'
-    with_subelements:
-      - "{{ sat6.orgs }}"
-      - subnets
-    ignore_errors: yes
-
-  - name: "Adding Domains to Locations"
-    shell: |
-        domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
-        hammer location add-domain --domain-id=${domainid} --name '{{ item.location }}'
-    with_items: "{{ sat6.subnets }}"
-    ignore_errors: yes
-
-  - name: "Adding Subnets to Locations"
-    shell: |
-        subnetid=$(hammer subnet list  | grep {{ item.name }} | awk '{print $1}')
-        hammer location add-subnet --subnet-id=${subnetid} --name '{{ item.location }}'
-    with_items: "{{ sat6.subnets }}"
-    ignore_errors: yes
+  - name: "Domain and Subnet creation"
+    block:
+      - name: "Creating domains"
+        shell: |
+            hammer domain create --name "{{ item }}"
+        with_items: "{{ sat6.domains }}"
+        args:
+          creates: /root/.setup/step4
+    
+      - name: "Domain creation Complete"
+        shell: touch /root/.setup/step4
+        args:
+          creates: /root/.setup/step4
+    
+      - name: "Creating subnets and adding to domains"
+        shell: |
+            domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
+            hammer subnet create --domain-ids=${domainid} \
+            --gateway={{ item.gw }} \
+            --mask={{ item.mask }} \
+            --name={{ item.name }} \
+            --tftp-id=1 --network={{ item.network }} \
+            --dns-primary={{ item.dns }}
+        with_items: "{{ sat6.subnets }}"
+        args:
+          creates: /root/.setup/step5
+    
+      - name: "Subnet creation Complete"
+        shell: touch /root/.setup/step5
+        args:
+          creates: /root/.setup/step5
+    
+      - name: "Adding Domains to Orgs and Locations"
+        shell: |
+            domainid=$(hammer domain list  | grep {{ item.1 }} | awk '{print $1}')
+            hammer organization add-domain --domain-id=${domainid} --name '{{ item.0.name }}'
+        with_subelements:
+          - "{{ sat6.orgs }}"
+          - domains
+        args:
+          creates: /root/.setup/step6
+    
+      - name: "Subnet creation Complete"
+        shell: touch /root/.setup/step6
+        args:
+          creates: /root/.setup/step6
+    
+      - name: "Adding Subnets to Orgs"
+        shell: |
+            subnetid=$(hammer subnet list  | grep {{ item.1 }} | awk '{print $1}')
+            hammer organization add-subnet --subnet-id=${subnetid} --name '{{ item.0.name }}'
+        with_subelements:
+          - "{{ sat6.orgs }}"
+          - subnets
+        args:
+          creates: /root/.setup/step7
+    
+      - name: "Add subnet to org Complete"
+        shell: touch /root/.setup/step7
+        args:
+          creates: /root/.setup/step7
+    
+      - name: "Adding Domains to Locations"
+        shell: |
+            domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
+            hammer location add-domain --domain-id=${domainid} --name '{{ item.location }}'
+        with_items: "{{ sat6.subnets }}"
+        args:
+          creates: /root/.setup/step8
+    
+      - name: "Add Domains to location Complete"
+        shell: touch /root/.setup/step8
+        args:
+          creates: /root/.setup/step8
+    
+      - name: "Adding Subnets to Locations"
+        shell: |
+            subnetid=$(hammer subnet list  | grep {{ item.name }} | awk '{print $1}')
+            hammer location add-subnet --subnet-id=${subnetid} --name '{{ item.location }}'
+        with_items: "{{ sat6.subnets }}"
+        args:
+          creates: /root/.setup/step9
+    
+      - name: "Add Subnets to location Complete"
+        shell: touch /root/.setup/step9
+        args:
+          creates: /root/.setup/step9
+    when: subnetstep.stdout == "false"
+    always:
+      - name: "Subnet section complete"
+        debug:  msg="Looks like we are done with subnet and domain section"
 
   - name: "Provisioning Satellite 6 - upload manifest"
     shell: |
-        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_default_org }}" && touch /root/.setup/step2
+        hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_default_org }}" && \
+        touch /root/.setup/step10
     args:
-      creates: /root/.setup/step2
+      creates: /root/.setup/step10
 
   - name: "Provisioning Satellite 6 - configure repositories"
     shell: |
@@ -268,33 +354,43 @@
         --name "{{ item }}" \
         --releasever "7Server" --basearch "x86_64" \
         --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_default_org }}"
-    args:
-      creates: /root/.setup/step3
     with_items: "{{ sat6_enabled_repos }}"
+    args:
+      creates: /root/.setup/step11
+
+  - name: "Repo config Complete"
+    shell: touch /root/.setup/step11
+    args:
+      creates: /root/.setup/step11
 
   - name: "Provisioning Satellite 6 - Syncing Content. This takes a long time."
     shell: |
         hammer product synchronize --name "Red Hat Enterprise Linux Server" \
-        --organization "{{ sat6_default_org }}" && touch /root/.setup/step4
+        --organization "{{ sat6_default_org }}" && \
+        touch /root/.setup/step12
     args:
-      creates: /root/.setup/step4
+      creates: /root/.setup/step12
 
   - name: "Provisioning Satellite 6 Host Collection"
     shell: |
-        # Create our application life cycle
-        hammer host-collection create --name='{{ sat6_default_hostcollection }}' --organization "{{ sat6_default_org }}" && touch /root/.setup/step5
+        hammer host-collection create --name={{ sat6_default_hostcollection }} --organization "{{ sat6_default_org }}" && \
+        touch /root/.setup/step13
     args:
-      creates: /root/.setup/step5
+      creates: /root/.setup/step13
 
   - name: "Provisioning Satellite 6 Lifecycle"
     shell: |
-        # Create our application life cycle
         hammer lifecycle-environment create --name "{{ item.name }}" \
         --description "Environment for {{ sat6_default_org }}'s {{ item.key }} Team" \
-        --prior "{{ item.prior }}" --organization "{{ sat6_default_org }}" && touch /root/.setup/step6
+        --prior "{{ item.prior }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6.environments }}"
     args:
-      creates: /root/.setup/step6
+      creates: /root/.setup/step14
+
+  - name: "Provisionging Lifecycle Complete"
+    shell: touch /root/.setup/step14
+    args:
+      creates: /root/.setup/step14
 
   - name: "Creating Base Content View"
     shell: |
@@ -307,9 +403,10 @@
         --organization "{{ sat6_default_org }}"
         hammer content-view publish --name "Base" \
         --description "Initial content view for our operating system" \
-        --organization "{{ sat6_default_org }}" && touch /root/.setup/step7
+        --organization "{{ sat6_default_org }}" && \
+        touch /root/.setup/step15
     args:
-      creates: /root/.setup/step7
+      creates: /root/.setup/step15
 
   - name: "Promoting Environments {{ sat6.environments }}"
     shell: |
@@ -317,12 +414,12 @@
         --to-lifecycle-environment "{{ item.name }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6.environments }}"
     args:
-      creates: /root/.setup/step8
+      creates: /root/.setup/step16
 
   - name: "Promotion Complete"
-    shell: touch /root/.setup/step8
+    shell: touch /root/.setup/step16
     args:
-      creates: /root/.setup/step8
+      creates: /root/.setup/step16
 
   - name: "Creating activation keys for environments"
     shell: |
@@ -332,14 +429,13 @@
       --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6.environments }}"
     args:
-      creates: /root/.setup/step9
+      creates: /root/.setup/step17
 
   - name: "Activation keys Complete"
-    shell: touch /root/.setup/step9
+    shell: touch /root/.setup/step17
     args:
-      creates: /root/.setup/step9
+      creates: /root/.setup/step17
 
-  # step 10 deleted
   - name: "Adding subs to activation keys for environments"
     shell: |
       hammer activation-key add-subscription --name "{{ sat6_default_org }}-{{ item[0]['key'] }}-key" \
@@ -349,12 +445,12 @@
       - "{{ sat6.environments }}"
       - "{{ sat6_pool_ids }}"
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step18
 
   - name: "Adding subs to activation keys Complete"
-    shell: touch /root/.setup/step11
+    shell: touch /root/.setup/step18
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step18
 
   - name: "Enabling sat tools repo in the keys"
     shell: |
@@ -363,34 +459,34 @@
       --value 1 --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6.environments }}"
     args:
-      creates: /root/.setup/step12
+      creates: /root/.setup/step19
 
   - name: "Step Complete"
-    shell: touch /root/.setup/step12
+    shell: touch /root/.setup/step19
     args:
-      creates: /root/.setup/step12
+      creates: /root/.setup/step19
 
   - name: "Adding host collection to activation keys"
     shell: |
-      hammer activation-key add-host-collection --name='{{ sat6_default_org }}-{{ item.name }}-key' --host-collection='{{ sat6_default_hostcollection }}' --organization={{ sat6_default_org }}
+      hammer activation-key add-host-collection --name={{ sat6_default_org }}-{{ item.name }}-key --host-collection={{ sat6_default_hostcollection }} --organization={{ sat6_default_org }}
     with_items: "{{ sat6.environments }}"
     args:
-      creates: /root/.setup/step14
+      creates: /root/.setup/step20
 
 
   - name: "Step Complete"
-    shell: touch /root/.setup/step14
+    shell: touch /root/.setup/step20
     args:
-      creates: /root/.setup/step14
+      creates: /root/.setup/step20
 
   - name: "Add all subscriptions to activation keys"
     shell: |
       for i in $(hammer --csv activation-key list --organization={{ sat6_default_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do \
       for j in $(hammer --csv subscription list --organization={{ sat6_default_org }}  | awk -F, {'print $1'} | grep -vi '^ID'); do \
       hammer activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
-      touch /root/.setup/step15
+      touch /root/.setup/step21
     args:
-      creates: /root/.setup/step15
+      creates: /root/.setup/step21
     ignore_errors: yes
 
   - name: "Add partition table to OS"
@@ -400,9 +496,9 @@
       do
       hammer partition-table add-operatingsystem --id="${PARTID}" --operatingsystem-id="${i}"  
       done && \
-      touch /root/.setup/step16
+      touch /root/.setup/step22
     args:
-      creates: /root/.setup/step16
+      creates: /root/.setup/step22
 
   - name: "Add kickstart pxe template to OS"
     shell: |
@@ -415,9 +511,9 @@
       hammer os add-config-template --id="${i}" --config-template-id="${SATID}"
       hammer os set-default-template --id="${i}" --config-template-id="${SATID}"
       done && \
-      touch /root/.setup/step17
+      touch /root/.setup/step23
     args:
-      creates: /root/.setup/step17
+      creates: /root/.setup/step23
 
   - name: "Add RHEL7 host group for each domain"
     shell: |
@@ -430,13 +526,13 @@
       --organization="{{ item.name }}" --name="{{ sat6_hostgroup }} for {{ item.domain }}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" && \
     args:
-      creates: /root/.setup/step18
+      creates: /root/.setup/step24
     with_items: "{{ sat6.subnets }}"
 
-  - name: "Compute Resources Complete"
-    shell: touch /root/.setup/step18
+  - name: "Host groups to domain Complete"
+    shell: touch /root/.setup/step24
     args:
-      creates: /root/.setup/step18
+      creates: /root/.setup/step24
 
   - name: "Add Openstack Compute Resources"
     shell: |
@@ -452,10 +548,10 @@
       --url {{ item.url }}
     with_items: "{{ compute_resources }}"
     args:
-      creates: /root/.setup/step19
+      creates: /root/.setup/step25
 
   - name: "Compute Resources Complete"
-    shell: touch /root/.setup/step19
+    shell: touch /root/.setup/step25
     args:
-      creates: /root/.setup/step19
+      creates: /root/.setup/step25
 
