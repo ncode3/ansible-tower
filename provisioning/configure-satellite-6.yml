@@ -531,7 +531,7 @@
       CAID=1
       PROXYID=1
       hammer hostgroup create --architecture="x86_64" --domain="{{ item.domain }}"  --medium-id="${MEDID}" --locations="{{ item.location }}" \
-      --organization="{{ item.name }}" --name="{{ sat6_hostgroup }} for {{ item.domain }}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
+      --organization="{{ item.name }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${OSID}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" && \
     args:
       creates: /root/.setup/step24
