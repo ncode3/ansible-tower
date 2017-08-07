@@ -24,11 +24,17 @@
         pass: redhat123
         tenant: Masked_Admins
         url: "http://10.55.2.155:5000/v2.0/tokens"
-      - name: 'OSP10'
+      - name: 'OSP10 Admin'
         description: 'Openstack 10'
         user: dtaylor
         pass: redhat123
-        tenant: ""
+        tenant: "admin"
+        url: "http://10.55.102.158:5000/v2.0/tokens"
+      - name: 'OSP10 Redhat Lab'
+        description: 'Openstack 10'
+        user: dtaylor
+        pass: redhat123
+        tenant: "Redhat_Lab"
         url: "http://10.55.102.158:5000/v2.0/tokens"
     sat6:
       environments:
@@ -557,7 +563,7 @@
       --locations "{{ sat6_default_location }}" \
       --organizations "{{ sat6_default_org }}" \
       --provider  Openstack \
-      --user {{ item.user }}\
+      --user {{ item.user }} \
       --password {{ item.pass }} \
       --tenant="{{ item.tenant }}" \
       --url {{ item.url }}
