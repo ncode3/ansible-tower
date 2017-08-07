@@ -389,7 +389,7 @@
   - name: "Provisioning Satellite 6 Lifecycle"
     shell: |
         hammer lifecycle-environment create --name "{{ item.name }}" \
-        --description "Environment for {{ sat6_default_org }}'s {{ item.key }} Team" \
+        --description "Environment for {{ sat6_default_org }}'s {{ item.name }} Team" \
         --prior "{{ item.prior }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6.environments }}"
     args:
