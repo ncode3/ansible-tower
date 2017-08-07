@@ -537,7 +537,7 @@
       for os in $OSID
       do
       hammer hostgroup create --architecture="x86_64" --domain="{{ item.domain }}"  --medium-id="${MEDID}" --locations="{{ item.location }}" \
-      --organization="{{ item.org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
+      --organization="{{ item.org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }} ${os}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base"
       done
     args:
