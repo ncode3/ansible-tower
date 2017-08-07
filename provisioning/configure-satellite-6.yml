@@ -115,7 +115,6 @@
     sat6_enabled_repos:
       - "Red Hat Enterprise Linux 7 Server (RPMs)"
       - "Red Hat Enterprise Linux 7 Server (Kickstart)"
-      - "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)"
     sat6_url: "https://{{ ansible_fqdn }}/"
     sat6_user: "admin"
     sat6_pass: "redhat123"
@@ -355,6 +354,15 @@
         --releasever "7Server" --basearch "x86_64" \
         --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos }}"
+    args:
+      creates: /root/.setup/step11
+
+  - name: "Provisioning Satellite 6 - tools repo"
+    shell: |
+        hammer repository-set enable \
+        --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
+        --basearch "x86_64" \
+        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_default_org }}"
     args:
       creates: /root/.setup/step11
 
