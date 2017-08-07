@@ -16,13 +16,13 @@
         description: 'Openstack 8 Redhat Lab'
         user: 'dtaylor'
         pass: "{{ ipmi_pass }}"
-        tenant: ""
+        tenant: "Redhat Lab"
         url: "http://10.55.2.155:5000/v2.0/tokens"
       - name: 'OSP8 Masked Admins'
         description: 'Openstack 8 Masked_Admins'
         user: dtaylor
-        pass: redhat123
-        tenant: Masked_Admins
+        pass: "{{ ipmi_pass }}"
+        tenant: "Masked_Admins"
         url: "http://10.55.2.155:5000/v2.0/tokens"
       - name: 'OSP10 Admin'
         description: 'Openstack 10'
