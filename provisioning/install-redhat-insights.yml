@@ -2,25 +2,25 @@
 - name: "Install Redhat Insights for System Patching"
   hosts: all
   tasks:
-    - name: Install Red Hat Access Insights Client
-      yum: name={{ item }} state=present
-      with_items:
-          - redhat-access-insights
-    
-    - name: Configure Red Hat Access Insights Client
-      template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
-    
     - name: Only register if this system hasn't been registered before
       stat: path=/etc/redhat-access-insights/.unregistered
       register: unreg
-    
-    - name: "Configure Red Hat Access Insights Client"
-      template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
+
+    - name: Install Redhat Insights and Register
+      block:
+        - name: Install Red Hat Access Insights Client
+          yum: name={{ item }} state=present
+          with_items:
+              - redhat-access-insights
+
+        - name: Configure Red Hat Access Insights Client
+          template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
+
+        - name: "Configure Red Hat Access Insights Client"
+          template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
+
+        - name: "Register to the Red Hat Access Insights Service"
+          command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
+          ignore_errors: yes
+          retries: 2
       when: unreg.stat.exists == false
-    
-    - name: "Register to the Red Hat Access Insights Service"
-      command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
-      when: unreg.stat.exists == false
-      ignore_errors: yes
-      retries: 2
-    
