@@ -446,7 +446,7 @@
 
   - name: "Adding subs to activation keys for environments"
     shell: |
-      hammer activation-key add-subscription --name "{{ sat6_default_org }}-{{ item[0]['key'] }}-key" \
+      hammer activation-key add-subscription --name "{{ sat6_default_org }}-{{ item[0]['name'] }}-key" \
       --subscription-id {{ item[1] }} \
       --organization "{{ sat6_default_org }}"
     with_nested:
