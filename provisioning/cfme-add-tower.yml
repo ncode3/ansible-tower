@@ -28,3 +28,4 @@
                 "password" : "{{ tower_pass }}"
               }' \
         https://{{ cfme_server }}/api/providers
+      ignore_errors: yes
