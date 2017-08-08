@@ -440,9 +440,9 @@
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
-        ssh 10.55.102.156 "shutdown -r +2"
-        ssh 10.55.102.157 "shutdown -r +2"
-        shutdown -r +2 && sleep 2
+        ssh 10.55.102.156 "shutdown -r +4"
+        ssh 10.55.102.157 "shutdown -r +4"
+        shutdown -r +4 && sleep 2
       args:
         chdir: /root
       become: true
