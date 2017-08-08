@@ -11,7 +11,7 @@
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
       cpupinning:
-        use: "yes"
+        use: "no"
         device: /dev/sda
       hugepages:
         use: "yes"
