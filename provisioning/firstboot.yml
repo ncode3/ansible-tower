@@ -19,7 +19,7 @@
 #         curl -k --data 'host_config_key={{ redhat_insights_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ redhat_insights_jobid }}/callback/"
 
 ## copy over the dynatrace monitoring installation and run it
-- include: "install-dynatrace.yml"
+##- include: "install-dynatrace.yml"
 
 
 ## playbook to install OSP 10 on physical nodes on firstboot
