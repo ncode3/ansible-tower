@@ -464,6 +464,7 @@
 
     - name: "Launching demos"
       shell: |
+        chmod 666 /var/log/nova/nova-manage.log
         echo "update the firewall port"
         curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8445\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
         # we sleep to allow time for the inventory to update between launching vms
