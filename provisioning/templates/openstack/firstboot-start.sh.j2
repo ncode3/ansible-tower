@@ -3,16 +3,16 @@ echo "update the firewall port"
 curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8445\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
 echo "Configure compute nodes"
 curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
+sleep 120
+echo "CFME launch job"
+curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
 sleep 700
 echo "Sat 6 launch job"
 curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
-sleep 120
-echo "Tower launch job"
-curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
-sleep 120
-echo "CMFE launch job"
+sleep 700
+echo "Ansible Tower launch job"
 curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-sleep 300
+sleep 600
 echo "OSE 3.5 launch job"
 curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
 touch /opt/firstboot.finished

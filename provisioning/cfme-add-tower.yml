@@ -1,5 +1,5 @@
 ---
-- name: "Add Tower provider to CFME"
+- name: "Add Ansible Tower Provider to CFME"
   hosts: tower.stack.maskedadmins.com
   vars:
     cfme_user: "admin"
@@ -12,7 +12,7 @@
     tower_server: "tower.stack.maskedadmins.com"
     tower_security: ssl
     tower_user: "admin"
-    tower_user: "ansible"
+    tower_pass: "ansible"
   tasks:
     - name: "Add Tower provider"
       shell: |
@@ -28,3 +28,4 @@
                 "password" : "{{ tower_pass }}"
               }' \
         https://{{ cfme_server }}/api/providers
+      ignore_errors: yes

@@ -11,7 +11,7 @@
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
       cpupinning:
-        use: "yes"
+        use: "no"
         device: /dev/sda
       hugepages:
         use: "yes"
@@ -440,16 +440,31 @@
 
     - name: "Reboot to new settings. Back in 10 mins or so"
       shell: |
-        ssh 10.55.102.156 "shutdown -r +2"
-        ssh 10.55.102.157 "shutdown -r +2"
-        shutdown -r +2 && sleep 2
+        ssh 10.55.102.156 "shutdown -r +4"
+        ssh 10.55.102.157 "shutdown -r +4"
+        shutdown -r +4 && sleep 2
       args:
         chdir: /root
       become: true
       when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
 
+    - name: "update all the ansible tower osp10 repos and sleep 3 mins"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' \
+        -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+        sleep 30
+      with_items:
+        - 226
+        - 1141
+        - 349
+        - 310
+        - 719
+        - 720
+      ignore_errors: yes
+
     - name: "Launching demos"
       shell: |
+        chmod 666 /var/log/nova/nova-manage.log
         echo "update the firewall port"
         curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8445\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
         # we sleep to allow time for the inventory to update between launching vms
