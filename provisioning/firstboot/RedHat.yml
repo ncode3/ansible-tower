@@ -83,6 +83,10 @@
     
   when: firstbootcheck.stdout == "false"
 
+- name: "Fall back to RHSM, Check if we are registered"
+  shell: "subscription-manager status || true"
+  register: rhsm_reg
+    
 - name: "Try to register to Satellite 6"
   block:
     - name: "Get the bootstrap python script"
@@ -100,14 +104,12 @@
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
         --rex \
-        --rex-user root
+        --rex-user root \
+        --force
       become: true
       register: satbootstrap
+  when: "'Overall Status: Current' not in rhsm_reg.stdout"
   rescue:
-    - name: "Fall back to RHSM, Check if we are registered"
-      shell: "subscription-manager status || true"
-      register: rhsm_reg
-    
     - name: Register and subscribe to multiple pools for virtual hosts
       redhat_subscription:
         state: present
