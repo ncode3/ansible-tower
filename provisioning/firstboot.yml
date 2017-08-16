@@ -13,8 +13,8 @@
       user: "admin"
       pass: "redhat123"
       org: Redhat_Lab
-      hostgroup: "RHEL 7 x86_64 Hostgroup"
-      location: Redhat_Lab
+      hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com 1"
+      location: "Private_Cloud"
       activation_key: "Redhat_Lab-Development-key"
   tasks:
     - include: "firstboot/{{ ansible_distribution }}.yml"
