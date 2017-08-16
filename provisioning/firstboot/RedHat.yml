@@ -110,6 +110,10 @@
       register: satbootstrap
   when: "'Overall Status: Current' not in rhsm_reg.stdout"
   rescue:
+    - name: "Clean up from Sat 6"
+      shell: |
+        subscription-manager clean
+      become: true
     - name: Register and subscribe to multiple pools for virtual hosts
       redhat_subscription:
         state: present
