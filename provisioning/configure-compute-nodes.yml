@@ -1,6 +1,6 @@
 ---
 - name: "Customize OSP 10 -  coompute nodes"
-  hosts: 10.55.102.157,10.55.102.156
+  hosts: 10.55.102.158,10.55.102.157
   vars:
     openstack:
       project_name: Redhat_Lab
