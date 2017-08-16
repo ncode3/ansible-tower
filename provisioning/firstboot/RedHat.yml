@@ -137,7 +137,7 @@
         creates: /opt/.firstboot
   when: firstbootcheck.stdout == "false"
 
-- name: "Try to register to Satellite 6""
+- name: "Try to register to Satellite 6"
   block:
     - name: "Get the bootstrap python script"
       shell: |
