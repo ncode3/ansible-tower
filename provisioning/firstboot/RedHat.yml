@@ -104,7 +104,7 @@
       become: true
       register: satbootstrap
   rescue:
-    - name: "Check if we are registered"
+    - name: "Fall back to RHSM, Check if we are registered"
       shell: "subscription-manager status || true"
       register: rhsm_reg
     
