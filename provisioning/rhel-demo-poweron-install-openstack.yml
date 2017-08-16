@@ -14,14 +14,14 @@
         - rhel-7-server-openstack-10-devtools-rpms
 
 - name: "Install Openstack 10 on 3 nodes"
-  hosts: 10.55.102.158
+  hosts: 10.55.102.156
   vars:
     os_packstack_use_answerfile: "yes"
-    os_controller_nodes: "10.55.102.158"
+    os_controller_nodes: "10.55.102.156"
     os_compute_nodes: "10.55.102.158,10.55.102.157,10.55.102.156"
-    os_network_nodes: "10.55.102.158"
-    os_amqp_nodes: "10.55.102.158"
-    os_mariadb_nodes: "10.55.102.158"
+    os_network_nodes: "10.55.102.156"
+    os_amqp_nodes: "10.55.102.156"
+    os_mariadb_nodes: "10.55.102.156"
     ml2_drivers: "local,vlan"
     ml2_networks: "local,vlan"
     ml2_bridge_name: "inter-vlan"

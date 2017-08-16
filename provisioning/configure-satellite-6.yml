@@ -29,7 +29,7 @@
         user: dtaylor
         pass: redhat123
         tenant: "Redhat_Lab"
-        url: "http://10.55.102.158:5000/v2.0/tokens"
+        url: "http://10.55.102.156:5000/v2.0/tokens"
     sat6:
       environments:
         - name: 'Development'
