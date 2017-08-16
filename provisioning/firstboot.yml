@@ -8,7 +8,8 @@
     redhat_insights_key: ""
     redhat_insights_jobid: ""
     sat6:
-      url: "satellite-6-demo.stack.maskedadmins.com"
+      #url: "satellite-6-demo.stack.maskedadmins.com"
+      url: "10.55.102.247"
       user: "admin"
       pass: "redhat123"
       org: Redhat_Lab
