@@ -58,55 +58,6 @@
       ignore_errors: yes
       become: true
     
-    - name: "Check if we are registered"
-      shell: "subscription-manager status || true"
-      register: rhsm_reg
-    
-    - name: Register and subscribe to multiple pools for virtual hosts
-      redhat_subscription:
-        state: present
-        username: "{{ rh_satellite_user }}"
-        password: "{{ rh_satellite_pass }}"
-        pool_ids: "{{ rh_subscription_pool_ids }}"
-    #    pools: "{{ rh_subscription_pools }}"
-      become: true
-      register: rhsm_status
-      when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
-      retries: 10
-    
-    - name: Register and subscribe to multiple pools for physical hosts
-      redhat_subscription:
-        state: present
-        username: "{{ rh_satellite_user }}"
-        password: "{{ rh_satellite_pass }}"
-        pool_ids: "{{ rh_subscription_pool_physical_ids }}"
-    #    pools: "{{ rh_subscription_pools }}"
-      become: true
-      register: rhsm_status
-      when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
-      retries: 10
-    
-    - name: "Disabling all repos"
-      shell: "subscription-manager repos --disable={{ item }}"
-      with_items: "{{ rh_disabled_repos }}"
-      become: true
-      args:
-        creates: /opt/.firstboot
-    
-    - name: "Enabling needed repos"
-      shell: "subscription-manager repos --enable={{ item }}"
-      with_items: "{{ rh_enabled_repos }}"
-      become: true
-      args:
-        creates: /opt/.firstboot
-    
-    - name: "Installing rpms {{ redhat_packages }}"
-      yum:
-        name: "{{ item }}"
-        state: latest
-      with_items: "{{ redhat_packages }}"
-      become: true
-    
     - name: "update dns with the real hostname given in openstack"
       template:
         src: vms/dns-updater.sh.j2
@@ -130,11 +81,6 @@
         group: root 
         mode: 0644
     
-    - name: "Create firstboot file"
-      shell: "touch /opt/.firstboot"
-      become: true
-      args:
-        creates: /opt/.firstboot
   when: firstbootcheck.stdout == "false"
 
 - name: "Try to register to Satellite 6"
@@ -145,7 +91,6 @@
         chmod +x /opt/bootstrap.py
       args:
         chdir: /opt
-
     - name: "Run the satellite bootstrap script"
       shell: |
         /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
@@ -158,7 +103,58 @@
         --rex-user root
       become: true
       register: satbootstrap
+  rescue:
+    - name: "Check if we are registered"
+      shell: "subscription-manager status || true"
+      register: rhsm_reg
+    
+    - name: Register and subscribe to multiple pools for virtual hosts
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_subscription_pool_ids }}"
+    #    pools: "{{ rh_subscription_pools }}"
+      become: true
+      register: rhsm_status
+      when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
+      retries: 10
+    - name: Register and subscribe to multiple pools for physical hosts
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_subscription_pool_physical_ids }}"
+    #    pools: "{{ rh_subscription_pools }}"
+      become: true
+      register: rhsm_status
+      when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
+      retries: 10
   always:
-    - name: "Did it work?"
-      debug: var=satboostrap
-~                     
+    - name: "Disabling all repos"
+      shell: "subscription-manager repos --disable={{ item }}"
+      with_items: "{{ rh_disabled_repos }}"
+      become: true
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Enabling needed repos"
+      shell: "subscription-manager repos --enable={{ item }}"
+      with_items: "{{ rh_enabled_repos }}"
+      become: true
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Installing rpms {{ redhat_packages }}"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ redhat_packages }}"
+      become: true
+
+    - name: "Create firstboot file"
+      shell: "touch /opt/.firstboot"
+      become: true
+      args:
+        creates: /opt/.firstboot
+  when: firstbootcheck.stdout == "false"
