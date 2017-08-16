@@ -112,6 +112,7 @@
   rescue:
     - name: "Clean up from Sat 6"
       shell: |
+        subscription-manager remove --all
         subscription-manager clean
       become: true
     - name: Register and subscribe to multiple pools for virtual hosts
