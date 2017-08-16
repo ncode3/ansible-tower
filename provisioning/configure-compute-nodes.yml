@@ -14,7 +14,7 @@
         use: "no"
         device: /dev/sda
       hugepages:
-        use: "yes"
+        use: "no"
         device: /dev/sda
       glance:
         mount_nfs: "yes"
