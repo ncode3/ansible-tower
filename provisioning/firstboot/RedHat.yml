@@ -136,3 +136,29 @@
       args:
         creates: /opt/.firstboot
   when: firstbootcheck.stdout == "false"
+
+- name: "Try to register to Satellite 6""
+  block:
+    - name: "Get the bootstrap python script"
+      shell: |
+        wget http://{{ sat6['url'] }}/pub/bootstrap.py
+        chmod +x /opt/bootstrap.py
+      args:
+        chdir: /opt
+
+    - name: "Run the satellite bootstrap script"
+      shell: |
+        /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
+        -s {{ sat6['url'] }} \
+        -o "{{ sat6['org'] }}" \
+        -L {{ sat6['location'] }} \
+        -g "{{ sat6['hostgroup'] }}" \
+        -a {{ sat6['activation_key'] }} \
+        --rex \
+        --rex-user root
+      become: true
+      register: satbootstrap
+  always:
+    - name: "Did it work?"
+      debug: var=satboostrap
+~                     
