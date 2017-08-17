@@ -1,5 +1,4 @@
 ---
-- include: ose-get-token.yml
 - name: "Add Openstack provider to CFME"
   hosts: cloudforms.stack.maskedadmins.com
   vars:
@@ -8,7 +7,7 @@
     cfme_server: "{{ ansible_hostname }}"
     cfme_project: redhat-lab
     osp10_name: "OSP10"
-    osp10_server: compute4.maskedadmins.com
+    osp10_server: compute2.maskedadmins.com
     osp10_security: non-ssl
     osp10_user: "dtaylor"
     osp10_pass: "redhat123"
