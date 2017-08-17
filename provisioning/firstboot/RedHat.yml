@@ -115,7 +115,7 @@
       shell: |
         subscription-manager remove --all
         subscription-manager clean
-        cp -f /etc/rhsm/rhsm.conf.kat-backup /etc/rhsm/rhsm.conf
+        [ -e /etc/rhsm/rhsm.conf.kat-backup ] && cp -f /etc/rhsm/rhsm.conf.kat-backup /etc/rhsm/rhsm.conf
       become: true
     - name: Register and subscribe to multiple pools for virtual hosts
       redhat_subscription:
