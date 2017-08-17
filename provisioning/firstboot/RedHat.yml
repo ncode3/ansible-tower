@@ -97,15 +97,16 @@
         chdir: /opt
     - name: "Run the satellite bootstrap script"
       shell: |
-        /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
-        -s {{ sat6['url'] }} \
-        -o "{{ sat6['org'] }}" \
-        -L {{ sat6['location'] }} \
-        -g "{{ sat6['hostgroup'] }}" \
-        -a {{ sat6['activation_key'] }} \
-        --rex \
-        --rex-user root \
-        --force --add-domain
+        #/opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
+        #-s {{ sat6['url'] }} \
+        #-o "{{ sat6['org'] }}" \
+        #-L {{ sat6['location'] }} \
+        #-g "{{ sat6['hostgroup'] }}" \
+        #-a {{ sat6['activation_key'] }} \
+        #--rex \
+        #--rex-user root \
+        #--force --add-domain
+        /bin/false
       become: true
       register: satbootstrap
   when: "'Overall Status: Current' not in rhsm_reg.stdout"
