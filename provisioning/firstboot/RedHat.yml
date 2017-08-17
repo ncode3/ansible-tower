@@ -117,6 +117,8 @@
         subscription-manager clean
         [ -e /etc/rhsm/rhsm.conf.kat-backup ] && cp -f /etc/rhsm/rhsm.conf.kat-backup /etc/rhsm/rhsm.conf
       become: true
+      ignore_errors: true
+
     - name: Register and subscribe to multiple pools for virtual hosts
       redhat_subscription:
         state: present
