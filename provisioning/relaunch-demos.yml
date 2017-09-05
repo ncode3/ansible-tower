@@ -54,7 +54,7 @@
       shell: |
         echo "{{ item.name }} launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/
-        sleep 120
+        sleep 180
       with_items:
         - name: 'Satellite'
           id: '259'
