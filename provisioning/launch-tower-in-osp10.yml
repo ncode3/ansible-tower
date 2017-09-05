@@ -92,6 +92,11 @@
           #  list: |
           #    root:redhat123
           #    cloud-user:redhat123
+          write_files:
+            - path: /etc/sudoers.d/999-cloud-user
+              permissions: '0440'
+              content: |
+                Defaults:cloud-user !requiretty
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
