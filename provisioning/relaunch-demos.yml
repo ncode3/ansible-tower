@@ -1,0 +1,55 @@
+---
+- name: "Relaunch demos in OSP10"
+  hosts: 10.55.102.156
+  tasks:
+    - name: "get list of vms off of osp10"
+      shell: |
+        source /root/keystonerc_dtaylor
+        openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID'
+      become: true
+      register: vms
+      ignore_errors: yes
+
+    - name: "delete all the vms off of osp10"
+      shell: |
+        source /root/keystonerc_dtaylor
+        openstack server delete {{ item }}
+        sleep 30
+      become: true
+      with_items: "{{ vms.stdout.split() }}"
+      ignore_errors: yes
+
+    - name: "update all the ansible tower osp10 repos"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+        -H 'Content-Type: application/json' -XPOST \
+        --user admin:ansible \
+        https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+        sleep 15
+      with_items:
+        - 226
+        - 1141
+        - 349
+        - 310
+        - 719
+        - 720
+    - name: "Launching demos"
+      shell: |
+        # we sleep to allow time for the inventory to update between launching vms
+        echo "Configure compute nodes"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
+        sleep 700
+        echo "Sat 6 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
+        sleep 120
+        echo "CMFE launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
+        sleep 120
+        echo "OSE 3.5 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+        sleep 600
+        echo "Tower launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
+        sleep 300
+        echo "OSE 3.5 launch job"
+        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
