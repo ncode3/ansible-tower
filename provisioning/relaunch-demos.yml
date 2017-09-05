@@ -10,6 +10,14 @@
       register: vms
       ignore_errors: yes
 
+    - name: "get list of volumes off of osp10"
+      shell: |
+        source /root/keystonerc_dtaylor
+        openstack volume list | grep '|' | awk '{print $2}'|grep -v 'ID'
+      become: true
+      register: volumes
+      ignore_errors: yes
+
     - name: "delete all the vms off of osp10"
       shell: |
         source /root/keystonerc_dtaylor
@@ -17,6 +25,15 @@
         sleep 30
       become: true
       with_items: "{{ vms.stdout.split() }}"
+      ignore_errors: yes
+
+    - name: "delete all the volumes off of osp10"
+      shell: |
+        source /root/keystonerc_dtaylor
+        openstack volume delete {{ item }}
+        sleep 30
+      become: true
+      with_items: "{{ volumes.stdout.split() }}"
       ignore_errors: yes
 
     - name: "update all the ansible tower osp10 repos"
