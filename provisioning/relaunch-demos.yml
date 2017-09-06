@@ -47,7 +47,6 @@
         -H 'Content-Type: application/json' -XPOST \
         --user admin:ansible \
         https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
-      delay: 15
       with_items:
         - 226
         - 1141
@@ -57,16 +56,12 @@
         - 720
 
     - name: "Launching demos"
-      uri:
-        url: "https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/"
-        validate_certs: no
-        method: POST
-        status_code: 201
-        user: admin
-        password: ansible
-        headers:
-          Content-Type: "application/json"
-      delay: 120
+      shell: |
+        curl -f -k \
+        -H 'Content-Type: application/json' -XPOST \
+        --user admin:ansible \
+        https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/
+        sleep 180
       with_items:
         - name: 'Satellite'
           id: '259'
@@ -76,3 +71,24 @@
           id: '258'
         - name: 'Tower'
           id: '294'
+# this is too fast
+#    - name: "Launching demos"
+#      uri:
+#        url: "https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/"
+#        validate_certs: no
+#        method: POST
+#        status_code: 201
+#        user: admin
+#        password: ansible
+#        headers:
+#          Content-Type: "application/json"
+#      delay: 120
+#      with_items:
+#        - name: 'Satellite'
+#          id: '259'
+#        - name: 'CMFE'
+#          id: '260'
+#        - name: 'OSE 3.5'
+#          id: '258'
+#        - name: 'Tower'
+#          id: '294'
