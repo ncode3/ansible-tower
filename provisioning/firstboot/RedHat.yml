@@ -130,6 +130,9 @@
       register: rhsm_status
       when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
       retries: 10
+      until: rhsm_status.rc == 0
+      delay: 1
+
     - name: Register and subscribe to multiple pools for physical hosts
       redhat_subscription:
         state: present
@@ -141,6 +144,8 @@
       register: rhsm_status
       when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
       retries: 10
+      until: rhsm_status.rc == 0
+      delay: 1
   always:
     - name: "Disabling all repos"
       shell: "subscription-manager repos --disable={{ item }}"
