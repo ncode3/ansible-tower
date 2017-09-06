@@ -37,6 +37,10 @@
       with_items: "{{ volumes.stdout.split() }}"
       ignore_errors: yes
 
+    - name: "Pause for a couple minutes to let the volumes delete"
+      pause:
+        seconds: 120
+
     - name: "update all the ansible tower osp10 repos"
       shell: |
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
@@ -51,6 +55,7 @@
         - 310
         - 719
         - 720
+
     - name: "Launching demos"
       uri:
         url: "https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/"
