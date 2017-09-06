@@ -37,9 +37,9 @@
       with_items: "{{ volumes.stdout.split() }}"
       ignore_errors: yes
 
-    - name: "Pause for a couple minutes to let the volumes delete"
+    - name: "Pause for 5 minutes to let the volumes delete"
       pause:
-        seconds: 120
+        seconds: 300
 
     - name: "update all the ansible tower osp10 repos"
       shell: |
