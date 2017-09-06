@@ -53,6 +53,7 @@
     - name: "Launching demos"
       uri:
         url: "https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/"
+        validate_certs: no
         method: POST
         user: admin
         password: ansible
