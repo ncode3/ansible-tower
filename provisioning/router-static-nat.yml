@@ -16,10 +16,9 @@
           66356138306534393064303336653665313636316563363533386236633838313437353037613132
           3532613733346463360a323362393564333930333966623435616163376365373632373765363431
           6233
-  hosts: all
-  #hosts: 10.55.102.156
+  hosts: 10.55.2.1
   gather_facts: no
-  connection: local
+  #connection: local
   tasks:
 #  - name: DEFINE PROVIDER
 #    set_fact:
@@ -34,7 +33,7 @@
       #password: "{{ password }}"
       commands:
         - show run 
-      provider: "{{ auth }}"
+      #provider: "{{ auth }}"
     register: staticnat
 
   - name: "Get all the static nat entries for logging"
