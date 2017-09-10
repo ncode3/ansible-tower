@@ -34,7 +34,7 @@
       #password: "{{ password }}"
       commands:
         - show run 
-    provider: "{{ auth }}"
+      provider: "{{ auth }}"
     register: staticnat
 
   - name: "Get all the static nat entries for logging"
@@ -47,7 +47,7 @@
       lines:
         - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
         - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
-    provider: "{{ auth }}"
+      provider: "{{ auth }}"
     register: results
 
   - name: "Dump the output of the command"
