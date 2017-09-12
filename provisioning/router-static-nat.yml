@@ -18,7 +18,7 @@
           6233
   hosts: 10.55.2.1
   gather_facts: no
-  #connection: local
+  connection: local
   tasks:
 #  - name: DEFINE PROVIDER
 #    set_fact:
@@ -27,31 +27,31 @@
 #        username: "{{ auth['username'] }}"
 #        password: "{{ auth['password'] }}"
 #
-  - name: "Get all the static nat entries for logging"
-    ios_command:
-      #username: "{{ username }}"
-      #password: "{{ password }}"
-      commands:
-        - show run 
-      #provider: "{{ auth }}"
-    register: staticnat
-
-  - name: "Get all the static nat entries for logging"
-    debug: var=staticnat
-
-  - name: "Remove and add the static entry"
-    ios_config:
+#  - name: "Get all the static nat entries for logging"
+#    ios_command:
 #      #username: "{{ username }}"
 #      #password: "{{ password }}"
-      lines:
-        - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
-        - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
-      provider: "{{ auth }}"
-    register: results
-
-  - name: "Dump the output of the command"
-    debug: var=results
-
+#      commands:
+#        - show run 
+#      #provider: "{{ auth }}"
+#    register: staticnat
+#
+#  - name: "Get all the static nat entries for logging"
+#    debug: var=staticnat
+#
+#  - name: "Remove and add the static entry"
+#    ios_config:
+##      #username: "{{ username }}"
+##      #password: "{{ password }}"
+#      lines:
+#        - "no ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
+#        - "ip nat inside source static tcp {{ int_ip }} {{ int_port }} {{ ext_ip }} {{ ext_port }} extendable"
+#      provider: "{{ auth }}"
+#    register: results
+#
+#  - name: "Dump the output of the command"
+#    debug: var=results
+#
   - name: "Copy over addnat.py script"
     template:
       src: network/addnat.py.j2
