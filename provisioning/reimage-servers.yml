@@ -20,3 +20,31 @@
     - name: "Server(s) will reinstall. It will be back in 20 mins"
       debug: var=powerstate
       when: powerstate == "pxe"
+## update to change the controller membership
+##  https://<tower hostname>/api/v1/hosts/1/groups/
+## Data: {'id': 2, 'associate': True}
+## group id 2894 for osp10-controllers
+## group id 2893 for osp10-computes
+## 10.55.102.156 is host id 12
+## 10.55.102.156 is host id 35
+# this is too fast
+#    - name: "Switching controllers"
+#      uri:
+#        url: "https://10.55.102.248:443/api/v1/hosts/{{ item.id }}/launch/"
+#        validate_certs: no
+#        method: POST
+#        status_code: 201
+#        user: admin
+#        password: ansible
+#        headers:
+#          Content-Type: "application/json"
+#      delay: 120
+#      with_items:
+#        - name: 'Satellite'
+#          id: '259'
+#        - name: 'CMFE'
+#          id: '260'
+#        - name: 'OSE 3.5'
+#          id: '258'
+#        - name: 'Tower'
+#          id: '294'

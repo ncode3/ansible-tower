@@ -2,7 +2,7 @@
 #- include: "control-rack-power.yml"
 
 - name: "Enable OSP 10 repos on all hosts"
-  hosts: 10.55.102.158,10.55.102.157,10.55.102.156
+  hosts: osp10-nodes
   tasks:
     - name: "Enabling needed repos for Openstack 10"
       shell: "subscription-manager repos --enable={{ item }}"
@@ -14,14 +14,19 @@
         - rhel-7-server-openstack-10-devtools-rpms
 
 - name: "Install Openstack 10 on 3 nodes"
-  hosts: 10.55.102.156
+  hosts: osp10-controllers
   vars:
     os_packstack_use_answerfile: "yes"
-    os_controller_nodes: "10.55.102.156"
-    os_compute_nodes: "10.55.102.158,10.55.102.157,10.55.102.156"
-    os_network_nodes: "10.55.102.156"
-    os_amqp_nodes: "10.55.102.156"
-    os_mariadb_nodes: "10.55.102.156"
+    #os_controller_nodes: "{{ osp10-controller }}"
+    #os_compute_nodes: "{{ osp10-computes }}"
+    #os_network_nodes: "{{ osp10-controller }}"
+    #os_storage_node: "{{ osp10-controller }}"
+    os_cinder_volumesgroup_size: "1000G"
+    #os_amqp_nodes: "{{ osp10-controller }}"
+    #os_mariadb_nodes: "{{ osp10-controller }}"
+    #os_cinder_device: "/dev/sda"
+    os_cinder_device: "/dev/sda1"
+    os_swift_device: "/dev/sda2"
     ml2_drivers: "local,vlan"
     ml2_networks: "local,vlan"
     ml2_bridge_name: "inter-vlan"
@@ -89,13 +94,12 @@
     - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
       shell: "packstack --answer-file=/root/packstack-answer.txt"
       become: true
-#      when: os_packstack_use_answerfile == "yes"
-#
-#    ## for demo use
-#    - name: "Run packstack --allinone"
-#      shell: "packstack --allinone"
-#      become: true
-#      when: os_packstack_use_answerfile == "no"
+      when: os_packstack_use_answerfile == "yes"
+
+    - name: "Run packstack --allinone for demo on a single server"
+      shell: "packstack --allinone"
+      become: true
+      when: os_packstack_use_answerfile == "no"
 
 ## customize openstack
 - include: "configure-osp10.yml"

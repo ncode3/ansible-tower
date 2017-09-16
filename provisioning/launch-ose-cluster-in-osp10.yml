@@ -10,7 +10,7 @@
     vault_os_projectid: ""
     vault_os_user: dtaylor
     vault_os_pass: redhat123
-    vault_os_url: "http://10.55.102.156:5000/v2.0"
+    vault_os_url: "http://{{ osp10-controller }}:5000/v2.0"
     os_create_volume: "yes"
     os_volume_size: 5
     os_volume_name: ose-volume-cluster

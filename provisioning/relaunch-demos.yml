@@ -1,6 +1,6 @@
 ---
 - name: "Relaunch demos in OSP10"
-  hosts: 10.55.102.156
+  hosts: osp10-controllers
   gather_facts: no
   tasks:
     - name: "get list of vms off of osp10"

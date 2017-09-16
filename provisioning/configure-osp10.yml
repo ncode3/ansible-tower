@@ -1,6 +1,6 @@
 ---
 - name: "Customize OSP 10 -  create networks, projects, users, and import glance images from nfs share"
-  hosts: 10.55.102.156
+  hosts: osp10-controllers
   vars:
     openstack:
       project_name: Redhat_Lab
@@ -329,6 +329,8 @@
       shell: |
         source /root/keystonerc_admin
         nova flavor-create m1.medium.performance 6 6144 60 4
+        echo "fixing nova-manage.log"
+        chmod 666 /var/log/nova/nova-manage.log
       args:
         chdir: /root
       become: true

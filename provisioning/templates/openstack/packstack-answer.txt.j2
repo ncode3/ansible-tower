@@ -26,7 +26,7 @@ CONFIG_CINDER_INSTALL=y
 
 # Specify 'y' to install OpenStack Shared File System (manila). ['y',
 # 'n']
-CONFIG_MANILA_INSTALL=n
+CONFIG_MANILA_INSTALL=y
 
 # Specify 'y' to install OpenStack Compute (nova). ['y', 'n']
 CONFIG_NOVA_INSTALL=y
@@ -57,7 +57,7 @@ CONFIG_GNOCCHI_INSTALL=y
 CONFIG_SAHARA_INSTALL=n
 
 # Specify 'y' to install OpenStack Orchestration (heat). ['y', 'n']
-CONFIG_HEAT_INSTALL=n
+CONFIG_HEAT_INSTALL=y
 
 # Specify 'y' to install OpenStack Database (trove) ['y', 'n']
 CONFIG_TROVE_INSTALL=n
@@ -92,14 +92,17 @@ CONFIG_DEBUG_MODE=n
 
 # Server on which to install OpenStack services specific to the
 # controller role (for example, API servers or dashboard).
-CONFIG_CONTROLLER_HOST={{ os_controller_nodes }}
+#CONFIG_CONTROLLER_HOST={{ os_controller_nodes }}
+CONFIG_CONTROLLER_HOST={% for host in groups['osp10-controllers'] %}{{ host }}{% endfor %}
 
 # List the servers on which to install the Compute service.
-CONFIG_COMPUTE_HOSTS={{ os_compute_nodes }}
+#CONFIG_COMPUTE_HOSTS={{ os_compute_nodes }}
+CONFIG_COMPUTE_HOSTS={% for host in groups['osp10-computes'] %}{{ host }},{% endfor %}{{ ansible_default_ipv4['address'] }}
 
 # List of servers on which to install the network service such as
 # Compute networking (nova network) or OpenStack Networking (neutron).
-CONFIG_NETWORK_HOSTS={{ os_network_nodes }}
+#CONFIG_NETWORK_HOSTS={{ os_network_nodes }}
+CONFIG_NETWORK_HOSTS={% for host in groups['osp10-network'] %}{{ host }}{% endfor %}
 
 # Specify 'y' if you want to use VMware vCenter as hypervisor and
 # storage; otherwise, specify 'n'. ['y', 'n']
@@ -136,11 +139,14 @@ CONFIG_VCENTER_CLUSTER_NAMES=
 
 # (Unsupported!) Server on which to install OpenStack services
 # specific to storage servers such as Image or Block Storage services.
-CONFIG_STORAGE_HOST="{{ ansible_default_ipv4['address'] }}
+#CONFIG_STORAGE_HOST={{ ansible_default_ipv4['address'] }}
+#CONFIG_STORAGE_HOST={{ os_storage_node }}
+CONFIG_STORAGE_HOST={% for host in groups['osp10-storage'] %}{{ host }}{% endfor %}
 
 # (Unsupported!) Server on which to install OpenStack services
 # specific to OpenStack Data Processing (sahara).
-CONFIG_SAHARA_HOST={{ ansible_default_ipv4['address'] }}
+#CONFIG_SAHARA_HOST={{ ansible_default_ipv4['address'] }}
+CONFIG_SAHARA_HOST={% for host in groups['osp10-controllers'] %}{{ host }}{% endfor %}
 
 # Specify 'y' to enable the EPEL repository (Extra Packages for
 # Enterprise Linux). ['y', 'n']
@@ -299,7 +305,8 @@ CONFIG_AMQP_AUTH_PASSWORD=PW_PLACEHOLDER
 # installation was not specified in CONFIG_MARIADB_INSTALL, specify
 # the IP address of an existing database server (a MariaDB cluster can
 # also be specified).
-CONFIG_MARIADB_HOST={{ os_mariadb_nodes }}
+#CONFIG_MARIADB_HOST={{ os_mariadb_nodes }}
+CONFIG_MARIADB_HOST={% for host in groups['osp10-controllers'] %}{{ host }}{% endfor %}
 
 # User name for the MariaDB administrative user.
 CONFIG_MARIADB_USER=root
@@ -526,7 +533,7 @@ CONFIG_GLANCE_KS_PW=2c0457abc97f4581
 # (Object Storage). The Object Storage service must be enabled to use
 # it as a working backend; otherwise, Packstack falls back to 'file'.
 # ['file', 'swift']
-CONFIG_GLANCE_BACKEND=file
+CONFIG_GLANCE_BACKEND=swift
 
 # Password to use for the Block Storage service (cinder) to access
 # the database.
@@ -558,7 +565,7 @@ CONFIG_CINDER_VOLUMES_CREATE=n
 # of the volume group will restrict the amount of disk space that you
 # can expose to Compute instances, and that the specified amount must
 # be available on the device used for /var/lib/cinder.
-CONFIG_CINDER_VOLUMES_SIZE=40G
+CONFIG_CINDER_VOLUMES_SIZE={{ os_cinder_volumesgroup_size }}
 
 # A single or comma-separated list of Red Hat Storage (gluster)
 # volume shares to mount. Example: 'ip-address:/vol-name', 'domain
@@ -1127,7 +1134,7 @@ CONFIG_SWIFT_KS_PW=124c33fee79b4aa8
 # device; Packstack does not create the filesystem, you must do this
 # first). If left empty, Packstack creates a loopback device for test
 # setup.
-CONFIG_SWIFT_STORAGES=
+CONFIG_SWIFT_STORAGES=/dev/sda2
 
 # Number of Object Storage storage zones; this number MUST be no
 # larger than the number of configured storage devices.
@@ -1146,7 +1153,7 @@ CONFIG_SWIFT_STORAGE_FSTYPE=ext4
 CONFIG_SWIFT_HASH=e99b9f6a4aef4fe8
 
 # Size of the Object Storage loopback file storage device.
-CONFIG_SWIFT_STORAGE_SIZE=2G
+CONFIG_SWIFT_STORAGE_SIZE=40G
 
 # Password used by Orchestration service user to authenticate against
 # the database.
@@ -1161,7 +1168,7 @@ CONFIG_HEAT_AUTH_ENC_KEY=1874d7da4e1c421b
 CONFIG_HEAT_KS_PW=PW_PLACEHOLDER
 
 # Specify 'y' to install the Orchestration CloudWatch API. ['y', 'n']
-CONFIG_HEAT_CLOUDWATCH_INSTALL=n
+CONFIG_HEAT_CLOUDWATCH_INSTALL=y
 
 # Specify 'y' to install the Orchestration CloudFormation API. ['y',
 # 'n']
