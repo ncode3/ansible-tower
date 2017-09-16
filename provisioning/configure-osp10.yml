@@ -11,11 +11,13 @@
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
       cpupinning:
-        use: "no"
-        device: /dev/sda
+        use: "yes"
+        #device: /dev/sda
+        device: /dev/sdb
       hugepages:
-        use: "no"
-        device: /dev/sda
+        use: "yes"
+        #device: /dev/sda
+        device: /dev/sdb
       glance:
         mount_nfs: "yes"
         import: "yes"
@@ -484,9 +486,6 @@
         sleep 600
         echo "Tower launch job"
         curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-        sleep 300
-        echo "OSE 3.5 launch job"
-        curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
       args:
         chdir: /root
       become: true
