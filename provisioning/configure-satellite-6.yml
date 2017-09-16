@@ -29,7 +29,7 @@
         user: dtaylor
         pass: redhat123
         tenant: "Redhat_Lab"
-        url: "http://{{ osp10-controller }}:5000/v2.0/tokens"
+        url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
     sat6:
       environments:
         - name: 'Development'
