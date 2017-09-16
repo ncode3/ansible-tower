@@ -18,7 +18,7 @@
   vars:
     os_packstack_use_answerfile: "yes"
     os_controller_nodes: "{{ osp10_controller }}"
-    os_compute_nodes: "{{ osp10-computes }}"
+    os_compute_nodes: "{{ osp10_computes }}"
     os_network_nodes: "{{ osp10_controller }}"
     os_storage_node: "{{ osp10_controller }}"
     os_cinder_volumesgroup_size: "1000G"
