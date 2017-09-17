@@ -11,11 +11,11 @@
       dhcp_domain: stack.maskedadmins.com
       dhcp_mtu: 1454
       cpupinning:
-        use: "yes"
+        use: "no"
         #device: /dev/sda
         device: /dev/sdb
       hugepages:
-        use: "yes"
+        use: "no"
         #device: /dev/sda
         device: /dev/sdb
       glance:
