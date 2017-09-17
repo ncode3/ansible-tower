@@ -136,7 +136,7 @@
       - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
         product: "Red Hat Enterprise Linux Fast Datapath"
     sat6_enabled_repos_tools:
-      - name:"Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)"
+      - name: "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)"
         product: "Red Hat Enterprise Linux Server"
     sat6_enabled_repos_openstack:
       - name: "Red Hat OpenStack Platform 10 for RHEL 7 (RPMs)"
