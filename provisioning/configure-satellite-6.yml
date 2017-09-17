@@ -140,9 +140,9 @@
         product: "Red Hat Enterprise Linux Server"
     sat6_enabled_repos_openstack:
       - name: "Red Hat OpenStack Platform 10 for RHEL 7 (RPMs)"
-      - product: "Red Hat OpenStack"
+        product: "Red Hat OpenStack"
       - name: "Red Hat OpenStack Platform 10 Developer Tools for RHEL 7 (RPMs)"
-      - product: "Red Hat OpenStack"
+        product: "Red Hat OpenStack"
     sat6_enabled_repos_openshift:
       - name: "Red Hat OpenShift Container Platform 3.5 (RPMs)"
         product: "Red Hat OpenShift Container Platform"
@@ -430,7 +430,12 @@
     with_items: "{{ sat6_enabled_repos }}"
     ignore_errors: yes
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step11a
+
+  - name: "Repo config Complete"
+    shell: touch /root/.setup/step11a
+    args:
+      creates: /root/.setup/step11a
 
   - name: "Provisioning Satellite 6 - Tools repos without a releaseversion"
     shell: |
@@ -440,8 +445,14 @@
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items:
       - "{{ sat6_enabled_repos_tools }}"
+    ignore_errors: yes
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step11b
+
+  - name: "Repo config Complete"
+    shell: touch /root/.setup/step11b
+    args:
+      creates: /root/.setup/step11b
 
   - name: "Provisioning Satellite 6 - configure Openstack repositories"
     shell: |
@@ -450,8 +461,14 @@
         --releasever "7Server" --basearch "x86_64" \
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos_openstack }}"
+    ignore_errors: yes
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step11c
+
+  - name: "Repo config Complete"
+    shell: touch /root/.setup/step11c
+    args:
+      creates: /root/.setup/step11c
 
   - name: "Provisioning Satellite 6 - configure Openshift repositories without releaseversion"
     shell: |
@@ -460,13 +477,14 @@
         --basearch "x86_64" \
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos_openshift }}"
+    ignore_errors: yes
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step11d
 
   - name: "Repo config Complete"
-    shell: touch /root/.setup/step11
+    shell: touch /root/.setup/step11d
     args:
-      creates: /root/.setup/step11
+      creates: /root/.setup/step11d
 
   - name: "Provisioning Satellite 6 - Syncing RHEL Product Content. This takes 30+ mins ..."
     shell: |
