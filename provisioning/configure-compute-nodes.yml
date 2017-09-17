@@ -1,5 +1,5 @@
 ---
-- name: "Customize OSP 10 -  coompute nodes"
+- name: "Customize OSP 10 -  compute nodes"
   hosts: osp10-computes
   vars:
     openstack:
