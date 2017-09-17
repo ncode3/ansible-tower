@@ -122,6 +122,11 @@
     sat6_default_subnet: "default"
     sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
     sat6_pool_ids: ['']
+    sat6_enabled_products:
+      - "Red Hat Enterprise Linux Server"
+      - "Red Hat Enterprise Linux Fast Datapath"
+      - "Red Hat OpenStack"
+      - "Red Hat OpenShift Container Platform"
     sat6_enabled_repos:
       - name: "Red Hat Enterprise Linux 7 Server (RPMs)"
         product: "Red Hat Enterprise Linux Server"
@@ -486,9 +491,7 @@
         hammer product synchronize --name "{{ item.product }}" \
         --organization "{{ sat6_default_org }}"
     with_items:
-      - "{{ sat6_enabled_repos }}"
-      - "{{ sat6_enabled_repos_openstack }}"
-      - "{{ sat6_enabled_repos_openshift }}"
+      - "{{ sat6_enabled_products }}"
     args:
       creates: /root/.setup/step12
 
