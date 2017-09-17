@@ -6,11 +6,19 @@
     cfme_pass: "smartvm"
     cfme_server: "{{ ansible_hostname }}"
     cfme_project: redhat-lab
-    osp10_name: "OSP10"
-    osp10_server: compute2.maskedadmins.com
-    osp10_security: non-ssl
-    osp10_user: "dtaylor"
-    osp10_pass: "redhat123"
+    compute_resources:
+      - name: 'OSP8'
+        description: 'Openstack 8 Redhat Lab'
+        user: 'dtaylor'
+        pass: "{{ ipmi_pass }}"
+        security: non-ssl
+        server: "{{ osp8_controller }}"
+      - name: 'OSP10'
+        description: 'Openstack 10'
+        user: dtaylor
+        pass: redhat123
+        security: non-ssl
+        server: "{{ osp10_controller }}"
   tasks:
     - name: "Use the API to add Openstack provider"
       shell: |
@@ -18,13 +26,15 @@
         -i -X POST -H "Accept: application/json" \
         -d "{
               \"type\"      : \"ManageIQ::Providers::Openstack::CloudManager\",
-              \"name\"      : \"{{ osp10_name }}\",
-              \"hostname\"  : \"{{ osp10_server }}\",
-              \"ipaddress\" : \"$(host {{ osp10_server }} | awk '{print $4}')\",
-              \"security_protocol\"      : \"{{ osp10_security }}\",
+              \"name\"      : \"{{ item.name }}\",
+              \"hostname\"  : \"{{ item.server }}\",
+              \"ipaddress\" : \"{{ item.server }}\",
+              \"security_protocol\"      : \"{{ item.security }}\",
               \"credentials\" : {
-                \"userid\"   : \"{{ osp10_user }}\",
-                \"password\" : \"{{ osp10_pass }}\"
+                \"userid\"   : \"{{ item.user }}\",
+                \"password\" : \"{{ item.pass }}\"
               }
         }" \
         https://{{ cfme_server }}/api/providers
+        sleep 5
+      with_items: "{{ compute_resources }}"
