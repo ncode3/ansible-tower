@@ -67,7 +67,7 @@
         mode: 0755
     
     - name: "Update dns entry"
-      shell: "/usr/sbin/ifup-local || true"
+      shell: "/sbin/ifup-local || true"
       become: true
       ignore_errors: yes
       args:
