@@ -523,16 +523,16 @@
 
   - name: "Creating Base Content View"
     shell: |
-        sattoolsid=$(hammer repository list  | grep "Satellite Tools 6.2" | awk '{print $1}')
-        rhelrepoid=$(hammer repository list  | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
-        ksid=$(hammer repository list  | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
-        commonid=$(hammer repository list  | grep "Common" | awk '{print $1}')
-        extraid=$(hammer repository list  | grep "Extras" | awk '{print $1}')
-        optionalid=$(hammer repository list  | grep "Optional" | awk '{print $1}')
-        fastdataid=$(hammer repository list  | grep "Fast Datapath" | awk '{print $1}')
-        openstackid=$(hammer repository list  | grep "OpenStack Platform 10 for RHEL 7" | awk '{print $1}')
-        openstackdevid=$(hammer repository list  | grep "OpenStack Platform 10 Developer Tools" | awk '{print $1}')
-        openshiftid=$(hammer repository list  | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
+        sattoolsid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Satellite Tools 6.2" | awk '{print $1}')
+        rhelrepoid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
+        ksid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
+        commonid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Common" | awk '{print $1}')
+        extraid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Extras" | awk '{print $1}')
+        optionalid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Optional" | awk '{print $1}')
+        fastdataid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Fast Datapath" | awk '{print $1}')
+        openstackid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform 10 for RHEL 7" | awk '{print $1}')
+        openstackdevid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform 10 Developer Tools" | awk '{print $1}')
+        openshiftid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
         hammer content-view create --name "Base" \
         --description "Base operating system" \
         --repository-ids "${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
