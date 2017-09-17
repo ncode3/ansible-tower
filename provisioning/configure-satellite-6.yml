@@ -17,13 +17,13 @@
         user: 'dtaylor'
         pass: "{{ ipmi_pass }}"
         tenant: "Redhat Lab"
-        url: "http://{{ osp8-controller }}:5000/v2.0/tokens"
+        url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
       - name: 'OSP8 Masked Admins'
         description: 'Openstack 8 Masked_Admins'
         user: dtaylor
         pass: "{{ ipmi_pass }}"
         tenant: "Masked_Admins"
-        url: "http://{{ osp8-controller }}:5000/v2.0/tokens"
+        url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
       - name: 'OSP10 Redhat Lab'
         description: 'Openstack 10'
         user: dtaylor
