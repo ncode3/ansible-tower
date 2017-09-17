@@ -595,6 +595,22 @@
       creates: /root/.setup/step24
     with_items: "{{ sat6.subnets }}"
 
+  - name: "Add RHEL7 host group for default domain"
+    shell: |
+      MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+      PARTID=$(hammer --csv partition-table list | grep 'Kickstart default' | awk -F, {'print $1'})
+      OSID=$(hammer --csv os list | grep 'RedHat 7' | awk -F, {'print $1'})
+      CAID=1
+      PROXYID=1
+      for os in $OSID
+      do
+      hammer hostgroup create --architecture="x86_64" --domain="{{ sat6_default_domain }}"  --medium-id="${MEDID}" --locations="{{ item.location }}" \
+      --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${os}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
+      --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base"
+      done
+    args:
+      creates: /root/.setup/step24
+
   - name: "Host groups to domain Complete"
     shell: touch /root/.setup/step24
     args:
