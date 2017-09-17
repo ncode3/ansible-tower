@@ -90,13 +90,13 @@
 - name: "Try to register to Satellite 6"
   block:
     - name: "Get the bootstrap python script"
-      shell: |
-        wget http://{{ sat6['url'] }}/pub/bootstrap.py
-        chmod +x /opt/bootstrap.py
-      args:
-        chdir: /opt
+      get_url:
+        url: "http://{{ sat6['url'] }}/pub/bootstrap.py"
+        dest: /opt/bootstrap.py
+
     - name: "Run the satellite bootstrap script"
       shell: |
+        chmod +x /opt/bootstrap.py
         /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
         -s {{ sat6['url'] }} \
         -o "{{ sat6['org'] }}" \
@@ -110,6 +110,7 @@
       become: true
       register: satbootstrap
   when: "'Overall Status: Current' not in rhsm_reg.stdout"
+
   rescue:
     - name: "Clean up from Sat 6"
       shell: |
