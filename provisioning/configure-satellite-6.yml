@@ -131,7 +131,7 @@
         product: "Red Hat Enterprise Linux Server"
       - name: "Red Hat Enterprise Linux 7 Server - Extras (RPMs)"
         product: "Red Hat Enterprise Linux Server"
-      - "Red Hat Enterprise Linux 7 Server - Optional (RPMs)"
+      - name: "Red Hat Enterprise Linux 7 Server - Optional (RPMs)"
         product: "Red Hat Enterprise Linux Server"
       - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
         product: "Red Hat Enterprise Linux Fast Datapath"
