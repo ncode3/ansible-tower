@@ -488,7 +488,7 @@
 
   - name: "Provisioning Satellite 6 - Syncing RHEL Product Content. This takes 30+ mins ..."
     shell: |
-        hammer product synchronize --name "{{ item.product }}" \
+        hammer product synchronize --name "{{ item }}" \
         --organization "{{ sat6_default_org }}"
     with_items:
       - "{{ sat6_enabled_products }}"
