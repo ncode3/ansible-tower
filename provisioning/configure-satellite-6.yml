@@ -123,8 +123,29 @@
     sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
     sat6_pool_ids: ['']
     sat6_enabled_repos:
-      - "Red Hat Enterprise Linux 7 Server (RPMs)"
-      - "Red Hat Enterprise Linux 7 Server (Kickstart)"
+      - name: "Red Hat Enterprise Linux 7 Server (RPMs)"
+        product: "Red Hat Enterprise Linux Server"
+      - name: "Red Hat Enterprise Linux 7 Server (Kickstart)"
+        product: "Red Hat Enterprise Linux Server"
+      - name: "Red Hat Enterprise Linux 7 Server - RH Common (RPMs)"
+        product: "Red Hat Enterprise Linux Server"
+      - name: "Red Hat Enterprise Linux 7 Server - Extras (RPMs)"
+        product: "Red Hat Enterprise Linux Server"
+      - "Red Hat Enterprise Linux 7 Server - Optional (RPMs)"
+        product: "Red Hat Enterprise Linux Server"
+      - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
+        product: "Red Hat Enterprise Linux Fast Datapath"
+    sat6_enabled_repos_tools:
+      - name:"Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)"
+        product: "Red Hat Enterprise Linux Server"
+    sat6_enabled_repos_openstack:
+      - name: "Red Hat OpenStack Platform 10 for RHEL 7 (RPMs)"
+      - product: "Red Hat OpenStack"
+      - name: "Red Hat OpenStack Platform 10 Developer Tools for RHEL 7 (RPMs)"
+      - product: "Red Hat OpenStack"
+    sat6_enabled_repos_openshift:
+      - name: "Red Hat OpenShift Container Platform 3.5 (RPMs)"
+        product: "Red Hat OpenShift Container Platform"
     sat6_url: "https://{{ ansible_fqdn }}/"
     sat6_user: "admin"
     sat6_pass: "redhat123"
@@ -164,7 +185,7 @@
             echo "calling update firewall port for sat6"
             curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
     
-      - name: "Run fusor-installer to setup Sat6"
+      - name: "Run fusor-installer to setup Sat6, takes 20 mins"
         shell: |
           echo -e "8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
           --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
@@ -259,8 +280,7 @@
         hammer defaults add --param-name organization_id --param-value $defaultorg
         hammer defaults add --param-name location_id --param-value $defaultloc && touch /root/.setup/step1
     args:
-      creates: /root/.setup/step1
-    ignore_errors: yes
+      creates: /root/.setup/step4
 
   - name: "Subnet and Domain check"
     shell: |
@@ -381,7 +401,6 @@
         shell: |
             subnetid=$(hammer subnet list  | grep {{ sat6_default_subnet }} | awk '{print $1}')
             hammer location add-subnet --subnet-id=${subnetid} --name '{{ sat6_default_location }}'
-        with_items: "{{ sat6.subnets }}"
         args:
           creates: /root/.setup/step9
     
@@ -402,22 +421,44 @@
     args:
       creates: /root/.setup/step10
 
-  - name: "Provisioning Satellite 6 - configure repositories"
+  - name: "Provisioning Satellite 6 - base repositories"
     shell: |
         hammer repository-set enable \
-        --name "{{ item }}" \
+        --name "{{ item.name }}" \
         --releasever "7Server" --basearch "x86_64" \
-        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_default_org }}"
+        --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos }}"
     args:
       creates: /root/.setup/step11
 
-  - name: "Provisioning Satellite 6 - tools repo"
+  - name: "Provisioning Satellite 6 - Tools repos without a releaseversion"
     shell: |
         hammer repository-set enable \
-        --name "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)" \
+        --name "{{ item.name }}" \
         --basearch "x86_64" \
-        --product "Red Hat Enterprise Linux Server" --organization "{{ sat6_default_org }}"
+        --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
+    with_items:
+      - "{{ sat6_enabled_repos_tools }}"
+    args:
+      creates: /root/.setup/step11
+
+  - name: "Provisioning Satellite 6 - configure Openstack repositories"
+    shell: |
+        hammer repository-set enable \
+        --name "{{ item.name }}" \
+        --releasever "7Server" --basearch "x86_64" \
+        --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
+    with_items: "{{ sat6_enabled_repos_openstack }}"
+    args:
+      creates: /root/.setup/step11
+
+  - name: "Provisioning Satellite 6 - configure Openshift repositories without releaseversion"
+    shell: |
+        hammer repository-set enable \
+        --name "{{ item.name }}" \
+        --basearch "x86_64" \
+        --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
+    with_items: "{{ sat6_enabled_repos_openshift }}"
     args:
       creates: /root/.setup/step11
 
@@ -426,11 +467,19 @@
     args:
       creates: /root/.setup/step11
 
-  - name: "Provisioning Satellite 6 - Syncing Content. This takes a long time."
+  - name: "Provisioning Satellite 6 - Syncing RHEL Product Content. This takes 30+ mins ..."
     shell: |
-        hammer product synchronize --name "Red Hat Enterprise Linux Server" \
+        hammer product synchronize --name "{{ item.product }}" \
         --organization "{{ sat6_default_org }}" && \
-        touch /root/.setup/step12
+    with_items:
+      - "{{ sat6_enabled_repos }}"
+      - "{{ sat6_enabled_repos_openstack }}"
+      - "{{ sat6_enabled_repos_openshift }}"
+    args:
+      creates: /root/.setup/step12
+
+  - name: "Product Sync Complete"
+    shell: touch /root/.setup/step12
     args:
       creates: /root/.setup/step12
 
@@ -460,9 +509,16 @@
         sattoolsid=$(hammer repository list  | grep "Satellite Tools 6.2" | awk '{print $1}')
         rhelrepoid=$(hammer repository list  | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
         ksid=$(hammer repository list  | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
+        commonid=$(hammer repository list  | grep "Common" | awk '{print $1}')
+        extraid=$(hammer repository list  | grep "Extras" | awk '{print $1}')
+        optionalid=$(hammer repository list  | grep "Optional" | awk '{print $1}')
+        fastdataid=$(hammer repository list  | grep "Fast Datapath" | awk '{print $1}')
+        openstackid=$(hammer repository list  | grep "OpenStack Platform 10 for RHEL 7" | awk '{print $1}')
+        openstackdevid=$(hammer repository list  | grep "OpenStack Platform 10 Developer Tools" | awk '{print $1}')
+        openshiftid=$(hammer repository list  | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
         hammer content-view create --name "Base" \
         --description "Base operating system" \
-        --repository-ids "${ksid},${rhelrepoid},${sattoolsid}" \
+        --repository-ids "${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
         --organization "{{ sat6_default_org }}"
         hammer content-view publish --name "Base" \
         --description "Initial content view for our operating system" \
@@ -604,7 +660,7 @@
       PROXYID=1
       for os in $OSID
       do
-      hammer hostgroup create --architecture="x86_64" --domain="{{ sat6_default_domain }}"  --medium-id="${MEDID}" --locations="{{ item.location }}" \
+      hammer hostgroup create --architecture="x86_64" --domain="{{ sat6_default_domain }}"  --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
       --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${os}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base"
       done
