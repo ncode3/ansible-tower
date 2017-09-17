@@ -176,7 +176,6 @@
       - name: "Update dns entry"
         shell: "/sbin/ifup-local || true"
         become: true
-        ignore_errors: yes
         args:
           creates: /opt/.firstboot
       
@@ -428,7 +427,6 @@
         --releasever "7Server" --basearch "x86_64" \
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos }}"
-    ignore_errors: yes
     args:
       creates: /root/.setup/step11a
 
@@ -445,7 +443,6 @@
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items:
       - "{{ sat6_enabled_repos_tools }}"
-    ignore_errors: yes
     args:
       creates: /root/.setup/step11b
 
@@ -461,7 +458,6 @@
         --releasever "7Server" --basearch "x86_64" \
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos_openstack }}"
-    ignore_errors: yes
     args:
       creates: /root/.setup/step11c
 
@@ -477,7 +473,6 @@
         --basearch "x86_64" \
         --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
     with_items: "{{ sat6_enabled_repos_openshift }}"
-    ignore_errors: yes
     args:
       creates: /root/.setup/step11d
 
@@ -489,7 +484,7 @@
   - name: "Provisioning Satellite 6 - Syncing RHEL Product Content. This takes 30+ mins ..."
     shell: |
         hammer product synchronize --name "{{ item.product }}" \
-        --organization "{{ sat6_default_org }}" && \
+        --organization "{{ sat6_default_org }}"
     with_items:
       - "{{ sat6_enabled_repos }}"
       - "{{ sat6_enabled_repos_openstack }}"
@@ -625,7 +620,6 @@
       touch /root/.setup/step21
     args:
       creates: /root/.setup/step21
-    ignore_errors: yes
 
   - name: "Add partition table to OS"
     shell: |
