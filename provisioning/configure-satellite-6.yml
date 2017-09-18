@@ -227,6 +227,17 @@
             group: root
             mode: 0644
     
+      - name: "Configure puppet autosigning"
+        template:
+            dest: /etc/puppet/autosign.conf
+            src: satellite/autosign.conf.j2
+            owner: foreman-proxy
+            group: puppet
+            mode: 0644
+
+      - name: "Restart puppetmaster"
+        shell: systemctl restart puppetmaster
+
       - name: "Copy over manifest"
         #template:
         copy:
@@ -517,6 +528,12 @@
     args:
       creates: /root/.setup/step14
 
+  - name: "Provisioning Satellite 6 Puppet Environments"
+    shell: |
+        hammer environment create --name {{ sat6_default_environment }} --locations {{ sat6_default_location }} --organizations {{ sat6_default_org }}
+    args:
+      creates: /root/.setup/step14
+
   - name: "Provisionging Lifecycle Complete"
     shell: touch /root/.setup/step14
     args:
@@ -662,7 +679,7 @@
       PROXYID=1
       for os in $OSID
       do
-      hammer hostgroup create --architecture="x86_64" --domain="{{ item.domain }}"  --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ item.location }}" \
+      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ item.domain }}"  --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ item.location }}" \
       --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }} ${os}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       done
@@ -681,7 +698,7 @@
       PROXYID=1
       for os in $OSID
       do
-      hammer hostgroup create --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
+      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
       --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${os}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       done
