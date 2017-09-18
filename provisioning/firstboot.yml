@@ -13,7 +13,7 @@
       user: "admin"
       pass: "redhat123"
       org: Redhat_Lab
-      hostgroup: "RHEL_7_x86_64_Hostgroup for stack.maskedadmins.com 1"
+      hostgroup: "RHEL_7_x86_64_Hostgroup for stack.maskedadmins.com 2"
       location: "Private_Cloud"
       environment: "Development"
       activation_key: "Redhat_Lab-Development-key"
