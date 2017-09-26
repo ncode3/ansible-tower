@@ -1,0 +1,37 @@
+---
+- name: "Launch ISPconfig"
+  hosts: all
+  vars:
+    ose_project: "redhat-lab"
+    ose_user: "admin"
+    ose_pass: "redhat123"
+    github_url: "https://github.com/jerob/docker-ispconfig.git"
+    ispconfig_container: "docker-ispconfig"
+  tasks:
+    - name: "Pull custom configuration from github"
+      git:
+        repo: "{{ github_url }}"
+        dest: "/opt/{{ ispconfig_container }}"
+
+    - name: "Build and push { ispconfig_container }} container"
+      shell: |
+        docker build --no-cache -t {{ ispconfig_container }} .
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project default
+        server=$(oc get svc|grep docker-reg| awk '{print $2}')
+        id=$(docker images|grep ^{{ ispconfig_container }}|awk '{print $3}')
+        token=$(oc whoami -t)
+        docker login -u {{ ose_user }} -p $token ${server}:5000
+        docker tag {{ ispconfig_container }} ${server}:5000/{{ ose_project }}/{{ ispconfig_container }}
+        docker push ${server}:5000/{{ ose_project }}/{{ ispconfig_container }}
+      args:
+        chdir: "/opt/{{ ispconfig_container }}"
+      become: true
+
+    - name: "Launch {{ ispconfig_container }} in openshift"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc new-app -i {{ ose_project }}/{{ ispconfig_container }}
+        echo "waiting 10 secs for it to deploy" && sleep 10
+      become: true
