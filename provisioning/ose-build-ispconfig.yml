@@ -5,7 +5,7 @@
     ose_project: "redhat-lab"
     ose_user: "admin"
     ose_pass: "redhat123"
-    github_url: "https://github.com/jerob/docker-ispconfig.git"
+    github_url: "https://github.com/syspimp/docker-ispconfig.git"
     ispconfig_container: "docker-ispconfig"
   tasks:
     - name: "Pull custom configuration from github"
