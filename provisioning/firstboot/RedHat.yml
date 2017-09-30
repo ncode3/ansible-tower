@@ -162,6 +162,12 @@
       args:
         creates: /opt/.firstboot
     
+    - name: "Perform a yum update"
+      shell:  yum -y update
+      become: true
+#      args:
+#        creates: /opt/.firstboot
+
     - name: "Installing rpms {{ redhat_packages }}"
       yum:
         name: "{{ item }}"
