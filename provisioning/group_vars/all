@@ -180,8 +180,8 @@ rh_subscription_pool_ids: !vault |
           64663236313836663131
 ## openstack related
 openstack_enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
-#openstack_packages: ['yum-utils','openstack-packstack']
-openstack_packages: ['yum-utils','openstack-packstack-puppet-9.0.1','openstack-packstack-9.0.1']
+openstack_packages: ['yum-utils','openstack-packstack']
+#openstack_packages: ['yum-utils','openstack-packstack-puppet-9.0.1','openstack-packstack-9.0.1']
 openstack:
   project_name: Redhat_Lab
   project_user: dtaylor
