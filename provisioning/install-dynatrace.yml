@@ -3,17 +3,18 @@
 - name: "Install Dynatrace Monitoring Agent for Linux"
   hosts: all
   tasks:
-    - name: "Copy over Dynatrace script"
-      copy:
-        dest: /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
-        src: "/opt/Dynatrace-OneAgent-Linux-1.121.186.sh"
-        owner: root
-        group: root
-        mode: 0755
+#    - name: "Copy over Dynatrace script"
+#      copy:
+#        dest: /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
+#        src: "/opt/Dynatrace-OneAgent-Linux-1.121.186.sh"
+#        owner: root
+#        group: root
+#        mode: 0755
 
     - name: "Running Dynatrace script"
       shell: |
-        /opt/Dynatrace-OneAgent-Linux-1.121.186.sh
+        wget  -O /opt/Dynatrace-OneAgent-Linux-1.127.133.sh "https://bhg80608.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?Api-Token=BGFZv27FSfypUACrkMgU-&arch=x86"
+        /bin/sh Dynatrace-OneAgent-Linux-1.127.133.sh APP_LOG_CONTENT_ACCESS=1
       args:
         chdir: /opt
         creates: /var/lib/dynatrace/oneagent/agent/config/ruxitagentloganalytics.conf
