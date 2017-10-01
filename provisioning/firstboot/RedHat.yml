@@ -162,6 +162,11 @@
       args:
         creates: /opt/.firstboot
     
+    - name: "Perform a yum update"
+      shell:  yum -y update
+      become: true
+       args:
+         creates: /opt/.firstboot
 
     - name: "Installing rpms {{ redhat_packages }}"
       yum:
@@ -177,8 +182,3 @@
         creates: /opt/.firstboot
   when: firstbootcheck.stdout == "false"
 
-- name: "Perform a yum update"
-  shell:  yum -y update
-  become: true
-#   args:
-#     creates: /opt/.firstboot
