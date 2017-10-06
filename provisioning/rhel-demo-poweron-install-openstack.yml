@@ -52,13 +52,13 @@
       with_items: "{{ openstack_packages }}"
       become: true
 
-#    - name: "apply fix for packstack bugzilla 1147811"
-#      template:
-#        src: openstack/compute.pp.j2
-#        dest: /usr/share/openstack-puppet/modules/packstack/manifests/nova/compute.pp
-#        owner: root
-#        group: root
-#        mode: 0644
+    - name: "apply fix for packstack bugzilla 1147811"
+      template:
+        src: openstack/compute.pp.j2
+        dest: /usr/share/openstack-puppet/modules/packstack/manifests/nova/compute.pp
+        owner: root
+        group: root
+        mode: 0644
 
     - name: "copy over pre-generated answer file"
       template:
