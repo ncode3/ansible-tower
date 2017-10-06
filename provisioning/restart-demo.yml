@@ -53,9 +53,6 @@
       rescue:
         # this is run if any of the above fail, add them to broke-nodes group
         - name: "I guess osp this controller had an error, adding to broken inventory"
-          debug: var=inventory_hostname
-
-        - name: Adding errored nodes to broken-nodes inventory group
           add_host: name={{ inventory_hostname }}
                 groups=broken-nodes
                 instance_name={{ inventory_hostname }}
@@ -63,9 +60,6 @@
     - name: "operate on unreachable nodes"
       block:
         - name: "I guess osp this controller isn't up, adding to broken inventory"
-          debug: var=inventory_hostname
-
-        - name: Adding unreachable nodes to broken-nodes inventory group
           add_host: name={{ inventory_hostname }}
                 groups=broken-nodes
                 instance_name={{ inventory_hostname }}
@@ -75,7 +69,7 @@
 
     - name: "cleanup on all broken-nodes group"
       block:
-      - name: "echo list the broken nodes"
+      - name: "iterate through the broken nodes"
         local_action: shell echo {{ item }} is unreachable
         with_inventory_hostnames:
           - broken-nodes
