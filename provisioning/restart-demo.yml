@@ -6,11 +6,11 @@
   tasks:
     - name: "Set fact for later use"
       set_fact:
-        controller: "{{ ansible_hostname }}"
+        controller: "{{ inventory_hostname }}"
 
     - name: "test if openstack is up, or just pxe boot"
       local_action: wait_for host="{{ controller }}" port=22 timeout=3
-      #local_action: shell ssh -o ConnectTimeout=10 {{ inventory_hostname }} "echo success"
+      #local_action: shell ssh -o ConnectTimeout=10 {{ controller }} "echo success"
       register: host_accessible
       #failed_when: False
 
