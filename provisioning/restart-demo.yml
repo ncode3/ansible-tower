@@ -50,21 +50,21 @@
           - 720
         ignore_errors: yes
       when: host_accessible.state is defined and host_accessible.state == "started"
+      #when: host_accessible.state is defined and host_accessible.stdout.find("success") != -1
 
       rescue:
         - name: "I guess osp this controller isn't up, adding to broken inventory"
           debug: var=inventory_hostname
 
-        - name: Adding unreachable nodes to broken_nodes inventory group
+        - name: Adding unreachable nodes to broken-nodes inventory group
           add_host: name={{ inventory_hostname }}
-                groups=broken_nodes
+                groups=broken-nodes
                 instance_name={{ inventory_hostname }}
       always:
         - name: "osp cleanup complete, operate on broken nodes"
-          debug:
-            var: "{{ item }}"
+          local_action: shell "echo {{ item }} is unreachable"
           with_inventory_hostnames:
-            - broken_nodes
+            - broken-nodes
 
 # always include pxe boot playbook
 - include: reimage-servers.yml
