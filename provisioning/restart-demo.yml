@@ -4,11 +4,15 @@
   gather_facts: no
   #hosts: 10.55.102.156
   tasks:
+    - name: "Set fact for later use"
+      set_fact:
+        controller: "{{ ansible_hostname }}"
+
     - name: "test if openstack is up, or just pxe boot"
-      local_action: wait_for host="{{ inventory_host }}" port=22 timeout=3
+      local_action: wait_for host="{{ controller }}" port=22 timeout=3
       #local_action: shell ssh -o ConnectTimeout=10 {{ inventory_hostname }} "echo success"
       register: host_accessible
-      failed_when: False
+      #failed_when: False
 
     - name: "clean up from last deploy of osp"
       block:
