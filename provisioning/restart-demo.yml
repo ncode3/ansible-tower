@@ -38,8 +38,8 @@
           - 719
           - 720
         ignore_errors: yes
-    rescue:
-      - name: "I guess osp controller isn't up"
-        debug: var=ansible_host
+      rescue:
+        - name: "I guess osp controller isn't up"
+          debug: var=ansible_host
 
 - include: reimage-servers.yml
