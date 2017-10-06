@@ -50,22 +50,8 @@
         ignore_errors: yes
       when: host_accessible.state is defined and host_accessible.state == "started"
       #when: host_accessible.state is defined and host_accessible.stdout.find("success") != -1
-
-        - name: "I guess osp this controller isn't up, adding to broken inventory"
-          debug: var=inventory_hostname
-          when: host_accessible.state is not defined
-          # we could connect, but not find the success text
-          #when: host_accessible.state is defined and host_accessible.stdout.find("success") == -1
-
-        - name: Adding unreachable nodes to broken-nodes inventory group
-          add_host: name={{ inventory_hostname }}
-                groups=broken-nodes
-                instance_name={{ inventory_hostname }}
-          when: host_accessible.state is not defined
-          # we could connect, but not find the success text
-          #when: host_accessible.state is defined and host_accessible.stdout.find("success") == -1
       rescue:
-        # this is run if any of the above fail, add them to broke-nodes group too
+        # this is run if any of the above fail, add them to broke-nodes group
         - name: "I guess osp this controller had an error, adding to broken inventory"
           debug: var=inventory_hostname
 
@@ -73,11 +59,26 @@
           add_host: name={{ inventory_hostname }}
                 groups=broken-nodes
                 instance_name={{ inventory_hostname }}
-      always:
-        - name: "osp cleanup complete, operate on broken nodes"
-          local_action: shell "echo {{ item }} is unreachable"
-          with_inventory_hostnames:
-            - broken-nodes
+
+    - name: "operate on unreachable nodes"
+      block:
+        - name: "I guess osp this controller isn't up, adding to broken inventory"
+          debug: var=inventory_hostname
+
+        - name: Adding unreachable nodes to broken-nodes inventory group
+          add_host: name={{ inventory_hostname }}
+                groups=broken-nodes
+                instance_name={{ inventory_hostname }}
+      when: host_accessible.state is not defined
+      # we could connect, but not find the success text
+      #when: host_accessible.state is defined and host_accessible.stdout.find("success") == -1
+
+    - name: "cleanup on all broken-nodes group"
+      block:
+      - name: "echo list the broken nodes"
+        local_action: shell "echo {{ item }} is unreachable"
+        with_inventory_hostnames:
+          - broken-nodes
 
 # always include pxe boot playbook
 - include: reimage-servers.yml
