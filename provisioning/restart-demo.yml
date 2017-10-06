@@ -1,38 +1,45 @@
 ---
 - name: "reset everything and rebuild environmnet"
   hosts: osp10-controllers
+  gather_facts: no
   #hosts: 10.55.102.156
   tasks:
-    - name: "get list of vms off of osp10"
-      shell: |
-        source /root/keystonerc_dtaylor
-        openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID'
-      become: true
-      register: vms
-      ignore_errors: yes
+    - name: "test if openstack is up, or just pxe boot"
+      block:
+      - name: "get list of vms off of osp10"
+        shell: |
+          source /root/keystonerc_dtaylor
+          openstack server list | grep '|' | awk '{print $2}'|grep -v 'ID'
+        become: true
+        register: vms
+        ignore_errors: yes
+  
+      - name: "delete all the vms off of osp10"
+        shell: |
+          source /root/keystonerc_dtaylor
+          openstack server delete {{ item }}
+          sleep 30
+        become: true
+        with_items: "{{ vms.stdout.split() }}"
+        ignore_errors: yes
+  
+      - name: "update all the ansible tower osp10 repos"
+        shell: |
+          curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+          -H 'Content-Type: application/json' -XPOST \
+          --user admin:ansible \
+          https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+          sleep 15
+        with_items:
+          - 226
+          - 1141
+          - 349
+          - 310
+          - 719
+          - 720
+        ignore_errors: yes
+    rescue:
+      - name: "I guess osp controller isn't up"
+        debug: var=ansible_host
 
-    - name: "delete all the vms off of osp10"
-      shell: |
-        source /root/keystonerc_dtaylor
-        openstack server delete {{ item }}
-        sleep 30
-      become: true
-      with_items: "{{ vms.stdout.split() }}"
-      ignore_errors: yes
-
-    - name: "update all the ansible tower osp10 repos"
-      shell: |
-        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
-        -H 'Content-Type: application/json' -XPOST \
-        --user admin:ansible \
-        https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
-        sleep 15
-      with_items:
-        - 226
-        - 1141
-        - 349
-        - 310
-        - 719
-        - 720
-      ignore_errors: yes
 - include: reimage-servers.yml
