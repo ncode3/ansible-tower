@@ -62,7 +62,7 @@
       always:
         - name: "osp cleanup complete, operate on broken nodes"
           debug:
-            msg: "{{ item }}"
+            var: "{{ item }}"
           with_inventory_hostnames:
             - broken_nodes
 
