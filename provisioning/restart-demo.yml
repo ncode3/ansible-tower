@@ -13,7 +13,6 @@
       #local_action: shell ssh -o ConnectTimeout=10 {{ controller }} "echo success"
       register: host_accessible
       ignore_errors: yes
-      #failed_when: False
 
     - name: "clean up from last deploy of osp"
       block:
@@ -52,11 +51,25 @@
       when: host_accessible.state is defined and host_accessible.state == "started"
       #when: host_accessible.state is defined and host_accessible.stdout.find("success") != -1
 
-      rescue:
         - name: "I guess osp this controller isn't up, adding to broken inventory"
           debug: var=inventory_hostname
+          when: host_accessible.state is not defined
+          # we could connect, but not find the success text
+          #when: host_accessible.state is defined and host_accessible.stdout.find("success") == -1
 
         - name: Adding unreachable nodes to broken-nodes inventory group
+          add_host: name={{ inventory_hostname }}
+                groups=broken-nodes
+                instance_name={{ inventory_hostname }}
+          when: host_accessible.state is not defined
+          # we could connect, but not find the success text
+          #when: host_accessible.state is defined and host_accessible.stdout.find("success") == -1
+      rescue:
+        # this is run if any of the above fail, add them to broke-nodes group too
+        - name: "I guess osp this controller had an error, adding to broken inventory"
+          debug: var=inventory_hostname
+
+        - name: Adding errored nodes to broken-nodes inventory group
           add_host: name={{ inventory_hostname }}
                 groups=broken-nodes
                 instance_name={{ inventory_hostname }}
