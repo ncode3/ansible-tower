@@ -76,7 +76,7 @@
     - name: "cleanup on all broken-nodes group"
       block:
       - name: "echo list the broken nodes"
-        local_action: shell "echo {{ item }} is unreachable"
+        local_action: shell echo {{ item }} is unreachable
         with_inventory_hostnames:
           - broken-nodes
 
