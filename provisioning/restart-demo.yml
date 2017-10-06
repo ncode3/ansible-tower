@@ -5,6 +5,11 @@
   #hosts: 10.55.102.156
   tasks:
     - name: "test if openstack is up, or just pxe boot"
+      wait_for: host="{{ ansible_host }}" port=22 timeout=3
+      register: host_accessible
+      failed_when: False
+
+    - name: "clean up from last deploy of osp"
       block:
       - name: "get list of vms off of osp10"
         shell: |
@@ -38,8 +43,13 @@
           - 719
           - 720
         ignore_errors: yes
+      when: host_accessible.state is defined and host_accessible.state == "started"
+
       rescue:
         - name: "I guess osp controller isn't up"
           debug: var=ansible_host
-
+      always:
+        - name: "osp cleanup complete"
+          debug: var=ansible_host
+# pxe boot include
 - include: reimage-servers.yml
