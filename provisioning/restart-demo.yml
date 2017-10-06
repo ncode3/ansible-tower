@@ -52,10 +52,19 @@
       when: host_accessible.state is defined and host_accessible.state == "started"
 
       rescue:
-        - name: "I guess osp controller isn't up"
-          debug: var=ansible_host
+        - name: "I guess osp this controller isn't up, adding to broken inventory"
+          debug: var=inventory_hostname
+
+        - name: Adding unreachable nodes to broken_nodes inventory group
+          add_host: name={{ inventory_hostname }}
+                groups=broken_nodes
+                instance_name={{ inventory_hostname }}
       always:
-        - name: "osp cleanup complete"
-          debug: var=ansible_host
-# pxe boot include
+        - name: "osp cleanup complete, operate on broken nodes"
+          debug:
+            msg: "{{ item }}"
+          with_inventory_hostnames:
+            - broken_nodes
+
+# always include pxe boot playbook
 - include: reimage-servers.yml
