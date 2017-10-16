@@ -24,8 +24,9 @@
     os_cinder_volumesgroup_size: "1000G"
     os_amqp_nodes: "{{ osp10_controller }}"
     os_mariadb_nodes: "{{ osp10_controller }}"
-    #os_cinder_device: "/dev/sda"
-    os_cinder_device: "/dev/sda1"
+    os_cinder_device: "/dev/sda"
+    # for shelf
+    #os_cinder_device: "/dev/sda1"
     os_swift_device: "/dev/sda2"
     ml2_drivers: "local,vlan"
     ml2_networks: "local,vlan"

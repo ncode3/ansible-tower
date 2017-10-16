@@ -2,7 +2,6 @@
 - name: "reset everything and rebuild environmnet"
   hosts: osp10-controllers
   gather_facts: no
-  #hosts: 10.55.102.156
   tasks:
     - name: "Set fact for later use"
       set_fact:
