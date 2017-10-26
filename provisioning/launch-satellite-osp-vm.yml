@@ -1,0 +1,108 @@
+---
+- name: Launch a Compute Resource via Satellite 6
+  hosts: satellite
+  gather_facts: no
+  vars_files:
+    - group_vars/satellite.yml
+  vars:
+    sat6_org: "{{ sat6_default_org }}"
+    sat6_location: "{{ sat6_default_location }}"
+    aws_resource: "Not Configured"
+    rhev_resource: "Not Configured"
+    osp8_resource: "OSP8 Redhat Lab"
+    osp10_resource: "OSP10 Redhat Lab"
+    vmname: "test vm"
+    vmimage: "test image"
+    vmmetadata:
+      - name: tower_key
+        value: dc7c0b52cd29cacceb8d3571257801ea"
+      - name: host_type
+        value: "whatever you want"
+      - name: tower_server
+        value: 10.55.102.248
+  tasks:
+    - name: "Openstack Blocks"
+      block:
+        - name: "OSP8 Block"
+          block:
+            - name: "Create VM in Openstack 8"
+              shell: |
+                hammer host create --name "{{ vmname }}" --organization "{{ sat6_org }}" \
+                --location "{{ sat6_location }}" --hostgroup "Base" \
+                --compute-resource "{{ osp8_resource }}" --provision-method image \
+                --image "{{ vmimage }}" --enabled true --managed true \
+                --interface "managed=true,primary=true,provision=true"
+              register: vmprovider
+
+            - name: "Set some meta data about the vm for cloud-init"
+              command: hammer host set-parameter --host {{ vmname }} --name {{ item.name }} --value "{{ item.value }}"
+              with_items:
+                - "{{ vmmetadata }}"
+                - name: tower_jobid
+                  value: 8
+      hammer os set-default-template --id="${i}" --config-template-id="${SATID}"
+          when: provider == "OSP8"
+
+        - name: "OSP10 Block"
+          block:
+            - name: "Create VM in Openstack 10"
+              shell: |
+                hammer host create --name "{{ vmname }}" --organization "{{ sat6_org }}" \
+                --location "{{ sat6_location }}" --hostgroup "Base" \
+                --compute-resource "{{ osp10_resource }}" --provision-method image \
+                --image "{{ vmimage }}" --enabled true --managed true \
+                --interface "managed=true,primary=true,provision=true" 
+              register: vmprovider
+
+            - name: "Set some meta data about the vm for cloud-init"
+              command: hammer host set-parameter --host {{ vmname }} --name {{ item.name }} --value "{{ item.value }}"
+              with_items:
+                - "{{ vmmetadata }}"
+                - name: tower_jobid
+                  value: 287
+          when: provider == "OSP10"
+      when: provider == "OSP10" or provider == "OSP8"
+
+    - name: "AWS Block"
+      block:
+        - name: "Create VM in AWS"
+          shell: |
+            hammer host create --name "{{ vmname }}" --organization "{{ sat6_org }}"" \
+            --location "{{ sat6_location }}" --hostgroup "Base" \
+            --compute-resource "{{ aws_resource }}" --provision-method image \
+            --image "{{ vmimage }}" --enabled true --managed true \
+            --interface "managed=true,primary=true,provision=true" \
+            --computeattributes="flavor_ref=1"
+          register: vmprovider
+        - name: "Set some meta data about the vm for cloud-init"
+          command: hammer host set-parameter --host {{ vmname }} --name {{ item.name }} --value "{{ item.value }}"
+          with_items:
+            - "{{ vmmetadata }}"
+            - name: tower_jobid
+              value: 87
+      when: provider == "AWS"
+
+    - name: "RHEV Block"
+      block:
+        - name: "Create VM in RHEV"
+          shell: |
+
+            hammer host create --name "{{ vmname }}" --organization "{{ sat6_org }}" \
+            --location "{{ sat6_location }}" --hostgroup "Base" \
+            --compute-resource "{{ rhev_resource }}" --provision-method image \
+            --image "{{ vmimage }}" --enabled true --managed true \
+            --interface "managed=true,primary=true,provision=true" \
+            --computeattributes="flavor_ref=1"
+          register: vmprovider
+
+        - name: "Set some meta data about the vm for cloud-init"
+          command: hammer host set-parameter --host {{ vmname }} --name {{ item.name }} --value "{{ item.value }}"
+          with_items:
+            - "{{ vmmetadata }}"
+            - name: tower_jobid
+              value: 87
+      when: provider == "RHEV"
+    
+     
+    - name: Show Server's IP
+      debug: var=vmprovider.stdout

@@ -238,6 +238,14 @@
             group: puppet
             mode: 0644
 
+      - name: "Updated User data template"
+        template:
+            dest: /var/tmp/user-data-template.txt
+            src: satellite/user-data-template.txt.j2
+            owner: root
+            group: root
+            mode: 0644
+
       - name: "Restart puppetmaster"
         shell: systemctl restart puppetmaster
 
@@ -663,13 +671,13 @@
     args:
       creates: /root/.setup/step23a
 
-  - name: "Grab the new User Date ID"
+  - name: "Update the new user data template"
     shell: |
-      hammer --csv template list | grep "{{ sat6_org }}" | awk -F, {'print $1'} && \
+      USERDATAID=$(hammer --csv template list | grep "{{ sat6_org }}" | awk -F, {'print $1'})
+      hammer template update --file /var/tmp/user-data-template.txt --id ${USERDATAID} && \
       touch /root/.setup/step23b
     args:
       creates: /root/.setup/step23b
-    register: userdata_template_id
 
   - name: "Add kickstart pxe template to OS"
     shell: |
