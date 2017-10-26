@@ -18,18 +18,21 @@
         user: 'dtaylor'
         pass: "{{ ipmi_pass }}"
         tenant: "Redhat Lab"
+        controller: "{{ osp8_controller }}"
         url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
       - name: 'OSP8 Masked Admins'
         description: 'Openstack 8 Masked_Admins'
         user: dtaylor
         pass: "{{ ipmi_pass }}"
         tenant: "Masked_Admins"
+        controller: "{{ osp8_controller }}"
         url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
       - name: 'OSP10 Redhat Lab'
         description: 'Openstack 10'
         user: dtaylor
         pass: redhat123
         tenant: "Redhat_Lab"
+        controller: "{{ osp10_controller }}"
         url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
     sat6:
       environments:
@@ -653,16 +656,34 @@
     args:
       creates: /root/.setup/step22
 
+  - name: "Clone the Default User Data Kickstart"
+    shell: |
+      hammer template clone --name 'Satellite Kickstart Default User Data' --new-name '{{ sat6_org }} User Data' && \
+      touch /root/.setup/step23a
+    args:
+      creates: /root/.setup/step23a
+
+  - name: "Grab the new User Date ID"
+    shell: |
+      hammer --csv template list | grep "{{ sat6_org }}" | awk -F, {'print $1'} && \
+      touch /root/.setup/step23b
+    args:
+      creates: /root/.setup/step23b
+    register: userdata_template_id
+
   - name: "Add kickstart pxe template to OS"
     shell: |
       PXEID=$(hammer --csv template list | grep 'Kickstart default PXELinux' | awk -F, {'print $1'})
-      SATID=$(hammer --csv template list | grep 'Satellite Kickstart Default' | awk -F, {'print $1'})
+      SATID=$(hammer --csv template list | grep -v 'Satellite Kickstart Default User Data' | grep 'Satellite Kickstart Default' | awk -F, {'print $1'})
+      USERDATAID=$(hammer --csv template list | grep "{{ sat6_org }}" | awk -F, {'print $1'})
       for i in $(hammer --csv os list | awk -F, {'print $1'} | grep -vi '^ID')
       do
       hammer template add-operatingsystem --id="${PXEID}" --operatingsystem-id="${i}"
       hammer os set-default-template --id="${i}" --config-template-id="${PXEID}"
       hammer os add-config-template --id="${i}" --config-template-id="${SATID}"
+      hammer os add-config-template --id="${i}" --config-template-id="${USERDATAID}"
       hammer os set-default-template --id="${i}" --config-template-id="${SATID}"
+      hammer os set-default-template --id="${i}" --config-template-id="${USERDATAID}"
       done && \
       touch /root/.setup/step23
     args:
@@ -679,8 +700,9 @@
       PROXYID=1
       for os in $OSID
       do
+      osname=$(hammer os info --id ${os} |grep Title:|sed -e 's/Title:              //g')
       hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ item.domain }}"  --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ item.location }}" \
-      --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }} ${os}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
+      --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       done
     args:
@@ -698,8 +720,9 @@
       PROXYID=1
       for os in $OSID
       do
+      osname=$(hammer os info --id ${os} |grep Title:|sed -e 's/Title:              //g')
       hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
-      --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${os}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
+      --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       done
     args:
@@ -726,8 +749,41 @@
     args:
       creates: /root/.setup/step25
 
-  - name: "Compute Resources Complete"
-    shell: touch /root/.setup/step25
-    args:
-      creates: /root/.setup/step25
 
+  - name: "Add Openstack Compute Resources for RHEL 7.3"
+    shell: |
+      images=$(ssh root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'")
+      for imagename in $images;
+      do
+        hammer compute-resource image create --name "$imagename" \
+        --operatingsystem "RedHat 7.3" --architecture "x86_64" \
+        --username root --user-data true \
+        --compute-resource "{{ item.description }}"
+      done
+    with_items: "{{ compute_resources }}"
+    args:
+      creates: /root/.setup/step26
+
+  - name: "Compute Resources Complete"
+    shell: touch /root/.setup/step26
+    args:
+      creates: /root/.setup/step26
+
+  - name: "Add Openstack Compute Resources for RHEL 7.4"
+    shell: |
+      images=$(ssh root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'")
+      for imagename in $images;
+      do
+        hammer compute-resource image create --name "$imagename" \
+        --operatingsystem "RedHat 7.4" --architecture "x86_64" \
+        --username root --user-data true \
+        --compute-resource "{{ item.description }}"
+      done
+    with_items: "{{ compute_resources }}"
+    args:
+      creates: /root/.setup/step27
+
+  - name: "Compute Images Complete"
+    shell: touch /root/.setup/step27
+    args:
+      creates: /root/.setup/step27
