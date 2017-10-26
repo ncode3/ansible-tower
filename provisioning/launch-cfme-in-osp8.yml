@@ -1,0 +1,122 @@
+---
+# Creates a new instance with provisioning userdata using Cloud-Init
+- name: launch a compute instance
+  hosts: localhost
+  gather_facts: no
+  vars:
+    os_create_volume: "yes"
+    os_volume_size: 5
+    os_volume_name: cfme-volume
+    os_server:
+      name: "cloudforms"
+      state: present
+      image: "CFME 4.5 For RHOSP"
+      flavor: "m1.large"
+      network: "Provisioning_102"
+      availability_zone: "nova"
+      security_groups: default
+      region_name: "RegionOne"
+      auto_ip: no
+      key_name: "dtaylor-openstack"
+    ## this calls the install cmfe playbook
+    host_config_key: dc7c0b52cd29cacceb8d3571257801ea
+    host_config_server: 10.55.102.248
+    host_config_jobid: 721
+  environment:
+    OS_TENANT_NAME: "{{ vault_os_project }}"
+    OS_TENANT_ID: "{{ vault_os_projectid }}"
+    OS_USERNAME: "{{ vault_os_user }}"
+    OS_PASSWORD: "{{ vault_os_pass }}"
+    OS_AUTH_URL: "{{ vault_os_url }}"
+  tasks:
+    - name: delete the old cfme instance
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: absent
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+      ignore_errors: yes
+
+    - name: "destroy old {{ os_volume_size }}g volume for {{ os_server['name'] }} ignore errors"
+      os_volume:
+        state: absent
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        size: "{{ os_volume_size }}"
+        display_name: "{{ os_volume_name }}"
+      when: os_create_volume == "yes"
+      ignore_errors: yes
+
+    - name: "create {{ os_volume_size }}g volume for {{ os_server['name'] }}"
+      os_volume:
+        state: present
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        size: "{{ os_volume_size }}"
+        display_name: "{{ os_volume_name }}"
+      when: os_create_volume == "yes"
+
+    - name: launch cloudforms instance
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: present
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        auto_ip: "{{ os_server['auto_ip'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+        userdata: |
+          #cloud-config
+          preserve_hostname: false
+          yum_repos:
+            epel:
+              mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=x86_64
+              enabled: true
+              name: Extra Packages for Enterprise Linux 7 - x86_64
+              gpgcheck: false
+          system_info:
+            default_user:
+              name: cloud-user
+          groups:
+            - cloud-user
+          users:
+            - name: cloud-user
+              primary-group: cloud-user
+              groups: wheel
+              se-linux-user: unconfined_u
+              #ssh_pwauth: true
+              lock-passwd: false
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+            - name: root
+              #ssh_pwauth: true
+              lock-passwd: false
+              expire: false
+              ssh-authorized-keys:
+                - "{{ cloud_user_pub_key }}"
+          #ssh_pwauth: true
+          #chpasswd:
+          #  list: |
+          #    root:redhat123
+          #    cloud-user:redhat123
+          write_files:
+            - path: /etc/sudoers.d/999-cloud-user
+              permissions: '0440'
+              content: |
+                Defaults:cloud-user !requiretty
+          runcmd:
+           # this is post configuration job template
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+        volumes:
+          - "{{ os_volume_name }}"
+      register: cloudforms
+
+    - name: Show Server's IP
+      debug: var=cloudforms.server.private_v4
