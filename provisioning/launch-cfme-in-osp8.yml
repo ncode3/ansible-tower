@@ -21,7 +21,7 @@
     ## this calls the install cmfe playbook
     host_config_key: dc7c0b52cd29cacceb8d3571257801ea
     host_config_server: 10.55.102.248
-    host_config_jobid: 721
+    host_config_jobid: 3546
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
     OS_TENANT_ID: "{{ vault_os_projectid }}"
