@@ -769,16 +769,19 @@
 
   - name: "Add Openstack Compute Resources for RHEL 7.3"
     shell: |
-      images=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'")
+      images=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'|  sed -e 's/[[:space:]]*$//'| tr \"\n\" ','")
+      OLDIFS=$IFS
+      IFS=,
       for imagename in $images;
       do
-        uuid=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | grep ${imagename} | cut -d\| -f1| xargs")
+        uuid=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | grep '${imagename}' | cut -d\| -f2| xargs")
         hammer compute-resource image create --name "$imagename" \
         --operatingsystem "RedHat 7.3" --architecture "x86_64" \
         --username root --user-data true \
         --compute-resource "{{ item.name }}" \
         --uuid "${uuid}"
       done
+      IFS=$OLDIFS
     with_items: "{{ compute_resources }}"
     args:
       creates: /root/.setup/step26
@@ -790,16 +793,19 @@
 
   - name: "Add Openstack Compute Resources for RHEL 7.4"
     shell: |
-      images=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'")
+      images=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'|  sed -e 's/[[:space:]]*$//'| tr \"\n\" ','")
+      OLDIFS=$IFS
+      IFS=,
       for imagename in $images;
       do
-        uuid=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | grep ${imagename} | cut -d\| -f1| xargs")
+        uuid=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | grep '${imagename}' | cut -d\| -f2| xargs")
         hammer compute-resource image create --name "$imagename" \
         --operatingsystem "RedHat 7.4" --architecture "x86_64" \
         --username root --user-data true \
         --compute-resource "{{ item.name }}" \
         --uuid "${uuid}"
       done
+      IFS=$OLDIFS
     with_items: "{{ compute_resources }}"
     args:
       creates: /root/.setup/step27
