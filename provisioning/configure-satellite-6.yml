@@ -775,7 +775,7 @@
         hammer compute-resource image create --name "$imagename" \
         --operatingsystem "RedHat 7.3" --architecture "x86_64" \
         --username root --user-data true \
-        --compute-resource "{{ item.description }}"
+        --compute-resource "{{ item.name }}"
       done
     with_items: "{{ compute_resources }}"
     args:
@@ -794,7 +794,7 @@
         hammer compute-resource image create --name "$imagename" \
         --operatingsystem "RedHat 7.4" --architecture "x86_64" \
         --username root --user-data true \
-        --compute-resource "{{ item.description }}"
+        --compute-resource "{{ item.name }}"
       done
     with_items: "{{ compute_resources }}"
     args:
