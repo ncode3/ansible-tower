@@ -760,7 +760,8 @@
       --user {{ item.user }} \
       --password {{ item.pass }} \
       --tenant="{{ item.tenant }}" \
-      --url {{ item.url }}
+      --url {{ item.url }} && \
+      touch /root/.setup/step25
     with_items: "{{ compute_resources }}"
     args:
       creates: /root/.setup/step25
