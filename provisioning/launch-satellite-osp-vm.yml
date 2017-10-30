@@ -40,7 +40,6 @@
                 - "{{ vmmetadata }}"
                 - name: tower_jobid
                   value: 8
-      hammer os set-default-template --id="${i}" --config-template-id="${SATID}"
           when: provider == "OSP8"
 
         - name: "OSP10 Block"
