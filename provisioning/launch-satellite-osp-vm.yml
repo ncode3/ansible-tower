@@ -29,8 +29,6 @@
           block:
             - name: "Create VM in Openstack 8"
               shell: |
-  - name: "Add RHEL7 host group for each domain"
-    shell: |
                 OSID=$(hammer --csv os list | grep '{{ operatingsystem }}' | awk -F, {'print $1'})
                 hammer host create --name "{{ vmname }}" --organization "{{ sat6_org }}" \
                 --location "{{ sat6_location }}" --hostgroup "{{ sat6_hostgroup }}" \
