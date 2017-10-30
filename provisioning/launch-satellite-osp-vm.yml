@@ -52,10 +52,12 @@
             - name: "Create VM in Openstack 10"
               shell: |
                 OSID=$(hammer --csv os list | grep '{{ operatingsystem }}' | awk -F, {'print $1'})
+                COMPUTEID=$(hammer --csv hammer compute-resource list | grep '{{ osp8_resource }}' | awk -F, {'print $1'})
+                IMAGEID=$(hammer --csv compute-resource image list --compute-resource-id ${COMPUTEID} | grep '{{ vmimage }}' | awk -F, {'print $1'})
                 hammer host create --operatingsystem-id ${OSID} --name "{{ vmname }}" --organization "{{ sat6_org }}" \
                 --location "{{ sat6_location }}" --hostgroup "{{ sat6_hostgroup }}" \
                 --compute-resource "{{ osp10_resource }}" --provision-method image \
-                --image "{{ vmimage }}" --enabled true --managed true \
+                --image-id "${IMAGEID}" --enabled true --managed true \
                 --interface "managed=true,primary=true,provision=true"
               register: vmprovider
 
