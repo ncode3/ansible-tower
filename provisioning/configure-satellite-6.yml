@@ -708,6 +708,14 @@
     args:
       creates: /root/.setup/step23
 
+  - name: "Update Medium Location"
+    shell: |
+      MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+      hammer medium update --id ${MEDID} --locations {{ sat6_default_location }} && \
+      touch /root/.setup/setup23a
+    args:
+      creates: /root/.setup/step23a
+
   - name: "Add RHEL7 host group for each domain"
     shell: |
       MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
