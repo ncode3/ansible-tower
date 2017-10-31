@@ -8,7 +8,7 @@
       project_pass: redhat123
       dns_server: 10.55.102.5
       dhcp_server: 10.55.102.5
-      dhcp_domain: stack.maskedadmins.com
+      dhcp_domain: dev.maskedadmins.com
       dhcp_mtu: 1454
       cpupinning:
         use: "no"
