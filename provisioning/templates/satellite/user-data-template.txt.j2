@@ -121,7 +121,7 @@ phone_home:
  tries: 10
 runcmd:
  - [ cloud-init-per, once, foreman-userdata, /tmp/foreman-userdata.sh ]
- - "curl -k --data 'tower_key=<%= @host.params['tower_key'].blank ? 'dc7c0b52cd29cacceb8d3571257801ea' : "#{@host.params['tower_key']}' https://<%= @host.params['tower_server'].blank ? '10.55.102.248' : "#{@host.params['tower_server']}" %>:443/api/v1/job_templates/<%= @host.params['tower_jobid'].blank ? '287' : "#{@host.params['tower_jobid']}" %>/callback/"
+ - "curl -k --data 'tower_key=<%= @host.params['tower_key'].blank ? 'dc7c0b52cd29cacceb8d3571257801ea' : "#{@host.params['tower_key']}" %> https://<%= @host.params['tower_server'].blank ? '10.55.102.248' : "#{@host.params['tower_server']}" %>:443/api/v1/job_templates/<%= @host.params['tower_jobid'].blank ? '287' : "#{@host.params['tower_jobid']}" %>/callback/"
 
 output: {all: '| tee -a /root/install.userdata.log'}
 
