@@ -70,6 +70,10 @@
                 --compute-attributes 'nics=["511ed063-6ab9-488a-b68f-d9fadcc12c95"],flavor_ref=3,image_ref=5ee6ccb0-2dbb-4d45-936e-b50aeb5bdb2f,tenant_id=577d322037144eefb75eed342bb3a8c6,security_groups=Redhat_Lab-sg'
               register: vmprovider
 
+            - name: "Pause to wait for host to be created"
+              pause:
+                minutes: 1
+
             - name: "Set some meta data about the vm for cloud-init"
               command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
               with_items:
