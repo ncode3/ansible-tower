@@ -17,7 +17,7 @@
     vmimage: "test image"
     vmmetadata:
       - name: tower_key
-        value: dc7c0b52cd29cacceb8d3571257801ea"
+        value: dc7c0b52cd29cacceb8d3571257801ea
       - name: host_type
         value: "whatever you want"
       - name: tower_server
