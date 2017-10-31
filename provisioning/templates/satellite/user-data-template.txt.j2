@@ -32,13 +32,13 @@ users:
    passwd: <%= @host.root_pass %>
 <%# Allow user to specify additional SSH key as host paramter -%>
 <% if @host.params['sshkey'].present? || @host.params['remote_execution_ssh_keys'].present? -%>
-ssh_authorized_keys:
+   ssh_authorized_keys:
 <% if @host.params['sshkey'].present? -%>
-  - <%= @host.params['sshkey'] %>
+   - <%= @host.params['sshkey'] %>
 <% end -%>
 <% if @host.params['remote_execution_ssh_keys'].present? -%>
 <% @host.params['remote_execution_ssh_keys'].each do |key| -%>
-  - <%= key %>
+   - <%= key %>
 <% end -%>
 <% end -%>
 <% end -%>
@@ -51,13 +51,13 @@ ssh_authorized_keys:
    passwd: <%= @host.root_pass %>
 <%# Allow user to specify additional SSH key as host paramter -%>
 <% if @host.params['sshkey'].present? || @host.params['remote_execution_ssh_keys'].present? -%>
-ssh_authorized_keys:
+   ssh_authorized_keys:
 <% if @host.params['sshkey'].present? -%>
-  - <%= @host.params['sshkey'] %>
+   - <%= @host.params['sshkey'] %>
 <% end -%>
 <% if @host.params['remote_execution_ssh_keys'].present? -%>
 <% @host.params['remote_execution_ssh_keys'].each do |key| -%>
-  - <%= key %>
+   - <%= key %>
 <% end -%>
 <% end -%>
 <% end -%>
@@ -121,7 +121,10 @@ phone_home:
  tries: 10
 runcmd:
  - [ cloud-init-per, once, foreman-userdata, /tmp/foreman-userdata.sh ]
- - "curl -k --data 'tower_key=<%= @host.params['tower_key'].blank ? 'dc7c0b52cd29cacceb8d3571257801ea' : "#{@host.params['tower_key']}" %> https://<%= @host.params['tower_server'].blank ? '10.55.102.248' : "#{@host.params['tower_server']}" %>:443/api/v1/job_templates/<%= @host.params['tower_jobid'].blank ? '287' : "#{@host.params['tower_jobid']}" %>/callback/"
-
+<% if @host.params['tower_key'].present? && @host.params['tower_server'].present? && @host.params['tower_jobid'].present? -%>
+ - "curl -k --data 'host_config_key=<%= @host.params['tower_key'] %>' https://<%= @host.params['tower_server'] %>:443/api/v1/job_templates/<%= @host.params['tower_jobid'] %>/callback/"
+<% else -%>
+ - "curl -k --data 'host_config_key=dc7c0b52cd29cacceb8d3571257801ea' https://10.55.102.248:443/api/v1/job_templates/287/callback/"
+<% end -%>
 output: {all: '| tee -a /root/install.userdata.log'}
 

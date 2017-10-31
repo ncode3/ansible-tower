@@ -2,7 +2,7 @@
 - name: Firstboot configuration tasks
   hosts: all
   vars:
-    dns_domain: "maskedadmins.com"
+    dns_domain: "dev.maskedadmins.com"
     #current patch level enforced by redhat insights job
     host_config_server: "10.55.102.248"
     redhat_insights_key: ""
@@ -13,7 +13,7 @@
       user: "admin"
       pass: "redhat123"
       org: Redhat_Lab
-      hostgroup: "RHEL_7_x86_64_Hostgroup for stack.maskedadmins.com 2"
+      hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RHEL 7.3"
       location: "Private_Cloud"
       environment: "Development"
       activation_key: "Redhat_Lab-Development-key"
