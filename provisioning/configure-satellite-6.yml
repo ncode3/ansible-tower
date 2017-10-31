@@ -751,10 +751,14 @@
       PROXYID=1
       for os in $OSID
       do
-      osname=$(hammer os info --id ${os} |grep Title:|sed -e 's/Title:              //g')
-      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
+        osname=$(hammer os info --id ${os} |grep Title:|sed -e 's/Title:              //g')
+        hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
       --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
+        hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --name "sshkey"  --value "{{ cloud_user_pub_key }}"
+        hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --name "tower_key"  --value "{{ tower_key }}"
+        hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --name "tower_server"  --value "{{ tower_server }}"
+        hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --name "tower_jobid"  --value "{{ tower_jobid }}"
       done
     args:
       creates: /root/.setup/step24
