@@ -1,6 +1,6 @@
 ---
 - name: "Grab an OSE authorization token"
-  hosts: ose-cluster-master.stack.maskedadmins.com
+  hosts: ose-cluster-master.dev.maskedadmins.com
   vars:
     ose_user: "admin"
     ose_pass: "redhat123"

@@ -1,6 +1,6 @@
 ---
 - name: "Customize OSE 3.5 nodes"
-  hosts: ose-cluster-node-1.stack.maskedadmins.com,ose-cluster-node-2.stack.maskedadmins.com
+  hosts: ose-cluster-node-1.dev.maskedadmins.com,ose-cluster-node-2.dev.maskedadmins.com
   tasks:
     - name: set docker config
       template:

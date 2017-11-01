@@ -1,7 +1,7 @@
 ---
 #- include: "firstboot.yml"
 - name: "Configure Cloudforms Management Engine"
-  hosts: cloudforms.stack.maskedadmins.com
+  hosts: cloudforms.dev.maskedadmins.com
   vars:
     cfme_user: "admin"
     cfme_pass: "smartvm"

@@ -248,7 +248,7 @@
         echo "calling update firewall port for workshopper"
         curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
         # this command will make the master a scheduled node. since we are launching multinode, lets use those and comment this out
-        echo -e '#!/bin/bash\noadm manage-node ose-cluster-master.stack.maskedadmins.com --schedulable\noc project default\noc deploy router --retry\noc deploy registry-console --retry' > /root/fix-demo.sh
+        echo -e '#!/bin/bash\noadm manage-node ose-cluster-master.dev.maskedadmins.com --schedulable\noc project default\noc deploy router --retry\noc deploy registry-console --retry' > /root/fix-demo.sh
         chmod +x /root/fix-demo.sh
         /root/fix-demo.sh
         sleep 120

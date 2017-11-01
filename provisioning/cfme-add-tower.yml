@@ -1,15 +1,15 @@
 ---
 - name: "Add Ansible Tower Provider to CFME"
-  hosts: tower.stack.maskedadmins.com
+  hosts: tower.dev.maskedadmins.com
   vars:
     cfme_user: "admin"
     cfme_pass: "smartvm"
     cfme_creds: "admin:smartvm"
     cfme_type: "ManageIQ::Providers::AnsibleTower::Provider"
-    cfme_server: "cloudforms.stack.maskedadmins.com"
+    cfme_server: "cloudforms.dev.maskedadmins.com"
     cfme_project: redhat-lab
     tower_name: "Ansible Tower"
-    tower_server: "tower.stack.maskedadmins.com"
+    tower_server: "tower.dev.maskedadmins.com"
     tower_security: ssl
     tower_user: "admin"
     tower_pass: "ansible"

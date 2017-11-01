@@ -1,17 +1,17 @@
 ---
 - include: ose-get-token.yml
 - name: "Add Openshift provider to CFME"
-  hosts: ose-cluster-master.stack.maskedadmins.com
+  hosts: ose-cluster-master.dev.maskedadmins.com
   ignore_errors: yes
   vars:
     cfme_user: "admin"
     cfme_pass: "smartvm"
     cfme_creds: "admin:smartvm"
     cfme_type: "ManageIQ::Providers::Openshift::ContainerManager"
-    cfme_server: "cloudforms.stack.maskedadmins.com"
+    cfme_server: "cloudforms.dev.maskedadmins.com"
     cfme_project: redhat-lab
     ose_name: "OSE3-3"
-    ose_server: "ose-cluster-master.stack.maskedadmins.com"
+    ose_server: "ose-cluster-master.dev.maskedadmins.com"
     ose_security: ssl
     ose_user: "admin"
   tasks:
