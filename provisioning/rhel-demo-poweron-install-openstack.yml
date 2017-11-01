@@ -45,6 +45,8 @@
     - name: "copying authorized key to id_rsa.pub"
       shell: |
         cp /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub
+      args:
+        creates: "/root/.ssh/id_rsa.pub"
 
     - name: "Install Openstack 10 Yum packages"
       yum:
