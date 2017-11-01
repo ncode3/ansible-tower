@@ -7,8 +7,8 @@
   vars:
     ipmi_targets:
       - 10.55.101.158
-#      - 10.55.101.157
-#      - 10.55.101.156
+      - 10.55.101.157
+      - 10.55.101.156
     powerstate: "pxe"
   tasks:
     - name: "reboot to pxe boot for {{ ipmi_targets }} and reimage"
