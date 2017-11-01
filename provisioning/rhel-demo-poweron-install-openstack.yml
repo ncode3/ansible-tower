@@ -92,15 +92,25 @@
       become: true
       when: "'cinder' not in cinder.stdout"
 
-    - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
-      shell: "packstack --answer-file=/root/packstack-answer.txt"
-      become: true
-      when: os_packstack_use_answerfile == "yes"
+    - name: "Block for packstack"
+      block:
+      - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
+        shell: "packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup"
+        become: true
+        when: os_packstack_use_answerfile == "yes"
+        args:
+          creates: /opt/.packstack-setup
 
-    - name: "Run packstack --allinone for demo on a single server"
-      shell: "packstack --allinone"
-      become: true
-      when: os_packstack_use_answerfile == "no"
+      - name: "Run packstack --allinone for demo on a single server"
+        shell: "packstack --allinone && touch /opt/.packstack-setup"
+        become: true
+        when: os_packstack_use_answerfile == "no"
+        args:
+          creates: /opt/.packstack-setup
+      rescue:
+      - name: "Remove packstack touched file"
+        shell: rm -f /opt/.packstack-setup
+    
 
 ## customize openstack
 - include: "configure-osp10.yml"
