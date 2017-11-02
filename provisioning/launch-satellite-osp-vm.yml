@@ -54,6 +54,7 @@
           block:
             - name: "Create VM in Openstack 10"
               shell: |
+                set -x
                 OSID=$(hammer --csv os list | grep '{{ operatingsystem }}' | awk -F, {'print $1'})
                 COMPUTEID=$(hammer --csv compute-resource list | grep '{{ osp10_resource }}' | awk -F, {'print $1'})
                 IMAGEID=$(hammer --csv compute-resource image list --compute-resource-id ${COMPUTEID} | grep '{{ vmimage }}' | awk -F, {'print $1'})
