@@ -791,9 +791,13 @@
       --user {{ item.user }} \
       --password {{ item.pass }} \
       --tenant="{{ item.tenant }}" \
-      --url {{ item.url }} && \
-      touch /root/.setup/step25
+      --url {{ item.url }}
     with_items: "{{ compute_resources }}"
+    args:
+      creates: /root/.setup/step25
+
+  - name: "Openstack Compute Resources Complete"
+    shell: touch /root/.setup/step25
     args:
       creates: /root/.setup/step25
 
