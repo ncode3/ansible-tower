@@ -68,7 +68,8 @@
                 #--interface "managed=true,primary=true,provision=true"
                 hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}' --organization Redhat_Lab \
                 --location Private_Cloud --hostgroup 'RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.3' \
-                --compute-resource '{{ osp10_resource }}' --provision-method image --image-id ${IMAGEID} --enabled true --managed true \
+                #--compute-resource '{{ osp10_resource }}' --provision-method image --image-id ${IMAGEID} --enabled true --managed true \
+                --compute-resource '{{ osp10_resource }}' --provision-method image --enabled true --managed true \
                 --interface managed=true,primary=true,provision=true --lifecycle-environment "Development" \
                 --content-view "Base"  \
                 --compute-attributes 'nics=["${SUBNETUUID}"],flavor_ref=3,image_ref=${IMAGEUUID},tenant_id=${TENANTUUID},security_groups={{ osp10_sg }}'
