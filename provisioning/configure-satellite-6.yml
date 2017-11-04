@@ -516,21 +516,27 @@
       creates: /root/.setup/step11d
 
   - name: "Repo config Complete"
-    shell: touch /root/.setup/step11d
+    shell: |
+      touch /root/.setup/step11d
+      echo '#!/bin/bash' > /tmp/productsync.sh
     args:
       creates: /root/.setup/step11d
 
   - name: "Provisioning Satellite 6 - Syncing RHEL Product Content. This takes 100+ mins with all the repos to sync..."
     shell: |
-        hammer product synchronize --name "{{ item }}" \
-        --organization "{{ sat6_default_org }}"
+        echo hammer product synchronize --name "{{ item }}" \
+        --organization "{{ sat6_default_org }}" >> /tmp/productsync.sh
     with_items:
       - "{{ sat6_enabled_products }}"
     args:
       creates: /root/.setup/step12
 
   - name: "Product Sync Complete"
-    shell: touch /root/.setup/step12
+    shell: |
+      chmod +x /tmp/productsync.sh
+      /tmp/productsync.sh &
+      disown
+      touch /root/.setup/step12
     args:
       creates: /root/.setup/step12
 
