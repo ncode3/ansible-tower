@@ -714,9 +714,9 @@
     shell: |
       MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
       hammer medium update --id ${MEDID} --locations {{ sat6_default_location }} && \
-      touch /root/.setup/setup23a
+      touch /root/.setup/setup23aa
     args:
-      creates: /root/.setup/step23a
+      creates: /root/.setup/step23aa
 
   - name: "Update OS with medium"
     shell: |
@@ -726,9 +726,9 @@
       do
         hammer os update --id ${os} --medium-ids ${MEDID}
       done
-      touch /root/.setup/setup23b
+      touch /root/.setup/setup23bb
     args:
-      creates: /root/.setup/step23b
+      creates: /root/.setup/step23bb
 
   - name: "Add RHEL7 host group for each domain"
     shell: |
