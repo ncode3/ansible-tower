@@ -13,20 +13,20 @@
   vars:
     dns_domain: "stack.maskedadmins.com"
     compute_resources:
-      - name: 'OSP8 Redhat Lab'
-        description: 'Openstack 8 Redhat Lab'
-        user: 'dtaylor'
-        pass: "{{ ipmi_pass }}"
-        tenant: "Redhat Lab"
-        controller: "{{ osp8_controller }}"
-        url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
-      - name: 'OSP8 Masked Admins'
-        description: 'Openstack 8 Masked_Admins'
-        user: dtaylor
-        pass: "{{ ipmi_pass }}"
-        tenant: "Masked_Admins"
-        controller: "{{ osp8_controller }}"
-        url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
+#      - name: 'OSP8 Redhat Lab'
+#        description: 'Openstack 8 Redhat Lab'
+#        user: 'dtaylor'
+#        pass: "{{ ipmi_pass }}"
+#        tenant: "Redhat Lab"
+#        controller: "{{ osp8_controller }}"
+#        url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
+#      - name: 'OSP8 Masked Admins'
+#        description: 'Openstack 8 Masked_Admins'
+#        user: dtaylor
+#        pass: "{{ ipmi_pass }}"
+#        tenant: "Masked_Admins"
+#        controller: "{{ osp8_controller }}"
+#        url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
       - name: 'OSP10 Redhat Lab'
         description: 'Openstack 10'
         user: dtaylor
