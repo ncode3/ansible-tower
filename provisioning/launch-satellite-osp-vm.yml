@@ -24,8 +24,6 @@
         value: "whatever you want"
       - name: tower_server
         value: 10.55.102.248
-      - name: tower_jobid
-        value: 287
   tasks:
     - name: "Set fact for Normal Boot Script"
       set_fact:
@@ -78,7 +76,7 @@
               with_items:
                 - "{{ vmmetadata }}"
                 - name: tower_jobid
-                  value: 8
+                  value: "{{ tower_jobid }}"
           when: provider == "OSP8"
 
         - name: "OSP10 Block"
@@ -106,17 +104,18 @@
                 #--compute-resource '{{ osp10_resource }}' --provision-method image --image-id ${IMAGEID} --enabled true --managed true \
               register: vmprovider
               become: true
+              ignore_errors: yes
 
-#            - name: "Pause to wait for host to be created"
-#              pause:
-#                minutes: 1
-#
-#            - name: "Set some meta data about the vm for cloud-init"
-#              command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
-#              with_items:
-#                - "{{ vmmetadata }}"
-#                - name: tower_jobid
-#                  value: 287
+            - name: "Pause to wait for host to be created"
+              pause:
+                minutes: 1
+
+            - name: "Set some meta data about the vm for cloud-init"
+              command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
+              with_items:
+                - "{{ vmmetadata }}"
+                - name: tower_jobid
+                  value: "{{ tower_jobid }}"
           when: provider == "OSP10"
       when: provider == "OSP10" or provider == "OSP8"
 
@@ -136,7 +135,7 @@
           with_items:
             - "{{ vmmetadata }}"
             - name: tower_jobid
-              value: 87
+              value: "{{ tower_jobid }}"
       when: provider == "AWS"
 
     - name: "RHEV Block"
@@ -156,7 +155,7 @@
           with_items:
             - "{{ vmmetadata }}"
             - name: tower_jobid
-              value: 87
+              value: "{{ tower_jobid }}"
       when: provider == "RHEV"
     
      
