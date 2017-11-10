@@ -1,4 +1,4 @@
-dns_domain: "stack.maskedadmins.com"
+dns_domain: "dev.maskedadmins.com"
 sat6_default_org: Redhat_Lab
 sat6_default_location: Private_Cloud
 sat6_default_hostcollection: RHEL_7_x86_64
