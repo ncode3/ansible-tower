@@ -33,6 +33,11 @@
         tower_jobid: "227"
       when: jobname == "ocp"
 
+    - name: "Set fact for JBOSS"
+      set_fact:
+        tower_jobid: "3654"
+      when: jobname == "jboss"
+
     - name: "Set fact for Openstack Node"
       set_fact:
         tower_jobid: "256"
