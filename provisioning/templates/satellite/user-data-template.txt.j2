@@ -115,7 +115,7 @@ write_files:
     /usr/bin/puppet agent --config /etc/puppet/puppet.conf --onetime --tags no_such_tag <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
     /sbin/service puppet start
 <% end -%>
-   ## ansible tower callback
+    ## ansible tower callback
 <% if @host.params['tower_key'].present? && @host.params['tower_server'].present? && @host.params['tower_jobid'].present? -%>
     curl -k --data 'host_config_key=<%= @host.params['tower_key'] %>' https://<%= @host.params['tower_server'] %>:443/api/v1/job_templates/<%= @host.params['tower_jobid'] %>/callback/
 <% else -%>
