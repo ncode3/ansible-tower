@@ -1,31 +1,45 @@
 ---
 - name: Firstboot configuration tasks
-  hosts: all:!satellite*:!cmfe*
-  vars:
-    dns_domain: "dev.maskedadmins.com"
-    #current patch level enforced by redhat insights job
-    host_config_server: "10.55.102.248"
-    redhat_insights_key: ""
-    redhat_insights_jobid: ""
-    sat6:
-      url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
-      #url: "10.55.102.204"
-      user: "admin"
-      pass: "redhat123"
-      org: redhatlab
-      hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.3"
-      location: "Private_Cloud"
-      environment: "Development"
-      activation_key: "Redhat_Lab-Development-key"
-  tasks:
-    - include: "firstboot/{{ ansible_distribution }}.yml"
+  hosts: all:!satellite*:!cfme*:!cloudforms*
+  roles:
+    - firstboot
 
 - name: Install Jboss Standalone
   hosts: jboss*
   roles:
     - jboss-standalone
 
-- name: Install Satellite
+- name: Configure Satellite
   hosts: satellite*
   roles:
     - satellite-server
+
+- name: Configure Cloudforms Management Engine
+  hosts: cloudforms*:cfme*
+  roles:
+    - cloudforms-server
+
+- name: Configure Openstack Compute Nodes with HugePages, CPU pinning 
+  hosts: osp10-computes
+  roles:
+    - { role: openstack, osp_mode: computes }
+
+- name: Customize Openstack -  create networks, projects, users, and import glance images from nfs share
+  hosts: osp10-controllers
+  roles:
+    - { role: openstack, osp_mode: controllers, cfme: true }
+
+- name: Customize Openshift Container Platform nodes
+  hosts: ose-cluster-node-1.dev.maskedadmins.com,ose-cluster-node-2.dev.maskedadmins.com
+  roles:
+    - { role: openshift, ocp_mode: nodes }
+
+- name: Customize Openshift Container Platform with 2 additional nodes
+  hosts: ose-cluster-master.dev.maskedadmins.com
+  roles:
+    - { role: openshift, ocp_mode: controllers, cfme: true }
+
+- name: Customize Ansible Tower
+  hosts: tower*
+  roles:
+    - ansible-tower
