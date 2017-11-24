@@ -1,0 +1,25 @@
+---
+- name: Firstboot configuration tasks
+  hosts: all
+  vars:
+    dns_domain: "dev.maskedadmins.com"
+    #current patch level enforced by redhat insights job
+    host_config_server: "10.55.102.248"
+    redhat_insights_key: ""
+    redhat_insights_jobid: ""
+    sat6:
+      url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
+      #url: "10.55.102.204"
+      user: "admin"
+      pass: "redhat123"
+      org: redhatlab
+      hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.3"
+      location: "Private_Cloud"
+      environment: "Development"
+      activation_key: "Redhat_Lab-Development-key"
+  tasks:
+    - include: "firstboot/{{ ansible_distribution }}.yml"
+
+- hosts: jboss*
+  roles:
+    - jboss-standalone
