@@ -1,0 +1,31 @@
+---
+- name: Block to configure CFME"
+  block:
+  - name: "Configure CFME"
+    shell: |
+      TERM=vt100 appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
+    args:
+      creates: /var/run/httpd/httpd.pid
+    become: true
+
+  rescue:
+  - name: "Try again CFME"
+    shell: |
+      lvremove -f /dev/vg_pg/lv_pg
+      vgremove -f vg_pg
+      pvremove -f /dev/vdb1
+      echo -e "rm 1\nquit" | parted /dev/vdb1
+      partprobe
+      TERM=vt100 appliance_console_cli -v --internal --dbdisk /dev/vdb --region 0 --password {{ cfme_pass }}
+    args:
+      creates: /var/run/httpd/httpd.pid
+    become: true
+  always:
+  - name: "Reboot and wait for it to return"
+    shell: |
+      shutdown -r +1 && true
+    become: true
+  - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
+  - local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=240
+
+- include: "cfme-add-openstack.yml"

@@ -1,0 +1,8 @@
+  identityProviders:
+  - challenge: true
+    login: true
+    name: httpd_provider
+    provider:
+      apiVersion: v1
+      kind: HTPasswdPasswordIdentityProvider
+      file: /etc/origin/master/htpasswd

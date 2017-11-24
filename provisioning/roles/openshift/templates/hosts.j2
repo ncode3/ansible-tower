@@ -1,0 +1,18 @@
+[OSEv3:children]
+nodes
+nfs
+masters
+etcd
+[OSEv3:vars]
+ansible_ssh_user=root
+deployment_type=openshift-enterprise
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+[nodes]
+{{ ansible_default_ipv4.address }}  openshift_public_ip={{ ansible_default_ipv4.address }} openshift_ip={{ ansible_default_ipv4.address }} openshift_public_hostname={{ ansible_nodename }} openshift_hostname={{ ansible_nodename }} connect_to={{ ansible_default_ipv4.address }} openshift_node_labels="{'region': 'infra'}" openshift_schedulable=True ansible_connection=local
+[nfs]
+{{ ansible_default_ipv4.address }}  openshift_public_ip={{ ansible_default_ipv4.address }} openshift_ip={{ ansible_default_ipv4.address }} openshift_public_hostname={{ ansible_nodename }} openshift_hostname={{ ansible_nodename }} connect_to={{ ansible_default_ipv4.address }} ansible_connection=local
+[masters]
+{{ ansible_default_ipv4.address }}  openshift_public_ip={{ ansible_default_ipv4.address }} openshift_ip={{ ansible_default_ipv4.address }} openshift_public_hostname={{ ansible_nodename }} openshift_hostname={{ ansible_nodename }} connect_to={{ ansible_default_ipv4.address }} ansible_connection=local
+[etcd]
+{{ ansible_default_ipv4.address }}  openshift_public_ip={{ ansible_default_ipv4.address }} openshift_ip={{ ansible_default_ipv4.address }} openshift_public_hostname={{ ansible_nodename }} openshift_hostname={{ ansible_nodename }} connect_to={{ ansible_default_ipv4.address }} ansible_connection=local
+

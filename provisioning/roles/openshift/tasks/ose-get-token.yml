@@ -1,0 +1,14 @@
+---
+- name: "Log into OSE, grab an OSE authorization token"
+  shell: |
+    oc login -u {{ ose_add_user }} -p {{ ose_add_pass }} > /dev/null 2>&1
+    oc whoami -t
+  register: token
+  become: true
+
+- name: "Set fact for later use"
+  set_fact:
+    ose_token: "{{ token.stdout }}"
+
+- name: "Display OSE authorization token"
+  debug: var=token

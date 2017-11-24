@@ -1,0 +1,66 @@
+---
+- name: set docker config
+  template:
+    src: ose/docker.j2
+    dest: /etc/sysconfig/docker
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: set selinux config
+  template:
+    src: ose/selinux.j2
+    dest: /etc/sysconfig/selinux
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: "set selinux to permissive for this run"
+  shell: setenforce 0
+  become: true
+
+- name: "Enabling OSE needed repos"
+  shell: |
+    subscription-manager repos --enable={{ item }}
+  with_items: "{{ ose_repos }}"
+  become: true
+
+- name: "Install OSE yum packages"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ ose_pkgs }}"
+  become: true
+
+- file:
+    path: /opt/ose-mount-host
+    state: directory
+    owner: 1001
+    group: root
+    mode: 0755
+  become: true
+
+- template:
+    src: ose/docker-storage-setup.j2
+    dest: /etc/sysconfig/docker-storage-setup
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: "Setup docker storage, requires a separate volume on /dev/vdb"
+  shell: |
+    docker-storage-setup
+  become: true
+  ignore_errors: yes
+
+- name: "Enabling and restarting services {{ ose_svcs }}"
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items: "{{ ose_svcs }}"
+  become: true
+

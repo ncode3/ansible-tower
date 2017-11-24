@@ -1,0 +1,5 @@
+---
+tower_tarball_location: http://10.55.102.5/ansible-tower-setup-latest.tar.gz
+restore_backup: "yes"
+backup_file_src: "/opt/ansible-tower-setup-3.1.3/tower-backup-latest.tar.gz"
+backup_file_dest: "/opt/tower-backup-latest.tar.gz"

@@ -1,0 +1,19 @@
+---
+- name: "Use the API to add Openstack provider to CFME"
+  shell: |
+    curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
+    -i -X POST -H "Accept: application/json" \
+    -d "{
+          \"type\"      : \"ManageIQ::Providers::Openstack::CloudManager\",
+          \"name\"      : \"{{ item.name }}\",
+          \"hostname\"  : \"{{ item.server }}\",
+          \"ipaddress\" : \"{{ item.server }}\",
+          \"security_protocol\"      : \"{{ item.security }}\",
+          \"credentials\" : {
+            \"userid\"   : \"{{ item.user }}\",
+            \"password\" : \"{{ item.pass }}\"
+          }
+    }" \
+    https://{{ cfme_server }}/api/providers
+    sleep 5
+  with_items: "{{ cfme.compute_resources }}"

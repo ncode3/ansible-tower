@@ -1,0 +1,42 @@
+---
+## this is for fedora 25 has python3 and python3 is not supported yet for anisble
+## also, you will have to use "ansible_python_interpreter: /usr/bin/python3" in extra variables
+- name: install python and deps for ansible modules
+  shell: dnf install -y python2 python2-dnf libselinux-python
+
+- name: "Set up /etc/hosts file"
+  shell: |
+    hostname=$(hostname)
+    shortname=$(hostname --short)
+    grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
+  become: true
+
+- name: "Installing rpms {{ fedora_packages }}"
+  shell: "yum -y install {{ fedora_packages }}"
+  become: true
+
+- name: "Enabling and restarting services {{ enabled_svcs }}"
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items: "{{ enabled_svcs }}"
+  become: true
+
+- name: "Stopping and disabling services {{ disabled_svcs }}"
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items: "{{ disabled_svcs }}"
+  become: true
+  ignore_errors: yes
+
+- name: "Updating MOTD"
+  template: 
+    src: tiger.ascii.j2
+    dest: /etc/motd 
+    owner: root 
+    group: root 
+    mode: 0644
+

@@ -1,0 +1,422 @@
+---
+- name: "Check if project exists, ignore the failure if it doesn't exist"
+  shell: |
+    . /root/keystonerc_admin
+    openstack project list | grep {{ openstack['project_name'] }} || true
+  ignore_errors: yes
+  register: proj_stat
+
+- name: "Create lab project and user, updating cores quota for project to 40"
+  shell: |
+    . /root/keystonerc_admin
+    openstack project create --description "{{ openstack['project_name'] }}" {{ openstack['project_name'] }}
+    openstack user create --project {{ openstack['project_name'] }} --password {{ openstack['project_pass'] }} {{ openstack['project_user'] }}
+    openstack role add --project {{ openstack['project_name'] }} --user {{ openstack['project_user'] }} admin
+    tenant=$(openstack project list | awk '/{{ openstack['project_name'] }}/ {print $2}')
+    nova quota-update --cores 40 $tenant
+  args:
+    chdir: /root
+  become: true
+  when: openstack['project_name'] not in proj_stat.stdout
+  #ignore_errors: yes
+
+- name: "copy over {{ openstack['project_user'] }} keystone file"
+  template:
+    src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
+    dest: "/root/keystonerc_{{ openstack['project_user'] }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "copy over glance import script"
+  template:
+    src: openstack/glance-import.sh.j2
+    dest: /root/glance-import.sh
+    owner: root
+    group: root
+    mode: 0755
+  when: openstack['glance']['import']  == "yes"
+    
+- name: "make the import directory"
+  file:
+    path: "{{ openstack['glance']['image_path'] }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: openstack['glance']['import']  == "yes"
+
+- name: copy over dns script  used by openstack dnsmasq to update the vm's dns entry
+  template:
+    src: openstack/dns-updater.sh.j2
+    dest: /usr/local/bin/dns-updater.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: openstack dnsmasq config file to use the dns script and custom mtu settings etc
+  template:
+    src: openstack/dnsmasq.conf.j2
+    dest: /etc/neutron/dnsmasq.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: update neutron dhcp_agent.ini dns values
+  lineinfile: 
+    line: "dnsmasq_dns_servers = {{ openstack['dns_server'] }}"
+    dest: /etc/neutron/dhcp_agent.ini
+    regexp: "^dnsmasq_dns_servers =*"
+    state: present
+
+- name: update neutron dhcp_agent.ini domain values
+  lineinfile: 
+    line: "dhcp_domain = {{ openstack['dhcp_domain'] }}"
+    dest: /etc/neutron/dhcp_agent.ini
+    regexp: "^dhcp_domain =*"
+    state: present
+
+- name: update neutron neutron.conf domain values
+  lineinfile: 
+    line: "dns_domain = {{ openstack['dhcp_domain'] }}"
+    dest: /etc/neutron/neutron.conf
+    regexp: "^dns_domain =*"
+    state: present
+
+- name: update nova.conf domain values
+  lineinfile:
+    line: "dhcp_domain={{ openstack['dhcp_domain'] }}"
+    dest: /etc/nova/nova.conf
+    regexp: "^dhcp_domain=*"
+    state: present
+
+- name: update neutron dhcp_agent.ini to use dnsmasq config file
+  lineinfile:
+    dest: /etc/neutron/dhcp_agent.ini
+    line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
+    regexp: "^dnsmasq_config_file =*"
+    state: present
+
+- name: update neutron dhcp_agent.ini isolated network values so cloud-init will work when not using a neutron router
+  lineinfile:
+    line: "enable_isolated_metadata = True"
+    dest: /etc/neutron/dhcp_agent.ini
+    regexp: "^enable_isolated_metadata = False"
+    state: present
+
+- name: "killing dnsmasq, ignore the failure if no process found"
+  shell: |
+    killall dnsmasq || true
+  become: true
+  ignore_errors: yes
+
+
+- name: "Enabling and restarting services openstack nova and neutron-dhcp-agent services"
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - neutron-dhcp-agent
+    - openstack-nova-api
+    - openstack-nova-cert
+    - openstack-nova-consoleauth
+    - openstack-nova-scheduler
+    - openstack-nova-conductor
+    - openstack-nova-novncproxy 
+  become: true
+
+- name: "Mount nfs share to import glance images"
+  mount:
+    path: "{{ openstack['glance']['image_path'] }}"
+    src: "{{ openstack['glance']['nfs_target'] }}"
+    fstype: nfs
+    opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
+    state: present
+  when: openstack['glance']['mount_nfs']  == "yes"
+
+- name: "Ensure nfs is mounted, ignore the failure if it is already mounted"
+  shell: |
+    mount {{ openstack['glance']['image_path'] }}
+  args:
+    chdir: /root
+  become: true
+  when: openstack['glance']['mount_nfs']  == "yes"
+  ignore_errors: yes
+
+- name: "Import a couple of glance images ... takes 10 mins"
+  shell: |
+    . /root/keystonerc_admin
+    NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
+    openstack image list | grep "${NAME}" || /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
+  args:
+    chdir: /root
+  become: true
+  with_items: "{{ openstack['glance']['image_names'] }}"
+  when: openstack['glance']['import'] == "yes"
+  #ignore_errors: yes
+
+- name: "Ensure nfs is unmounted"
+  shell: |
+    umount {{ openstack['glance']['image_path'] }}
+  args:
+    chdir: /root
+  become: true
+  when: openstack['glance']['mount_nfs']  == "yes"
+  #ignore_errors: yes
+
+- name: "Create the networks and subnets ..."
+  shell: |
+    . /root/keystonerc_admin
+    projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
+    neutron net-list | grep "{{ item.key }}" || \
+    ( neutron net-create {{ item.key }} --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id {{ item.value.vlanid }} --tenant-id=$projectid && \
+    neutron subnet-create {{ item.key }} {{ item.value.cidr }} --gateway {{ item.value.gateway }} --name "{{ item.value.subnet_name }}" --allocation-pool start={{ item.value.dhcp_start }},end={{ item.value.dhcp_end }} --tenant-id=$projectid --dns-nameserver {{ openstack['dns_server'] }} )
+  args:
+    chdir: /root
+  become: true
+  with_dict: "{{ openstack['networks'] }}"
+  #ignore_errors: yes
+
+- name: "Create the security groups ..."
+  shell: |
+    . /root/keystonerc_{{ openstack['project_user'] }}
+    openstack keypair create --public-key ~/.ssh/id_rsa.pub {{ openstack['project_user'] }}-openstack
+    openstack security group create {{ openstack['project_name'] }}-sg --description "{{ openstack['project_name'] }} Security Group"
+    openstack security group rule create --protocol icmp {{ openstack['project_name'] }}-sg
+    openstack security group rule create --protocol tcp {{ openstack['project_name'] }}-sg
+    openstack security group rule create --protocol udp {{ openstack['project_name'] }}-sg
+  args:
+    chdir: /root
+  become: true
+  #ignore_errors: yes
+
+- name: "Configure the system for Huge Pages"
+  shell: |
+    grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
+    grub2-install {{ openstack['hugepages']['device'] }}
+    echo 'vm.nr_hugepages=6144' >> /etc/sysctl.conf
+  args:
+    chdir: /root
+  become: true
+  when: openstack['hugepages']['use']  == "yes"
+  #ignore_errors: yes
+
+- name: "Installing numactl"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "numactl"
+  become: true
+  when: openstack['cpupinning']['use']  == "yes"
+
+- name: get the guest cpus we isolate for guest images
+  shell: |
+    numactl --hardware | grep 'node 0 cpus' | cut -d\: -f2| sed -e 's/ 0 1 //g' | sed -e 's/ /,/g'
+  become: true
+  register: guestcpus
+  when: openstack['cpupinning']['use']  == "yes"
+
+- name: update nova.conf cpu pinning values
+  lineinfile:
+    line: "vcpu_pin_set={{ guestcpus.stdout }}"
+    dest: /etc/nova/nova.conf
+    regexp: "^vcpu_pin_set=*"
+    state: present
+  when: openstack['cpupinning']['use']  == "yes"
+
+- name: "Configure the system for cpu pinning"
+  shell: |
+    grubby --update-kernel=ALL --args="isolcpus={{ guestcpus.stdout }}"
+    grub2-install {{ openstack['cpupinning']['device'] }}
+  args:
+    chdir: /root
+  become: true
+  when: openstack['cpupinning']['use']  == "yes"
+  #ignore_errors: yes
+
+- name: "Enabling and restarting services openstack nova "
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - openstack-nova-compute
+
+  become: true
+- name: "Setting the flavors for non performance ..."
+  shell: |
+    source /root/keystonerc_admin
+    for FLAVOR in `nova flavor-list | cut -f 2 -d ' ' | grep -o [0-9]*`
+    do
+      nova flavor-key ${FLAVOR} set "aggregate_instance_extra_specs:pinned"="false";
+    done
+  args:
+    chdir: /root
+  become: true
+  when: openstack['cpupinning']['use']  == "yes"
+  #ignore_errors: yes
+
+- name: "Create the performance flavor to use later..."
+  shell: |
+    source /root/keystonerc_admin
+    nova flavor-create m1.medium.performance 6 6144 60 4
+    echo "fixing nova-manage.log"
+    chmod 666 /var/log/nova/nova-manage.log
+  args:
+    chdir: /root
+  become: true
+  #ignore_errors: yes
+
+- name: "Set the metadata for huge pages flavor ..."
+  shell: |
+    source /root/keystonerc_admin
+    nova flavor-key m1.medium.performance set hw:mem_page_size=2048
+  args:
+    chdir: /root
+  become: true
+  when: openstack['hugepages']['use']  == "yes"
+  #ignore_errors: yes
+
+- name: "Set the metadata for cpu pinning flavor ..."
+  shell: |
+    source /root/keystonerc_admin
+    nova flavor-key m1.medium.performance set hw:cpu_policy=dedicated
+    nova flavor-key m1.medium.performance set aggregate_instance_extra_specs:pinned=true
+  args:
+    chdir: /root
+  become: true
+  when: openstack['cpupinning']['use']  == "yes"
+  #ignore_errors: yes
+
+- name: "Create the normal and performance availability zones ..."
+  shell: |
+    source /root/keystonerc_admin
+    nova aggregate-create performance
+    nova aggregate-set-metadata 1 pinned=true
+    nova aggregate-create normal
+    nova aggregate-set-metadata 2 pinned=false
+  args:
+    chdir: /root
+  become: true
+  when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+  #ignore_errors: yes
+  
+- name: "Add the compute nodes to the performance zone ..."
+  shell: |
+    source /root/keystonerc_admin
+    nova aggregate-add-host 1 {{ item }}
+  args:
+    chdir: /root
+  become: true
+  when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+  #ignore_errors: yes
+  with_items:
+    - "compute2.maskedadmins.com"
+    - "compute3.maskedadmins.com"
+
+- name: "Add the compute nodes to the normal zone ..."
+  shell: |
+    source /root/keystonerc_admin
+    nova aggregate-add-host 2 {{ item }}
+  args:
+    chdir: /root
+  become: true
+  when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+  #ignore_errors: yes
+  with_items:
+    - "compute4.maskedadmins.com"
+
+- name: "Update Nova Scheduler to filter on capabilities  ..."
+  shell: |
+    sed -i -e 's/^scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter/scheduler_default_filters=RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,CoreFilter,NUMATopologyFilter,AggregateInstanceExtraSpecsFilter/g' /etc/nova/nova.conf
+    systemctl restart openstack-nova-scheduler.service
+  args:
+    chdir: /root
+  become: true
+  when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+  #ignore_errors: yes
+
+- name: "firstboot.service file"
+  template:
+    src: openstack/firstboot-setup.service.j2
+    dest: /etc/systemd/system/firstboot-setup.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "/opt/firstboot-start.sh file"
+  template:
+    src: openstack/firstboot-start.sh.j2
+    dest: /opt/firstboot-start.sh
+    owner: root
+    group: root
+    mode: 0755
+  when: openstack['hugepages']['use']  == "yes"
+
+- name: "/opt/firstboot-stop.sh file"
+  template:
+    src: openstack/firstboot-stop.sh.j2
+    dest: /opt/firstboot-stop.sh
+    owner: root
+    group: root
+    mode: 0755
+  when: openstack['hugepages']['use']  == "yes"
+
+- name: "Reloading systemctl for firstboot script to launch demos"
+  shell: |
+    systemctl daemon-reload  
+    systemctl enable firstboot-setup.service
+  args:
+    chdir: /root
+  become: true
+  when: openstack['hugepages']['use']  == "yes"
+
+- name: "Reboot to new settings. Back in 10 mins or so"
+  shell: |
+    ssh 10.55.102.156 "shutdown -r +4"
+    ssh 10.55.102.157 "shutdown -r +4"
+    shutdown -r +4 && sleep 2
+  args:
+    chdir: /root
+  become: true
+  when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
+
+- name: "update all the ansible tower osp10 repos and sleep 3 mins"
+  shell: |
+    curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' \
+    -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+    sleep 30
+  with_items:
+    - 226
+    - 1141
+    - 349
+    - 310
+    - 719
+    - 720
+  ignore_errors: yes
+
+- name: "Launching demos"
+  shell: |
+    chmod 666 /var/log/nova/nova-manage.log
+    echo "update the firewall port"
+    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8445\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+    # we sleep to allow time for the inventory to update between launching vms
+    echo "Configure compute nodes"
+    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
+    sleep 700
+    echo "Sat 6 launch job"
+    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
+    #sleep 120
+    #echo "CMFE launch job"
+    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
+    sleep 120
+    echo "OSE 3.5 launch job"
+    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+    sleep 600
+    echo "Tower launch job"
+    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
+  args:
+    chdir: /root
+  become: true
+  when: ( openstack['hugepages']['use']  == "no" ) and ( openstack['cpupinning']['use']  == "no" )

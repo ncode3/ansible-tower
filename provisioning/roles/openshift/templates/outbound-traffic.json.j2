@@ -1,0 +1,17 @@
+{
+    "kind": "EgressNetworkPolicy",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "default"
+    },
+    "spec": {
+        "egress": [
+            {
+                "type": "Allow",
+                "to": {
+                    "cidrSelector": "{{ ose_outbound_network_cidr }}"
+                }
+            }
+        ]
+    }
+}

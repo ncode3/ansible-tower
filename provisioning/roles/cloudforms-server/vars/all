@@ -1,0 +1,4 @@
+---
+cfme_user: "admin"
+cfme_pass: "smartvm"
+cfme_project: "redhat-lab"

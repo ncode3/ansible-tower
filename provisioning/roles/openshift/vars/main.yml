@@ -1,0 +1,22 @@
+---
+multinode: "no"
+node1_ip: ""
+node1_hostname: ""
+node2_ip: ""
+node2_hostname: ""
+ose_add_user: "admin"
+ose_add_pass: "redhat123"
+ose_add_project: "redhat-lab"
+ose_add_project_description: "This is an example project to demonstrate OpenShift v3"
+ose_add_project_displayname: "Redhat Lab Demo Project"
+ose_outbound_network_cidr: "10.55.0.0/16"
+ocp_variant: "3.5"
+cfme_user: "admin"
+cfme_pass: "smartvm"
+cfme_creds: "admin:smartvm"
+cfme_type: "ManageIQ::Providers::Openshift::ContainerManager"
+cfme_server: "cloudforms.dev.maskedadmins.com"
+cfme_project: redhat-lab
+ose_name: "OCP"
+ose_server: "ose-cluster-master.dev.maskedadmins.com"
+ose_security: ssl

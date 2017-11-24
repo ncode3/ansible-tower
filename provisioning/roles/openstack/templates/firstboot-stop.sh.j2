@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ -e /opt/firstboot.finished ]
+then
+  echo "Removing firstboot service ..."
+  systemctl disable firstboot-setup
+  #rm -f /etc/systemd/system/firstboot-setup.service
+  #rm -f /opt/firstboot-start.sh /opt/firstboot-stop.sh
+  systemctl daemon-reload
+else
+  echo "/opt/firstboot-setup.sh did not run yet."
+fi

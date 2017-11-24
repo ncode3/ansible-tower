@@ -1,0 +1,66 @@
+---
+- name: "Install yum packages"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ tower_pkgs }}"
+  become: true
+  ignore_errors: yes
+
+- name: "Grab tower tarball"
+  unarchive:
+    src: "{{ tower_tarball_location }}"
+    dest: /opt
+    remote_src: True
+
+- name: "Change the inventory passwords to 'ansible' for installation"
+  shell: |
+    cd ansible-tower-setup-*
+    sed -i -e "s/admin_password=''/admin_password='ansible'/g" inventory
+    sed -i -e "s/redis_password=''/redis_password='ansible'/g" inventory
+    sed -i -e "s/pg_password=''/pg_password='ansible'/g" inventory
+    sed -i -e "s/rabbitmq_password=''/rabbitmq_password='ansible'/g" inventory
+    echo "calling update firewall port for tower"
+    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8446\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+  args:
+    chdir: /opt
+
+- name: "Install Ansible Tower"
+  shell: |
+    cd ansible-tower-setup-*
+    ./setup.sh
+  args:
+    chdir: /opt
+  become: true
+
+- name: "Disable PRoot to allow local_actions"
+  lineinfile: 
+    line: "AWX_PROOT_ENABLED=False"
+    dest: /etc/tower/settings.py
+    regexp: "^AWX_PROOT_ENABLED=*"
+    state: present
+
+- name: "Restart Tower"
+  shell: |
+    ansible-tower-service restart
+  become: true
+
+- name: "Copy over backup file {{ backup_file_src }}"
+  copy:
+    dest: "{{ backup_file_dest }}"
+    src: "{{ backup_file_src }}"
+    owner: root
+    group: root
+    mode: 0755
+  when: restore_backup == "yes"
+
+- name: "Restore Backup"
+  shell: |
+    cd ansible-tower-setup-*
+    ./setup.sh -e 'restore_backup_file={{ backup_file_dest }}' -r
+  args:
+    chdir: /opt
+  become: true
+  when: restore_backup == "yes"
+
+- include: cfme-add-tower.yml

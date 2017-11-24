@@ -1,0 +1,29 @@
+ansible_callback_facts_yaml: /root/.config/openshift/.ansible/callback_facts.yaml
+ansible_inventory_path: /root/.config/openshift/hosts
+ansible_log_path: /tmp/ansible.log
+deployment:
+  ansible_ssh_user: root
+  hosts:
+  - connect_to: {{ ansible_default_ipv4.address }}
+    hostname: {{ ansible_nodename }}
+    ip: {{ ansible_default_ipv4.address }}
+    node_labels: '{''region'': ''infra''}'
+    public_hostname: {{ ansible_nodename }}
+    public_ip: {{ ansible_default_ipv4.address }} 
+    roles:
+    - master
+    - etcd
+    - node
+    - storage
+  master_routingconfig_subdomain: 'ose.maskedadmins.com'
+  proxy_exclude_hosts: ''
+  proxy_http: ''
+  proxy_https: ''
+  roles:
+    etcd: {}
+    master: {}
+    node: {}
+    storage: {}
+variant: openshift-enterprise
+variant_version: '3.3'
+version: v2

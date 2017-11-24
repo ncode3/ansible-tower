@@ -1,0 +1,9 @@
+---
+- include: "configure-ocp-controllers.yml"
+  when: ocp_mode == 'controllers'
+
+- include: "configure-ocp-nodes.yml"
+  when: ocp_mode == 'nodes'
+
+- include: "add-openshift-to-cfme.yml"
+  when: cfme == 'true'

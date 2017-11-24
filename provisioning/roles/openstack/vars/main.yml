@@ -1,0 +1,85 @@
+---
+openstack:
+  project_name: Redhat_Lab
+  project_user: dtaylor
+  project_pass: redhat123
+  dns_server: 10.55.102.5
+  dhcp_server: 10.55.102.5
+  dhcp_domain: dev.maskedadmins.com
+  dhcp_mtu: 1454
+  cpupinning:
+    use: "no"
+    #device: /dev/sda
+    device: /dev/sdb
+  hugepages:
+    use: "no"
+    #device: /dev/sda
+    device: /dev/sdb
+  glance:
+    mount_nfs: "yes"
+    import: "yes"
+    image_path: /mnt/compute1/glance-images
+    nfs_target: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
+    image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.1.5-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2','QCI-Template-bare.qcow2']
+    #image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
+  networks:
+    Management_101:
+      cidr: 10.55.101.0/24
+      vlanid: 101
+      subnet_name: NET101
+      dhcp_start: 10.55.101.10
+      dhcp_end: 10.55.101.50
+      gateway: 10.55.101.1
+    Provisioning_102:
+      cidr: 10.55.102.0/24
+      vlanid: 102
+      subnet_name: NET102
+      dhcp_start: 10.55.102.200
+      dhcp_end: 10.55.102.225
+      gateway: 10.55.102.1
+    Dev_103:
+      cidr: 10.55.103.0/24
+      vlanid: 103
+      subnet_name: NET103
+      dhcp_start: 10.55.103.200
+      dhcp_end: 10.55.103.225
+      gateway: 10.55.103.1
+    Test_104:
+      cidr: 10.55.104.0/24
+      vlanid: 104
+      subnet_name: NET104
+      dhcp_start: 10.55.104.200
+      dhcp_end: 10.55.104.225
+      gateway: 10.55.104.1
+    Storage_105:
+      cidr: 10.55.105.0/24
+      vlanid: 105
+      subnet_name: NET105
+      dhcp_start: 10.55.105.200
+      dhcp_end: 10.55.105.225
+      gateway: 10.55.105.1
+    Prod_106:
+      cidr: 10.55.106.0/24
+      vlanid: 106
+      subnet_name: NET106
+      dhcp_start: 10.55.106.200
+      dhcp_end: 10.55.106.225
+      gateway: 10.55.106.1
+cfme_user: "admin"
+cfme_pass: "smartvm"
+cfme_server: "{{ ansible_hostname }}"
+cfme_project: redhat-lab
+cfme:
+  compute_resources:
+    - name: 'OSP8'
+      description: 'Openstack 8 Redhat Lab'
+      user: 'dtaylor'
+      pass: "{{ ipmi_pass }}"
+      security: non-ssl
+      server: "{{ osp8_controller }}"
+    - name: 'OSP10'
+      description: 'Openstack 10'
+      user: dtaylor
+      pass: redhat123
+      security: non-ssl
+    server: "{{ osp10_controller }}"

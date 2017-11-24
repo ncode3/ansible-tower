@@ -1,0 +1,42 @@
+---
+- vars:
+    packages: "bash-completion vim-enhanced net-snmp ntp ntpdate git wget"
+- name: Updating packages on system
+  shell: "rpm-ostree pkg-add {{ packages }}"
+  become: true
+
+- name: "Set ntp to true"
+  shell: |
+    ntpdate server 10.55.102.5 iburst
+    timedatectl set-ntp true
+    systemctl restart chronyd
+  poll: 0
+  async: 1
+  become: true
+  ignore_errors: yes
+
+- name: Set authorized key for root
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ cloud_user_pub_key }}"
+  ignore_errors: yes
+
+- name: "Updating MOTD"
+  template: 
+    src: tiger.ascii.j2
+    dest: /etc/motd 
+    owner: root 
+    group: root 
+    mode: 0644
+  ignore_errors: yes
+
+- name: Updating packages on system
+  shell: "rpm-ostree pkg-add {{ packages }}"
+  become: true
+  ignore_errors: yes
+
+- name: Rebooting system
+  shell: "reboot && sleep 2"
+  become: true
+  ignore_errors: yes

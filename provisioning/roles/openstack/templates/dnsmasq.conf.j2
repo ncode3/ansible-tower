@@ -1,0 +1,6 @@
+dhcp-boot=pxelinux.0,pxe-boot-hostname,{{ openstack['dhcp_server'] }}
+dhcp-no-override
+dhcp-option=26,{{ openstack['dhcp_mtu'] }}
+domain={{ openstack['dhcp_domain'] }}
+log-dhcp
+dhcp-script=/opt/dns-updater.sh

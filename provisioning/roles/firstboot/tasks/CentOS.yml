@@ -1,0 +1,40 @@
+---
+- name: "Set up /etc/hosts file"
+  shell: |
+    hostname=$(hostname)
+    shortname=$(hostname --short)
+    grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
+  become: true
+
+- name: "Enabling and restarting services {{ enabled_svcs }}"
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items: "{{ enabled_svcs }}"
+  become: true
+
+- name: "Stopping and disabling services {{ disabled_svcs }}"
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items: "{{ disabled_svcs }}"
+  become: true
+  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
+  ignore_errors: yes
+
+- name: "Installing rpms {{ centos_packages }}"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ centos_packages }}"
+  become: true
+
+- name: "Updating MOTD"
+  template: 
+    src: tiger.ascii.j2
+    dest: /etc/motd 
+    owner: root 
+    group: root 
+    mode: 0644
