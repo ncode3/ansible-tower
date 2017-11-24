@@ -1,6 +1,6 @@
 ---
 - name: Launch a Compute Resource via Satellite 6
-  hosts: satellite
+  hosts: satellite*
   gather_facts: no
   vars_files:
     - group_vars/satellite.yml
