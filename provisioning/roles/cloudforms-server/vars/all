@@ -2,3 +2,18 @@
 cfme_user: "admin"
 cfme_pass: "smartvm"
 cfme_project: "redhat-lab"
+cfme_server: "{{ ansible_hostname }}"
+cfme:
+  compute_resources:
+    - name: 'OSP8'
+      description: 'Openstack 8 Redhat Lab'
+      user: 'dtaylor'
+      pass: "{{ ipmi_pass }}"
+      security: non-ssl
+      server: "{{ osp8_controller }}"
+    - name: 'OSP10'
+      description: 'Openstack 10'
+      user: dtaylor
+      pass: redhat123
+      security: non-ssl
+      server: "{{ osp10_controller }}"

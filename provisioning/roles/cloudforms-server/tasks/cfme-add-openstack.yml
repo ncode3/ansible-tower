@@ -20,7 +20,7 @@
         security: non-ssl
         server: "{{ osp10_controller }}"
   tasks:
-    - name: "Use the API to add Openstack provider"
+    - name: "Use the API to add Openstack provider to CFME"
       shell: |
         curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
         -i -X POST -H "Accept: application/json" \

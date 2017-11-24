@@ -4,6 +4,3 @@
 
 - include: "configure-osp-computes.yml"
   when: osp_mode == 'computes'
-
-- include: "add-openstack-to-cfme.yml"
-  when: cfme == 'true'
