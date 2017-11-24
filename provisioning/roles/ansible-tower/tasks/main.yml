@@ -63,4 +63,4 @@
   become: true
   when: restore_backup == "yes"
 
-- include: cfme-add-tower.yml
+- include: add-tower-to-cfme.yml
