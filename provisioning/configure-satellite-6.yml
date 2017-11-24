@@ -794,7 +794,7 @@
       --password {{ item.pass }} \
       --tenant="{{ item.tenant }}" \
       --url {{ item.url }}
-    with_items: "{{ compute_resources }}"
+    with_items: "{{ sat6.compute_resources }}"
     args:
       creates: /root/.setup/step25
 
@@ -823,7 +823,7 @@
         fi
       done
       IFS=$OLDIFS
-    with_items: "{{ compute_resources }}"
+    with_items: "{{ sat6.compute_resources }}"
     args:
       creates: /root/.setup/step26
 
@@ -851,7 +851,7 @@
 #        fi
 #      done
 #      IFS=$OLDIFS
-#    with_items: "{{ compute_resources }}"
+#    with_items: "{{ sat6.compute_resources }}"
 #    args:
 #      creates: /root/.setup/step27
 #

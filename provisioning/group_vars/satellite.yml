@@ -3,32 +3,35 @@ sat6_default_org: Redhat_Lab
 sat6_default_location: Private_Cloud
 sat6_default_hostcollection: RHEL_7_x86_64
 sat6_default_hostgroup: "RHEL_7_x86_64_Hostgroup"
-sat6_default_domain: "stack.maskedadmins.com"
+sat6_default_domain: "dev.maskedadmins.com"
 sat6_default_subnet: "default"
 sat6_default_environment: "Development"
-compute_resources:
-  - name: 'OSP8 Redhat Lab'
-    description: 'Openstack 8 Redhat Lab'
-    user: 'dtaylor'
-    pass: "{{ ipmi_pass }}"
-    tenant: "Redhat Lab"
-    controller: "{{ osp8_controller }}"
-    url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
-  - name: 'OSP8 Masked Admins'
-    description: 'Openstack 8 Masked_Admins'
-    user: dtaylor
-    pass: "{{ ipmi_pass }}"
-    tenant: "Masked_Admins"
-    controller: "{{ osp8_controller }}"
-    url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
-  - name: 'OSP10 Redhat Lab'
-    description: 'Openstack 10'
-    user: dtaylor
-    pass: redhat123
-    tenant: "Redhat_Lab"
-    controller: "{{ osp10_controller }}"
-    url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
+tower_key: dc7c0b52cd29cacceb8d3571257801ea
+tower_server: 10.55.102.248
+tower_jobid: 287
 sat6:
+  compute_resources:
+#    - name: 'OSP8 Redhat Lab'
+#      description: 'Openstack 8 Redhat Lab'
+#      user: 'dtaylor'
+#      pass: "{{ ipmi_pass }}"
+#      tenant: "Redhat Lab"
+#      controller: "{{ osp8_controller }}"
+#      url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
+#    - name: 'OSP8 Masked Admins'
+#      description: 'Openstack 8 Masked_Admins'
+#      user: dtaylor
+#      pass: "{{ ipmi_pass }}"
+#      tenant: "Masked_Admins"
+#      controller: "{{ osp8_controller }}"
+#      url: "http://{{ osp8_controller }}:5000/v2.0/tokens"
+    - name: 'OSP10 Redhat Lab'
+      description: 'Openstack 10'
+      user: dtaylor
+      pass: redhat123
+      tenant: "Redhat_Lab"
+      controller: "{{ osp10_controller }}"
+      url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
   environments:
     - name: 'Development'
       prior: 'Library'
@@ -111,13 +114,6 @@ sat6:
         - "Test_104"
         - "Storage_105"
         - "Prod_106"
-sat6_default_org: Redhat_Lab
-sat6_default_location: Private_Cloud
-sat6_default_hostcollection: RHEL_7_x86_64
-sat6_default_hostgroup: "RHEL_7_x86_64_Hostgroup"
-sat6_default_domain: "stack.maskedadmins.com"
-sat6_default_subnet: "default"
-sat6_default_environment: "Development"
 sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
 sat6_pool_ids: ['']
 sat6_enabled_products:
