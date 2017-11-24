@@ -82,4 +82,4 @@ cfme:
       user: dtaylor
       pass: redhat123
       security: non-ssl
-    server: "{{ osp10_controller }}"
+      server: "{{ osp10_controller }}"
