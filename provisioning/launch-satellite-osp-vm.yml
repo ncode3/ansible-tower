@@ -107,9 +107,9 @@
               become: true
               ignore_errors: yes
 
-            - name: "Pause to wait for host to be created"
-              pause:
-                minutes: 1
+#            - name: "Pause to wait for host to be created"
+#              pause:
+#                minutes: 1
 
             - name: "Set some meta data about the vm for cloud-init"
               command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
