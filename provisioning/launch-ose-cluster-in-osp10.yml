@@ -5,6 +5,7 @@
   gather_facts: no
   vars:
     ## install OSE with Huge Pages flavor
+    dns_domain: dev.maskedadmins.com
     vault_os_project: Redhat_Lab
     vault_os_projectid: ""
     vault_os_user: dtaylor
