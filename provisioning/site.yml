@@ -1,6 +1,6 @@
 ---
 - name: Firstboot configuration tasks
-  hosts: all
+  hosts: all:!satellite*:!cmfe*
   vars:
     dns_domain: "dev.maskedadmins.com"
     #current patch level enforced by redhat insights job
