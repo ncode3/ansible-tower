@@ -1,0 +1,16 @@
+---
+tower_tarball_location: http://10.55.102.5/ansible-tower-setup-latest.tar.gz
+restore_backup: "yes"
+backup_file_src: "/opt/ansible-tower-setup-3.1.3/tower-backup-latest.tar.gz"
+backup_file_dest: "/opt/tower-backup-latest.tar.gz"
+cfme_user: "admin"
+cfme_pass: "smartvm"
+cfme_creds: "admin:smartvm"
+cfme_type: "ManageIQ::Providers::AnsibleTower::Provider"
+cfme_server: "cloudforms.dev.maskedadmins.com"
+cfme_project: redhat-lab
+tower_name: "Ansible Tower"
+tower_server: "tower.dev.maskedadmins.com"
+tower_security: ssl
+tower_user: "admin"
+tower_pass: "ansible"
