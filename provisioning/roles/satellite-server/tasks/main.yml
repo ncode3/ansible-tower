@@ -71,7 +71,7 @@
     - name: "Configure hammer cli tool"
       template:
           dest: /etc/hammer/cli_config.yml
-          src: satellite/cli_config.yml.j2
+          src: cli_config.yml.j2
           owner: root
           group: root
           mode: 0644
@@ -79,7 +79,7 @@
     - name: "Configure puppet autosigning"
       template:
           dest: /etc/puppet/autosign.conf
-          src: satellite/autosign.conf.j2
+          src: autosign.conf.j2
           owner: foreman-proxy
           group: puppet
           mode: 0644
@@ -87,7 +87,7 @@
     - name: "Updated User data template"
       template:
           dest: /var/tmp/user-data-template.txt
-          src: satellite/user-data-template.txt.j2
+          src: user-data-template.txt.j2
           owner: root
           group: root
           mode: 0644
