@@ -11,7 +11,7 @@
 - name: "Configure Satellite 6"
   hosts: all
   vars:
-    dns_domain: "stack.maskedadmins.com"
+    dns_domain: "dev.maskedadmins.com"
     compute_resources:
 #      - name: 'OSP8 Redhat Lab'
 #        description: 'Openstack 8 Redhat Lab'

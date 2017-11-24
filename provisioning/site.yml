@@ -20,6 +20,12 @@
   tasks:
     - include: "firstboot/{{ ansible_distribution }}.yml"
 
-- hosts: jboss*
+- name: Install Jboss Standalone
+  hosts: jboss*
   roles:
     - jboss-standalone
+
+- name: Install Satellite
+  hosts: satellite*
+  roles:
+    - satellite-server
