@@ -1,2 +1,4 @@
 templates/satellite/manifest_*
 templates/satellite/*pem
+roles/satellite-server/templates/manifest_*
+roles/satellite-server/templates/*pem
