@@ -245,4 +245,4 @@
   become: true
   ignore_errors: yes
 
-- include: cfme-add-openshift.yml
+- include: add-openshift-to-cfme.yml
