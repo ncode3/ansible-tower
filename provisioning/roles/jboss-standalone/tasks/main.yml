@@ -34,7 +34,7 @@
   copy: src=jboss-as-standalone.sh dest=/etc/init.d/jboss mode=0755
 
 - name: Enable JBoss to be started at boot
-  service: name=jboss enabled=yes state=started
+  systemd: name=jboss enabled=yes state=started
 
 - name: deploy iptables rules
   template: src=iptables-save dest=/etc/sysconfig/iptables
@@ -46,7 +46,7 @@
   when: ansible_distribution_major_version == "7" 
 
 - name: Ensure that firewalld is started
-  service: name=firewalld state=started
+  systemd: name=firewalld state=started
   when: ansible_distribution_major_version == "7" 
 
 - name: deploy firewalld rules
