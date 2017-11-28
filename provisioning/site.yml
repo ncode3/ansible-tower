@@ -1,6 +1,7 @@
 ---
 - name: Firstboot configuration tasks
   hosts: all:!satellite*:!cfme*:!cloudforms*
+  become: yes
   roles:
     - firstboot
 
