@@ -103,9 +103,9 @@
         -L {{ sat6['location'] }} \
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
-        --rex \
-        --rex-user root \
-        --force --add-domain --skip-puppet --skip-foreman
+        --force --add-domain --skip-puppet
+        #--rex  --skip-foreman \
+        #--rex-user root \
         #/bin/false
       become: true
       register: satbootstrap
