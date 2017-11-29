@@ -415,7 +415,7 @@
       openshiftid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
       hammer content-view create --name "Base" \
       --description "Base operating system" \
-      --repository-ids "${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
+      --repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
       --organization "{{ sat6_default_org }}"
       hammer content-view publish --name "Base" \
       --description "Initial content view for our operating system" \
@@ -707,3 +707,9 @@
   args:
     creates: /root/.setup/step28
 
+- name: "Set Capsule to proper location"
+  shell: |
+    hammer capsule update --id 1 --locations {{ sat6_default_location }} && \
+    touch /root/.setup/step29
+  args:
+    creates: /root/.setup/step29
