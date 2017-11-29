@@ -1,0 +1,23 @@
+---
+- name: Only register if this system hasn't been registered before
+  stat: path=/etc/redhat-access-insights/.unregistered
+  register: unreg
+
+- name: Install Redhat Insights for System Patching and Register
+  block:
+    - name: Install Red Hat Access Insights Client
+      yum: name={{ item }} state=present
+      with_items:
+          - redhat-access-insights
+
+    - name: "Configure Red Hat Access Insights Client"
+      template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
+
+    - name: "Register to the Red Hat Access Insights Service"
+      command: redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
+      register: reg_insights
+      ignore_errors: yes
+      retries: 10
+      until: reg_insights.rc == 0
+      delay: 1
+  when: unreg.stat.exists == false
