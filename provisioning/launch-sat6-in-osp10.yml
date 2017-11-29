@@ -182,3 +182,19 @@
     - name: Show Server's IP
       debug: var=server_with_no_volume.server.private_v4
       when: os_create_volume == "no"
+
+    - name: "update all the ansible tower osp10 repos"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+        -H 'Content-Type: application/json' -XPOST \
+        --user admin:ansible \
+        https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+        sleep 5
+      with_items:
+        - 226
+        - 1141
+        - 349
+        - 310
+        - 719
+        - 720
+      ignore_errors: yes
