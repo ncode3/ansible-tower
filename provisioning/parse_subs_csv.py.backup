@@ -1,0 +1,69 @@
+#!/usr/bin/python
+
+import csv, sys
+import numpy
+
+csvfiles = ['/Users/dataylor/Downloads/Delta_Air_Lines_inventory_report-evpla999.csv','/Users/dataylor/Downloads/Delta_Air_Lines_inventory_report-sdc1mgm01-sat01.csv']
+#csvfiles = sys.argv(1)
+
+def readMyFile(filenames):
+    uuids = []
+    hostnames = []
+    subscriptions = []
+    amounts = []
+    account_num = []
+    contract_num = []
+    start_date = []
+    end_date = []
+    phys_cpu = []
+    cores = []
+    virtual = []
+    hypervisor = []
+    unlicensed_hosts = []
+    for filename in filenames:
+        with open(filename) as csvDataFile:
+            csvReader = csv.reader(csvDataFile)
+            for row in csvReader:
+            	if row[6] != 'unknown':
+    	            uuids.append(row[0])
+    	            hostnames.append(row[1])
+    	            subscriptions.append(row[3])
+    	            amounts.append(row[4])
+    	            account_num.append(row[5])
+    	            contract_num.append(row[6])
+    	            start_date.append(row[7])
+    	            end_date.append(row[8])
+    	            phys_cpu.append(row[9])
+    	            cores.append(row[10])
+    	            virtual.append(row[11])
+    	            hypervisor.append(row[12])
+    	        else:
+    	        	unlicensed_hosts.append(row[1])
+    return uuids, hostnames, subscriptions, amounts, account_num, contract_num, start_date, end_date, phys_cpu, cores, virtual, hypervisor, unlicensed_hosts
+ 
+ 
+uuids, hostnames, subscriptions, amounts, account_num, contract_num, start_date, end_date, phys_cpu, cores, virtual, hypervisor, unlicensed_hosts = readMyFile(csvfiles)
+ 
+print "number of subscriptions in use: %d" % len(subscriptions)
+print "number of licensed hosts: %d" % len(hostnames)
+print "number of unique subscriptions: %d" % len(numpy.unique(subscriptions))
+print "list of unique subscriptions:"
+usub = []
+for sub in subscriptions:
+  if sub not in usub:
+    usub.append(sub)
+
+for uniq in usub:
+  print uniq
+
+print "number of unique, licensed hostnames: %d" % len(numpy.unique(hostnames))
+print "number of unique contract numbers: %d" % len(numpy.unique(contract_num))
+print "list of unique contracts:"
+for sub in contract_num:
+  print numpy.unique(sub)
+print "number of unique account numbers: %d" % len(numpy.unique(account_num))
+print "list of unique account numbers:"
+for sub in account_num:
+  print numpy.unique(sub)
+
+

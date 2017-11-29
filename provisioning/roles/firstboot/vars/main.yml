@@ -4,8 +4,8 @@ host_config_server: "10.55.102.248"
 redhat_insights_key: ""
 redhat_insights_jobid: ""
 sat6:
-  #url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
-  url: "satellite-6-demo.dev.maskedadmins.com"
+  url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
+  #url: "satellite-6-demo.dev.maskedadmins.com"
   user: "admin"
   pass: "redhat123"
   #org: redhatlab

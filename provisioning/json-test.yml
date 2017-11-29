@@ -1,0 +1,18 @@
+---
+- name: "json test"
+  hosts: osp10-controllers
+  #hosts: 10.55.102.156
+  tasks:
+    - name: "get list of hosts in ansible"
+      uri: 
+        url: https://10.55.102.248/api/v1/hosts/
+         method: GET
+         force_basic_auth: yes
+         user: admin
+         password: admin
+         return_content: yes
+      register: json_output
+
+    - debug: msg="{{ item.host_name }} {{ item.component_name }}"
+      with_items: "{{ json_output.results }}"
+      #with_items: "{{ json_output.results | map(attribute='content') | map('from_json') | map(attribute='host_components') | sum(start=[]) | map(attribute='HostRoles') | list }}"
