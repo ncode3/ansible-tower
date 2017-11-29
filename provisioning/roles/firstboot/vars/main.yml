@@ -8,7 +8,7 @@ sat6:
   url: "satellite-6-demo.dev.maskedadmins.com"
   user: "admin"
   pass: "redhat123"
-  org: Redhat_Lab
+  org: redhatlab
   hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.3"
   location: "Private_Cloud"
   environment: "Development"

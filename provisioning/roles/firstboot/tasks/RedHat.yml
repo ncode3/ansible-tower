@@ -103,7 +103,7 @@
         -L {{ sat6['location'] }} \
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
-        --force --add-domain --skip-puppet
+        --force --add-domain --skip-puppet --insecure
         #--rex  --skip-foreman \
         #--rex-user root \
         #/bin/false
