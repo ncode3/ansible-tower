@@ -34,7 +34,10 @@
   copy: src=jboss-as-standalone.sh dest=/etc/init.d/jboss mode=0755
 
 - name: Enable JBoss to be started at boot
-  systemd: name=jboss enabled=yes state=started
+  systemd: name=jboss enabled=yes
+
+- name: Enable JBoss to be started at boot
+  systemd: name=jboss state=started
 
 - name: deploy iptables rules
   template: src=iptables-save dest=/etc/sysconfig/iptables
