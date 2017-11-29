@@ -3,7 +3,7 @@
   hosts: all
   vars:
     sat6:
-      url: "satellite-6-demo.stack.maskedadmins.com"
+      url: "satellite-6-demo.dev.maskedadmins.com"
       user: "admin"
       pass: "redhat123"
       org: Redhat_Lab
