@@ -103,7 +103,7 @@
         -L {{ sat6['location'] }} \
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
-        --force --add-domain --skip-puppet --insecure
+        --force --add-domain --skip-puppet --subscription-manager-args="--insecure"
         #--rex  --skip-foreman \
         #--rex-user root \
         #/bin/false
