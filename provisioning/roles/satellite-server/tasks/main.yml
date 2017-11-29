@@ -172,7 +172,7 @@
   block:
     - name: "Creating domains"
       shell: |
-          [[ "{{ dns_domain }}" != "{{ item }}" ]] && hammer domain create --name "{{ item }}"
+          [[ "{{ dns_domain }}" != "{{ item }}" ]] && hammer domain create --name "{{ item }}" || true
       with_items: "{{ sat6.domains }}"
       ignore_errors: yes
       args:
