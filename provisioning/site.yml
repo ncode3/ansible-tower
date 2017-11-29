@@ -4,6 +4,7 @@
   become: yes
   roles:
     - firstboot
+    - insights
 
 - name: Install Jboss Standalone
   hosts: jboss*
