@@ -43,7 +43,7 @@
       shell: |
         zone="{{ dns_domain }}"
         hostname="$(hostname --short)"
-        echo -e "3\n${hostname}.${zone}\n12\n${zone}8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
+        echo -e "3\n${hostname}.${zone}\n12\n${zone}\n8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
         --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
         cat fusor-installer.stdout
         cat fusor-installer.stderr
