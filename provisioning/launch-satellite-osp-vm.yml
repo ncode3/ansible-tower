@@ -58,6 +58,9 @@
         tower_jobid: "295"
       when: jobname == "tower"
 
+    - name: "Debug msg"
+      debug: msg="Using Satellite Server {{ inventory_hostname }}"
+
     - name: "Openstack Blocks"
       block:
         - name: "OSP8 Block"
