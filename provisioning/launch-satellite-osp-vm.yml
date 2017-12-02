@@ -99,7 +99,8 @@
                 #--compute-resource "{{ osp10_resource }}" --provision-method image \
                 #--image-id "${IMAGEID}" --enabled true --managed true \
                 #--interface "managed=true,primary=true,provision=true"
-                hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}' --organization '{{ sat6_org }}' \
+                #hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}' --organization '{{ sat6_org }}' \
+                hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}' --organization 'redhatlab' \
                 --location {{ sat6_location }} --hostgroup '{{ sat6_hostgroup }}' \
                 --compute-resource '{{ osp10_resource }}' --provision-method image --enabled true --managed true \
                 --interface managed=true,primary=true,provision=true --lifecycle-environment "Development" \
