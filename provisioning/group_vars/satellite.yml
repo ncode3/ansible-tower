@@ -1,5 +1,6 @@
 dns_domain: "dev.maskedadmins.com"
-sat6_default_org: Redhat_Lab
+sat6_default_org: redhatlab
+#sat6_default_org: Redhat_Lab
 sat6_default_location: Private_Cloud
 sat6_default_hostcollection: RHEL_7_x86_64
 sat6_default_hostgroup: "RHEL_7_x86_64_Hostgroup"
