@@ -93,7 +93,7 @@
       get_url:
         url: "http://{{ sat6['url'] }}/pub/bootstrap.py"
         dest: /opt/bootstrap.py
-      when: 'Current' not in rhsm_reg.stdout
+      when: "'Current' not in rhsm_reg.stdout"
 
     - name: "Run the satellite bootstrap script"
       shell: |
@@ -110,8 +110,8 @@
         #/bin/false
       become: true
       register: satbootstrap
-      when: 'Current' not in rhsm_reg.stdout
-  when: 'Current' not in rhsm_reg.stdout
+      when: "'Current' not in rhsm_reg.stdout"
+  when: "'Current' not in rhsm_reg.stdout"
 
   rescue:
     - name: "Clean up from Sat 6"
