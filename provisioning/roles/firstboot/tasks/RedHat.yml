@@ -131,7 +131,7 @@
     #    pools: "{{ rh_subscription_pools }}"
       become: true
       register: rhsm_status
-      when: "'Overall Status: Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
+      when: "'Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
       retries: 10
       until: rhsm_status.msg.find("System successfully registered") != -1
       delay: 1
@@ -145,7 +145,7 @@
     #    pools: "{{ rh_subscription_pools }}"
       become: true
       register: rhsm_status
-      when: "'Overall Status: Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
+      when: "'Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
       retries: 10
       until: rhsm_status.msg.find("System successfully registered") != -1
       delay: 1
