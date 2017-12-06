@@ -25,7 +25,7 @@
 - name: Configure Openstack Compute Nodes with HugePages, CPU pinning 
   hosts: osp10-computes
   roles:
-    - { role: openstack, osp_mode: computes }
+    - { role: openstack, osp_mode: computes, cfme: false }
 
 - name: Customize Openstack -  create networks, projects, users, and import glance images from nfs share
   hosts: osp10-controllers
@@ -35,7 +35,7 @@
 - name: Customize Openshift Container Platform nodes
   hosts: ose-cluster-node-1.dev.maskedadmins.com,ose-cluster-node-2.dev.maskedadmins.com
   roles:
-    - { role: openshift, ocp_mode: nodes }
+    - { role: openshift, ocp_mode: nodes, cfme: false }
 
 - name: Customize Openshift Container Platform with 2 additional nodes
   hosts: ose-cluster-master.dev.maskedadmins.com
