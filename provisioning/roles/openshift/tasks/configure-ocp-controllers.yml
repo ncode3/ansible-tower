@@ -193,6 +193,14 @@
 #          delay=1
 #          timeout=300
 #
+- name: "Fix the container playbook"
+  shell: |
+    sed -i -e 's/^/#/g' /usr/share/ansible/openshift-ansible/roles/etcd/tasks/system_container.yml
+  become: true
+  ignore_errors: yes
+  args:
+    creates: /root/.setupcomplete
+
 - name: "Install OCP variant {{ ocp_variant }} - takes 50 mins for 3 nodes"
   shell: |
     setenforce 0
