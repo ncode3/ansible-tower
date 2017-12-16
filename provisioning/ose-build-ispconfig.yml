@@ -13,7 +13,7 @@
         repo: "{{ github_url }}"
         dest: "/opt/{{ ispconfig_container }}"
 
-    - name: "Build and push { ispconfig_container }} container"
+    - name: "Build and push {{ ispconfig_container }} container"
       shell: |
         docker build --no-cache -t {{ ispconfig_container }} .
         oc login -u {{ ose_user }} -p {{ ose_pass }}
