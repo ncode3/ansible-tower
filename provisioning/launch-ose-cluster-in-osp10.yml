@@ -82,7 +82,7 @@
         - "node-2"
       ignore_errors: yes
 
-    - name: "create {{ os_volume_size }}g volume for each node for {{ os_server['name'] }}"
+    - name: "create {{ os_volume_size }}g volume for each master for {{ os_server['name'] }}"
       os_volume:
         state: present
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -91,6 +91,15 @@
       when: os_create_volume == "yes"
       with_items:
         - "master"
+
+    - name: "create 2g volume for each node for {{ os_server['name'] }}"
+      os_volume:
+        state: present
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        size: "5"
+        display_name: "{{ os_volume_name }}-{{ item }}"
+      when: os_create_volume == "yes"
+      with_items:
         - "node-1"
         - "node-2"
 
