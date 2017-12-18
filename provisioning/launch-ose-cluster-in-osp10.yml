@@ -42,7 +42,7 @@
   tasks:
     - name: delete the old nodes
       os_server:
-        name: "{{ os_server['name'] }}-node-{{ item }}"
+        name: "{{ os_server['name'] }}-{{ item }}"
         state: absent
         image: "RHEL 7.3 Cloud"
         flavor: "{{ os_server['flavor'] }}"
@@ -53,8 +53,8 @@
         key_name: "{{ os_server['key_name'] }}"
       ignore_errors: yes
       with_items:
-        - 1
-        - 2
+        - "node-1"
+        - "node-2"
 
     - name: delete the old master
       os_server:
@@ -69,22 +69,30 @@
         key_name: "{{ os_server['key_name'] }}"
       ignore_errors: yes
 
-    - name: "destroy old {{ os_volume_size }}g volume for {{ os_server['name'] }} Master, ignore errors"
+    - name: "destroy old {{ os_volume_size }}g volumes for {{ os_server['name'] }} Cluster, ignore errors"
       os_volume:
         state: absent
         availability_zone: "{{ os_server['availability_zone'] }}"
         size: "{{ os_volume_size }}"
-        display_name: "{{ os_volume_name }}"
+        display_name: "{{ os_volume_name }}-{{ item }}"
       when: os_create_volume == "yes"
+      with_items:
+        - "master"
+        - "node-1"
+        - "node-2"
       ignore_errors: yes
 
-    - name: "create {{ os_volume_size }}g volume for {{ os_server['name'] }} Master"
+    - name: "create {{ os_volume_size }}g volume for each node for {{ os_server['name'] }}"
       os_volume:
         state: present
         availability_zone: "{{ os_server['availability_zone'] }}"
         size: "{{ os_volume_size }}"
-        display_name: "{{ os_volume_name }}"
+        display_name: "{{ os_volume_name }}-{{ item }}"
       when: os_create_volume == "yes"
+      with_items:
+        - "master"
+        - "node-1"
+        - "node-2"
 
     - name: launch a high performance instance for node 1
       os_server:
