@@ -12,6 +12,7 @@
     vault_os_pass: redhat123
     vault_os_url: "http://{{ osp10_controller }}:5000/v2.0"
     os_create_volume: "yes"
+    os_destroy_old_volumes: "no"
     os_volume_size: 50
     os_volume_name: ose-volume-cluster
     os_server:
@@ -75,7 +76,7 @@
         availability_zone: "{{ os_server['availability_zone'] }}"
         size: "{{ os_volume_size }}"
         display_name: "{{ os_volume_name }}-{{ item }}"
-      when: os_create_volume == "yes"
+      when: os_destroy_old_volumes == "yes"
       with_items:
         - "master"
         - "node-1"
@@ -250,7 +251,7 @@
           runcmd:
             - "/opt/start-install.sh"
         volumes:
-          - "{{ os_volume_name }}"
+          - "{{ os_volume_name }}-master"
       register: ose_master
 
     - name: Show OSE Masters IP

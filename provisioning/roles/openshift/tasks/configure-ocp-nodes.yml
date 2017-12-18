@@ -1,7 +1,7 @@
 ---
 - name: set docker config
   template:
-    src: ose/docker.j2
+    src: docker.j2
     dest: /etc/sysconfig/docker
     owner: root
     group: root
@@ -10,7 +10,7 @@
 
 - name: set selinux config
   template:
-    src: ose/selinux.j2
+    src: selinux.j2
     dest: /etc/sysconfig/selinux
     owner: root
     group: root
@@ -43,7 +43,7 @@
   become: true
 
 - template:
-    src: ose/docker-storage-setup.j2
+    src: docker-storage-setup.j2
     dest: /etc/sysconfig/docker-storage-setup
     owner: root
     group: root

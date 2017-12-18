@@ -67,7 +67,7 @@
   become: true
 
 - template:
-    src: ose/installer.cfg.yml.j2
+    src: installer.cfg.yml.j2
     dest: /root/.config/openshift/installer.cfg.yml
     owner: root
     group: root
@@ -76,7 +76,7 @@
   become: true
 
 - template:
-    src: ose/hosts.j2
+    src: hosts.j2
     dest: /root/.config/openshift/hosts
     owner: root
     group: root
@@ -85,7 +85,7 @@
   become: true
 
 - template:
-    src: ose/installer-multi.cfg.yml.j2
+    src: installer-multi.cfg.yml.j2
     dest: /root/.config/openshift/installer.cfg.yml
     owner: root
     group: root
@@ -94,7 +94,7 @@
   become: true
 
 - template:
-    src: ose/hosts-multi.j2
+    src: hosts-multi.j2
     dest: /root/.config/openshift/hosts
     owner: root
     group: root
@@ -103,7 +103,7 @@
   become: true
 
 - template:
-    src: ose/outbound-traffic.json.j2
+    src: outbound-traffic.json.j2
     dest: /tmp/outbound-traffic.json
     owner: root
     group: root
@@ -111,7 +111,7 @@
   become: true
 
 - template:
-    src: ose/docker-storage-setup.j2
+    src: docker-storage-setup.j2
     dest: /etc/sysconfig/docker-storage-setup
     owner: root
     group: root
@@ -119,7 +119,7 @@
   become: true
 
 - template:
-    src: ose/docker.j2
+    src: docker.j2
     dest: /etc/sysconfig/docker
     owner: root
     group: root
@@ -135,7 +135,7 @@
   become: true
 
 - template:
-    src: ose/selinux.j2
+    src: selinux.j2
     dest: /etc/sysconfig/selinux
     owner: root
     group: root
@@ -144,7 +144,7 @@
 
 ## this is used by openshift dnsmasq to update the applications dns entry
 - template:
-    src: ose/dns-updater.sh.j2
+    src: dns-updater.sh.j2
     dest: /opt/dns-updater.sh
     owner: root
     group: root
@@ -162,7 +162,7 @@
 
 ## this is needed because a search domain will break things, so we update the dhcp script to comment it out
 - template:
-    src: ose/99-origin-dns.sh.j2
+    src: 99-origin-dns.sh.j2
     dest: /usr/share/ansible/openshift-ansible/roles/openshift_node_dnsmasq/files/networkmanager/99-origin-dns.sh
     owner: root
     group: root
