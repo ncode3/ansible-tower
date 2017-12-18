@@ -66,13 +66,6 @@
         group: root
         mode: 0755
     
-    - name: "Update dns entry"
-      shell: "/sbin/ifup-local || true"
-      become: true
-      ignore_errors: yes
-      args:
-        creates: /opt/.firstboot
-    
     - name: "Updating MOTD"
       template: 
         src: tiger.ascii.j2
@@ -176,6 +169,13 @@
         state: latest
       with_items: "{{ redhat_packages }}"
       become: true
+
+    - name: "Update dns entry"
+      shell: "/sbin/ifup-local || true"
+      become: true
+      ignore_errors: yes
+      args:
+        creates: /opt/.firstboot
 
     - name: "Create firstboot file"
       shell: "touch /opt/.firstboot"
