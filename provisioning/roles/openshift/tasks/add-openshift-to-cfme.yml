@@ -10,7 +10,7 @@
           "hostname"  : "{{ ose_server }}",
           "security_protocol"      : "{{ ose_security }}",
           "credentials" : {
-            "userid"   : "{{ ose_user }}",
+            "userid"   : "{{ ose_add_user }}",
             "password" : "{{ ose_token }}"
           }' \
     https://{{ cfme_server }}/api/providers
