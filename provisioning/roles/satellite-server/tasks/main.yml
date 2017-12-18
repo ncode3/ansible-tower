@@ -260,6 +260,13 @@
       args:
         creates: /root/.setup/step8
 
+    - name: "Removing Default Domain from Default Location"
+      shell: |
+          hammer location remove-domain --id=2 --domain '{{ sat6_default_domain }}' && \
+          touch /root/.setup/step8a
+      args:
+        creates: /root/.setup/step8a
+
     - name: "Add Domains to location Complete"
       shell: touch /root/.setup/step8
       args:
@@ -273,6 +280,14 @@
       args:
         creates: /root/.setup/step9
   
+  
+    - name: "Removing default subnet from Default Location"
+      shell: |
+          hammer location remove-subnet --id 2 --subnet default && \
+          touch /root/.setup/step9a
+      args:
+        creates: /root/.setup/step9a
+
     - name: "Adding Default Subnet to Locations"
       shell: |
           subnetid=$(hammer subnet list  | grep {{ sat6_default_subnet }} | awk '{print $1}')
