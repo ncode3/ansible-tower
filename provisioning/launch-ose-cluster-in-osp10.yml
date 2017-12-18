@@ -148,6 +148,8 @@
           runcmd:
            # this is firstboot configuration job template
            - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
+        volumes:
+          - "{{ os_volume_name }}-node-1"
       register: atomic_node1
 
     - name: launch a high performance instance for node 2
@@ -194,6 +196,8 @@
           runcmd:
            # this is post configuration job template
            - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
+        volumes:
+          - "{{ os_volume_name }}-node-2"
       register: atomic_node2
 
     - name: launch a Master OSE instance with volume in the normal perforance zone
