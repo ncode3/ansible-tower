@@ -1,16 +1,9 @@
 ---
-- name: "Setup check"
-  shell: |
-    if [ -e "/opt/satellite/{{ sat6_manifest }}" ]
-    then
-      echo "true"
-    else
-      echo "false"
-    fi
-  register: initialsetup
-  become: true
-
-- name: "Block to perform initial setup"
+- name: "Check if we are entitled for Satellite"
+  shell: "subscription-manager list --consumed || true"
+  register: rhsm_reg
+    
+- name: "Try to Entitle to use Satellite 6"
   block:
     - name: "Add Satellite Entitlement to Server"
       redhat_subscription:
@@ -40,7 +33,27 @@
         name: "satellite"
         state: latest
       become: true
+  when: "'Red Hat Satellite' not in rhsm_reg.stdout"
 
+- name: "Satellite Setup check"
+  shell: |
+    if [ -e "/opt/satellite/{{ sat6_manifest }}" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: initialsetup
+  become: true
+
+- name: "Block to perform initial setup"
+  block:
+    - name: "make setup tracking dir"
+      file:
+        path: /root/.setup
+        state: directory
+        mode: 0755
+  
     - name: "Run fusor installer, takes about 20 mins ..."
       shell: |
         satellite-installer --scenario satellite \
@@ -50,18 +63,14 @@
         --foreman-proxy-puppetca true \
         --foreman-proxy-tftp true \
         --disable-system-checks \
-        --enable-foreman-plugin-discovery
+        --enable-foreman-plugin-discovery && touch /root/.setup/fusor.success
       become: true
+      args:
+        creates: /root/.setup/fusor.success
   
     - name: "make hammer config dir"
       file:
         path: /root/.hammer
-        state: directory
-        mode: 0755
-  
-    - name: "make setup tracking dir"
-      file:
-        path: /root/.setup
         state: directory
         mode: 0755
   
