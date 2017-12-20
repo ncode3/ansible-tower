@@ -12,39 +12,51 @@
 
 - name: "Block to perform initial setup"
   block:
-    - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
-      shell: |
-        echo "calling update firewall port for sat6"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
-  
-    - name: "Enable satellite repos"
-      shell: |
-        subscription-manager repos --enable rhel-7-server-rpms \
-                           --enable rhel-server-rhscl-7-rpms \
-                           --enable rhel-server-7-satellite-6-beta-rpms
-      become: true
-  
-    - name: "Clean out old yum metadata"
-      shell: |
-        yum clean all
-      become: true
+    - name: "installing private key"
+      template:
+        src: openstack/blank.key.j2
+        dest: /root/.ssh/id_rsa
+        owner: root
+        group: root
+        mode: 0600
 
-    - name: "Installing satellite rpms"
-      yum:
-        name: "satellite"
-        state: latest
+    - name: "update dns with the real hostname given in openstack"
+      template:
+        src: vms/dns-updater.sh.j2
+        dest: /usr/sbin/ifup-local
+        owner: root
+        group: root
+        mode: 0755
+    
+    - name: "Update dns entry"
+      shell: "/sbin/ifup-local || true"
       become: true
-
-    - name: "Run fusor installer, takes about 20 mins ..."
+      args:
+        creates: /opt/.firstboot
+    
+    - name: "Update firewall port for Sat6"
       shell: |
-        satellite-installer --scenario satellite \
-        --foreman-initial-organization "{{ sat6_default_org }}" \
-        --foreman-initial-location "{{ sat6_default_location }}" \
-        --foreman-admin-password {{ sat6_pass }} \
-        --foreman-proxy-puppetca true \
-        --foreman-proxy-tftp true \
-        --enable-foreman-plugin-discovery
+          echo "calling update firewall port for sat6"
+          curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+  
+    - name: "Run fusor-installer to setup Sat6, takes 20 mins"
+      shell: |
+        zone="{{ dns_domain }}"
+        hostname="$(hostname --short)"
+        echo -e "3\n${hostname}.${zone}\n12\n${zone}\n8\n{{ fusor_installer_lease_from }}\n1\n" | /sbin/fusor-installer --skip_validations=true \
+        --fusor-foreman-admin-password={{ sat6_pass }} > fusor-installer.stdout 2>fusor-installer.stderr
+        cat fusor-installer.stdout
+        cat fusor-installer.stderr
       become: true
+      args:
+        creates: /root/fusor-installer.stdout
+  
+  #  - name: "Enabling needed repos for updates"
+  #    shell: "subscription-manager repos --enable=rhel-7-server-satellite-tools-6.2-rpms"
+  #
+  #  - name: "yum update this bad boy"
+  #    shell: |
+  #      yum -y update
   
     - name: "make hammer config dir"
       file:
@@ -66,15 +78,6 @@
           group: root
           mode: 0644
   
-    - name: "Setting hammer to use default org and locations"
-      shell: |
-        hammer user update --login admin \
-        --default-location-id 1 \
-        --default-organization-id 1 \
-        --locations "{{ sat6_default_location }}" \
-        --organizations "{{ sat6_default_org }}"
-      become: true
-
     - name: "Configure puppet autosigning"
       template:
           dest: /etc/puppet/autosign.conf
@@ -106,45 +109,45 @@
   when: initialsetup.stdout == "false"
 
 
-#- name: "Creating Orgs for Satellite 6"
-#  shell: |
-#      hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
-#      --description "{{ item.description }}"
-#  with_items: "{{ sat6.orgs }}"
-#  args:
-#    creates: /root/.setup/step1
-#
-#- name: "Org creation Complete"
-#  shell: touch /root/.setup/step1
-#  args:
-#    creates: /root/.setup/step1
-#
-#- name: "Creating Locations for Satellite 6"
-#  shell: |
-#      hammer location create --name "{{ item }}"
-#  with_items: "{{ sat6.locations }}"
-#  args:
-#    creates: /root/.setup/step2
-#
-#- name: "Location creation Complete"
-#  shell: touch /root/.setup/step2
-#  args:
-#    creates: /root/.setup/step2
-#
-#- name: "Adding Orgs to Locations"
-#  shell: |
-#      hammer location add-organization --name "{{ item.1 }}" --organization "{{ item.0.name }}"
-#  with_subelements:
-#    - "{{ sat6.orgs }}"
-#    - locations
-#  args:
-#    creates: /root/.setup/step3
-#
-#- name: "Org to Location creation Complete"
-#  shell: touch /root/.setup/step3
-#  args:
-#    creates: /root/.setup/step3
-#
+- name: "Creating Orgs for Satellite 6"
+  shell: |
+      hammer organization create --name "{{ item.name }}" --label "{{ item.label }}" \
+      --description "{{ item.description }}"
+  with_items: "{{ sat6.orgs }}"
+  args:
+    creates: /root/.setup/step1
+
+- name: "Org creation Complete"
+  shell: touch /root/.setup/step1
+  args:
+    creates: /root/.setup/step1
+
+- name: "Creating Locations for Satellite 6"
+  shell: |
+      hammer location create --name "{{ item }}"
+  with_items: "{{ sat6.locations }}"
+  args:
+    creates: /root/.setup/step2
+
+- name: "Location creation Complete"
+  shell: touch /root/.setup/step2
+  args:
+    creates: /root/.setup/step2
+
+- name: "Adding Orgs to Locations"
+  shell: |
+      hammer location add-organization --name "{{ item.1 }}" --organization "{{ item.0.name }}"
+  with_subelements:
+    - "{{ sat6.orgs }}"
+    - locations
+  args:
+    creates: /root/.setup/step3
+
+- name: "Org to Location creation Complete"
+  shell: touch /root/.setup/step3
+  args:
+    creates: /root/.setup/step3
+
 #  - name: "Setting default org and location Satellite 6"
 #    shell: |
 #        defaultorg=$(hammer organization list  | grep {{ sat6_default_org }} | awk '{print $1}')
@@ -257,12 +260,12 @@
       args:
         creates: /root/.setup/step8
 
-#    - name: "Removing Default Domain from Default Location"
-#      shell: |
-#          hammer location remove-domain --id=2 --domain '{{ sat6_default_domain }}' && \
-#          touch /root/.setup/step8a
-#      args:
-#        creates: /root/.setup/step8a
+    - name: "Removing Default Domain from Default Location"
+      shell: |
+          hammer location remove-domain --id=2 --domain '{{ sat6_default_domain }}' && \
+          touch /root/.setup/step8a
+      args:
+        creates: /root/.setup/step8a
 
     - name: "Add Domains to location Complete"
       shell: touch /root/.setup/step8
@@ -278,12 +281,12 @@
         creates: /root/.setup/step9
   
   
-#    - name: "Removing default subnet from Default Location"
-#      shell: |
-#          hammer location remove-subnet --id 2 --subnet default && \
-#          touch /root/.setup/step9a
-#      args:
-#        creates: /root/.setup/step9a
+    - name: "Removing default subnet from Default Location"
+      shell: |
+          hammer location remove-subnet --id 2 --subnet default && \
+          touch /root/.setup/step9a
+      args:
+        creates: /root/.setup/step9a
 
     - name: "Adding Default Subnet to Locations"
       shell: |
