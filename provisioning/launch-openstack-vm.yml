@@ -50,6 +50,19 @@
         display_name: "{{ os_volume_name }}"
       when: os_create_volume == "yes"
 
+    - name: delete the old server, if it exists
+      os_server:
+        name: "{{ os_server['name'] }}"
+        state: absent
+        image: "{{ os_server['image'] }}"
+        flavor: "{{ os_server['flavor'] }}"
+        network: "{{ os_server['network'] }}"
+        availability_zone: "{{ os_server['availability_zone'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
+        region_name: "{{ os_server['region_name'] }}"
+        key_name: "{{ os_server['key_name'] }}"
+      ignore_errors: yes
+
     - name: launch an instance with volume
       os_server:
         name: "{{ os_server['name'] }}"
@@ -57,6 +70,7 @@
         image: "{{ os_server['image'] }}"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
         region_name: "{{ os_server['region_name'] }}"
         auto_ip: "{{ os_server['auto_ip'] }}"
