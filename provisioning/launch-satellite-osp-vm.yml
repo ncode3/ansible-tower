@@ -13,6 +13,7 @@
     rhev_resource: "Not Configured"
     osp8_resource: "OSP8 Redhat Lab"
     osp10_resource: "OSP10 Redhat Lab"
+    osp10_subnet: "NET103"
     operatingsystem: "RedHat 7.3"
     vmname: "test vm"
     vmimage: "test image"
