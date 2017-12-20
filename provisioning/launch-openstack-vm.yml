@@ -121,6 +121,7 @@
         image: "{{ os_server['image'] }}"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
+        security_groups: "{{ os_server['security_groups'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
         region_name: "{{ os_server['region_name'] }}"
         auto_ip: "{{ os_server['auto_ip'] }}"
