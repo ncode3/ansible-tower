@@ -1,0 +1,74 @@
+---
+- name: "Check if we are entitled for Gluster Storage"
+  shell: "subscription-manager list --consumed || true"
+  register: rhsm_reg
+    
+- name: "Try to Entitle to use Gluster"
+  block:
+    - name: "Add Gluster Storage Entitlement to Server"
+      redhat_subscription:
+        state: present
+        pool_ids: "{{ rh_storage_pool_id }}"
+      become: true
+      register: rhsm_status
+      retries: 10
+      delay: 1
+
+    - name: "Enable Storage repos"
+      shell: |
+        subscription-manager repos --enable rh-gluster-3-for-rhel-7-server-rpms \
+                           --enable rh-gluster-3-samba-for-rhel-7-server-rpms \
+                           --enable rh-gluster-3-nfs-for-rhel-7-server-rpms \
+                           --enable rhel-ha-for-rhel-7-server-rpms
+      become: true
+  
+    - name: "Clean out old yum metadata"
+      shell: |
+        yum clean all
+      become: true
+
+    - name: "Yum update"
+      shell: |
+        yum -y update
+      become: true
+
+    - name: "Reboot and wait for it to return"
+      shell: |
+        shutdown -r +1 && true
+      become: true
+
+    - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
+  when: "'Storage' not in rhsm_reg.stdout"
+
+- name: "Do we have to install rpms check"
+  shell: "rpm -qa redhat-storage-server"
+  register: storagecheck
+    
+- name: "Installation Block"
+  block:
+    - name: "Installing Storage rpms"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      become: true
+      with_items:
+        - redhat-storage-server
+        - glusterfs-ganesha
+
+    - name: "Installing Storage rpms"
+      shell: |
+        yum -y groupinstall {{ item }}
+      become: true
+      with_items:
+        - RH-Gluster-Samba-Server
+        - RH-Gluster-AD-Integration
+
+    - name: "Reboot and wait for it to return"
+      shell: |
+        shutdown -r +1 && true
+      become: true
+
+    - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
+
+  when: "'storage' not in storagecheck.stdout"
+
