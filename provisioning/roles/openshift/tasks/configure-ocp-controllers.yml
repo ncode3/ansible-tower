@@ -127,8 +127,18 @@
   become: true
 
 - template:
-    src: ose/fix-ose-auth.txt.j2
+    src: fix-ose-auth.txt.j2
     dest: /tmp/fix-ose-auth.txt
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+
+- name: "Add Ansible hosts file with cloud config for Openstack integration"
+  template:
+    src: ansible-hosts.j2
+    dest: /etc/ansible/hosts
     owner: root
     group: root
     mode: 0644

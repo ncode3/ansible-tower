@@ -20,3 +20,13 @@ cfme_project: redhat-lab
 ose_name: "OCP"
 ose_server: "ose-cluster-master.dev.maskedadmins.com"
 ose_security: ssl
+openstack:
+  name: 'OSP10 Redhat Lab'
+  description: 'Openstack 10'
+  user: dtaylor
+  pass: redhat123
+  tenantid: "42703655d32d4506855b8815682567b2"
+  region: "RegionOne"
+  controller: "{{ osp10_controller }}"
+  url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
+  subnetid: "242b2296-f5e6-416b-b7c1-5d8293935921"
