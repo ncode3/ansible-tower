@@ -12,11 +12,17 @@
 
 - name: "Block to perform initial setup"
   block:
-    - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
-      shell: |
-        echo "calling update firewall port for sat6"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
-  
+    - name: "Add Satellite Entitlement to Server"
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_satellite_pool_id }}"
+      become: true
+      register: rhsm_status
+      retries: 10
+      delay: 1
+
     - name: "Enable satellite repos"
       shell: |
         subscription-manager repos --enable rhel-7-server-rpms \
@@ -103,6 +109,12 @@
           owner: root
           group: root
           mode: 0644
+
+    - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
+      shell: |
+        echo "calling update firewall port for sat6"
+        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+  
   when: initialsetup.stdout == "false"
 
 
