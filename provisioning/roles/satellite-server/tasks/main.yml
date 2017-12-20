@@ -49,6 +49,7 @@
         --foreman-admin-password {{ sat6_pass }} \
         --foreman-proxy-puppetca true \
         --foreman-proxy-tftp true \
+        --disable-system-checks \
         --enable-foreman-plugin-discovery
       become: true
   
