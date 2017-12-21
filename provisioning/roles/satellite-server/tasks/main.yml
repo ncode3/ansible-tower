@@ -488,12 +488,13 @@
 
 - name: "Adding subs to activation keys for environments"
   shell: |
+    subid=$(hammer subscription list --organization "{{ sat6_default_org }}"| grep "{{ item[1] }}"| cut -f1 -d\|)
     hammer activation-key add-subscription --name "{{ sat6_default_org }}-{{ item[0]['name'] }}-key" \
-    --subscription-id {{ item[1] }} \
+    --subscription-id ${subid} \
     --organization "{{ sat6_default_org }}"
   with_nested:
     - "{{ sat6.environments }}"
-    - "{{ sat6_pool_ids }}"
+    - "{{ sat6.subs_for_activationkeys }}"
   args:
     creates: /root/.setup/step18
 
