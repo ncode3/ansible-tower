@@ -531,13 +531,13 @@
     creates: /root/.setup/step20
 
 - name: "Add all subscriptions to activation keys"
+  ignore_errors: yes
   shell: |
     for i in $(hammer --csv activation-key list --organization={{ sat6_default_org }} | awk -F, {'print $1'} | grep -vi '^ID'); do \
     for j in $(hammer --csv subscription list --organization={{ sat6_default_org }}  | awk -F, {'print $1'} | grep -vi '^ID'); do \
     hammer activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
     touch /root/.setup/step21
   args:
-  ignore_errors: yes
     creates: /root/.setup/step21
 
 - name: "Add partition table to OS"
