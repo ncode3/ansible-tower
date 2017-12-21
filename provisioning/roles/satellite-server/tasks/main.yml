@@ -584,29 +584,29 @@
   args:
     creates: /root/.setup/step23
 
-- name: "Update Medium Location"
-  shell: |
-    MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
-    hammer medium update --id ${MEDID} --locations {{ sat6_default_location }} && \
-    touch /root/.setup/setup23aa
-  args:
-    creates: /root/.setup/step23aa
-
-- name: "Update OS with medium"
-  shell: |
-    MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
-    OSID=$(hammer --csv os list | grep 'RedHat 7' | awk -F, {'print $1'})
-    for os in $OSID
-    do
-      hammer os update --id ${os} --medium-ids ${MEDID}
-    done
-    touch /root/.setup/setup23bb
-  args:
-    creates: /root/.setup/step23bb
+#- name: "Update Medium Location"
+#  shell: |
+#    MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+#    hammer medium update --id ${MEDID} --locations {{ sat6_default_location }} && \
+#    touch /root/.setup/setup23aa
+#  args:
+#    creates: /root/.setup/step23aa
+#
+#- name: "Update OS with medium"
+#  shell: |
+#    MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+#    OSID=$(hammer --csv os list | grep 'RedHat 7' | awk -F, {'print $1'})
+#    for os in $OSID
+#    do
+#      hammer os update --id ${os} --medium-ids ${MEDID}
+#    done
+#    touch /root/.setup/setup23bb
+#  args:
+#    creates: /root/.setup/step23bb
 
 - name: "Add RHEL7 host group for each domain"
   shell: |
-    MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+    #MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
     PARTID=$(hammer --csv partition-table list | grep 'Kickstart default' | awk -F, {'print $1'})
     OSID=$(hammer --csv os list | grep 'RedHat 7' | awk -F, {'print $1'})
     LCID=$(hammer lifecycle-environment list --organization {{ sat6_default_org }} | grep '{{ sat6_default_environment }} | Library' | awk -F\| {'print $1'})
@@ -616,7 +616,8 @@
     for os in $OSID
     do
       osname=$(hammer os info --id ${os} |grep Title:|sed -e 's/Title:              //g')
-      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ item.domain }}"  --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ item.location }}" \
+      #hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ item.domain }}"  --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ item.location }}" \
+      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ item.domain }}"  --content-source-id="${CSID}"  --locations="{{ item.location }}" \
       --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "sshkey"  --value "{{ cloud_user_pub_key }}"
@@ -630,7 +631,7 @@
 
 - name: "Add RHEL7 host group for default domain"
   shell: |
-    MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
+    #MEDID=$(hammer --csv medium list | grep 'Kickstart_x86_64_7Server' | awk -F, {'print $1'})
     PARTID=$(hammer --csv partition-table list | grep 'Kickstart default' | awk -F, {'print $1'})
     OSID=$(hammer --csv os list | grep 'RedHat 7' | awk -F, {'print $1'})
     LCID=$(hammer lifecycle-environment list --organization {{ sat6_default_org }} | grep '{{ sat6_default_environment }} | Library' | awk -F\| {'print $1'})
@@ -640,7 +641,8 @@
     for os in $OSID
     do
       osname=$(hammer os info --id ${os} |grep Title:|sed -e 's/Title:              //g')
-      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
+      #hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --medium-id="${MEDID}" --locations="{{ sat6_default_location }}" \
+      hammer hostgroup create --environment {{ sat6_default_environment }} --architecture="x86_64" --domain="{{ sat6_default_domain }}" --content-source-id="${CSID}" --locations="{{ sat6_default_location }}" \
     --organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --subnet="{{ sat6_default_subnet }}" --partition-table-id="${PARTID}" \
     --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ sat6_default_domain }} ${osname}" --name "sshkey"  --value "{{ cloud_user_pub_key }}"
