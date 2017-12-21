@@ -23,6 +23,8 @@ compute_resources:
     controller: "{{ osp10_controller }}"
     url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
 sat6:
+  subs_for_activationkeys:
+    - "Employee SKU"
   environments:
     - name: 'Development'
       prior: 'Library'
@@ -105,8 +107,6 @@ sat6:
         - "Test_104"
         - "Storage_105"
         - "Prod_106"
-      subs_for_activationkeys:
-        - "Employee SKU"
 tower_key: dc7c0b52cd29cacceb8d3571257801ea
 tower_server: 10.55.102.248
 tower_jobid: 287
