@@ -26,12 +26,12 @@ sat6:
   subs_for_activationkeys:
     - "Employee SKU"
   environments:
-    - name: 'Development'
+    - name: 'development'
       prior: 'Library'
-    - name: 'Testing'
-      prior: 'Development'
-    - name: 'Production'
-      prior: 'Testing'
+    - name: 'testing'
+      prior: 'development'
+    - name: 'production'
+      prior: 'testing'
   locations:
     - "Private_Cloud"
 #    - "Legacy_Servers"
@@ -116,7 +116,7 @@ sat6_default_hostcollection: RHEL_7_x86_64
 sat6_default_hostgroup: "RHEL_7_x86_64_Hostgroup"
 sat6_default_domain: "dev.maskedadmins.com"
 sat6_default_subnet: "Dev_103"
-sat6_default_environment: "Development"
+sat6_default_environment: "development"
 sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
 sat6_pool_ids: !vault |
           $ANSIBLE_VAULT;1.1;AES256
