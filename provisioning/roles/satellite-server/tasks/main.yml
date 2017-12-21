@@ -537,6 +537,7 @@
     hammer activation-key add-subscription --id ${i} --subscription-id ${j}; done; done && \
     touch /root/.setup/step21
   args:
+  ignore_errors: yes
     creates: /root/.setup/step21
 
 - name: "Add partition table to OS"
