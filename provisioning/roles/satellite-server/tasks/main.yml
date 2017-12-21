@@ -54,6 +54,14 @@
         state: directory
         mode: 0755
   
+    - name: "installing private key to accesss OSP"
+      template:
+        src: openstack/blank.key.j2
+        dest: /root/.ssh/id_rsa
+        owner: root
+        group: root
+        mode: 0600
+
     - name: "Run fusor installer, takes about 20 mins ..."
       shell: |
         satellite-installer --scenario satellite \
