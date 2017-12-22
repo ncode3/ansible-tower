@@ -1,7 +1,6 @@
 ---
 - name: Firstboot configuration tasks
-  hosts: all
-#  hosts: all:!cfme*:!cloudforms*
+  hosts: all:!cfme*:!cloudforms*
   become: yes
   roles:
     - firstboot
@@ -22,6 +21,8 @@
   hosts: cloudforms*:cfme*
   roles:
     - cloudforms-server
+    - firstboot
+    - insights
 
 - name: Configure Openstack Compute Nodes with HugePages, CPU pinning 
   hosts: osp10-computes
