@@ -48,5 +48,3 @@
   hosts: tower*
   roles:
     - ansible-tower
-    - firstboot
-    - insights
