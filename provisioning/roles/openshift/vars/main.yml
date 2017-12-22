@@ -36,5 +36,5 @@ openstack:
   tenantid: "42703655d32d4506855b8815682567b2"
   region: "RegionOne"
   controller: "{{ osp10_controller }}"
-  url: "http://{{ osp10_controller }}:5000/v2.0/tokens"
+  auth: "http://{{ osp10_controller }}:5000/v2.0/tokens"
   subnetid: "242b2296-f5e6-416b-b7c1-5d8293935921"
