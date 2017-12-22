@@ -1,6 +1,7 @@
 ---
 - name: Firstboot configuration tasks
-  hosts: all:!satellite*:!cfme*:!cloudforms*
+  hosts: all
+#  hosts: all:!cfme*:!cloudforms*
   become: yes
   roles:
     - firstboot
@@ -13,7 +14,7 @@
     - jboss-standalone
 
 - name: Configure Satellite
-  hosts: satellite*:sat6*
+  hosts: sat6*
   roles:
     - satellite-server
 
