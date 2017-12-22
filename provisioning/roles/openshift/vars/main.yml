@@ -34,6 +34,7 @@ openstack:
   user: dtaylor
   pass: redhat123
   tenantid: "42703655d32d4506855b8815682567b2"
+  tenant: "{{ vault_os_project }}"
   region: "RegionOne"
   controller: "{{ osp10_controller }}"
   auth: "http://{{ osp10_controller }}:5000/v2.0/tokens"
