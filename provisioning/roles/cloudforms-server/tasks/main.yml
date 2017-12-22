@@ -1,5 +1,15 @@
 ---
-- name: Block to configure CFME"
+- name: "Cloudforms is running check"
+  shell: |
+    if [ -e "/var/run/httpd/httpd.pid" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: cfmecheck
+
+- name: "Block to configure CFME"
   block:
   - name: "Configure CFME"
     shell: |
@@ -9,7 +19,7 @@
     become: true
 
   rescue:
-  - name: "Try again CFME"
+  - name: "Try again to configure CFME"
     shell: |
       lvremove -f /dev/vg_pg/lv_pg
       vgremove -f vg_pg
@@ -20,12 +30,21 @@
     args:
       creates: /var/run/httpd/httpd.pid
     become: true
+
   always:
-  - name: "Reboot and wait for it to return"
+  - name: "Reboot server"
     shell: |
       shutdown -r +1 && true
     become: true
-  - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
-  - local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=240
+    when: cfmecheck.stdout == 'false'
+
+  - name: "Wait for host to reboot"
+    local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
+    when: cfmecheck.stdout == 'false'
+    
+  - name: "Wait for CFME to start"
+    local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=240
+    when: cfmecheck.stdout == 'false'
 
 - include: "add-openstack-to-cfme.yml"
+  when: cfmecheck.stdout == 'false'
