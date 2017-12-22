@@ -45,7 +45,7 @@
     - { role: openshift, ocp_mode: controllers, cfme: true }
 
 - name: Customize Ansible Tower
-  hosts: tower*:Tower*
+  hosts: tower*
   roles:
     - ansible-tower
     - firstboot

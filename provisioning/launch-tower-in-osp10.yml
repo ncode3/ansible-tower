@@ -13,7 +13,7 @@
     os_volume_size: 5
     os_volume_name: ose-volume
     os_server:
-      name: "Tower"
+      name: "tower"
       state: present
       image: "RHEL 7.3 Cloud"
       flavor: "m1.small"
