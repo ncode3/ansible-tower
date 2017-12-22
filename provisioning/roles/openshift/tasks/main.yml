@@ -1,4 +1,22 @@
 ---
+- name: "Check if we are entitled for Openshift"
+  shell: "subscription-manager list --consumed || true"
+  register: rhsm_reg
+    
+- name: "Try to Entitle to use Openshift"
+  block:
+    - name: "Add Openshift Entitlement to Server"
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_openshift_pool_id }}"
+      become: true
+      register: rhsm_status
+      retries: 10
+      delay: 1
+  when: "'OpenShift' not in rhsm_reg.stdout"
+
 - include: "configure-ocp-controllers.yml"
   when: ocp_mode == 'controllers'
 
