@@ -1,4 +1,8 @@
 ---
+- name: "Pause for 5 minutes to let CFME settle"
+  pause:
+    seconds: 300
+
 - name: "Use the API to add Openstack provider to CFME"
   shell: |
     curl -k --user {{ cfme_user }}:{{ cfme_pass }} \
