@@ -36,15 +36,14 @@
     shell: |
       shutdown -r +1 && true
     become: true
-    when: cfmecheck.stdout == 'false'
 
   - name: "Wait for host to reboot"
     local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=240
-    when: cfmecheck.stdout == 'false'
     
   - name: "Wait for CFME to start"
     local_action: wait_for port=443 host="{{ ansible_ssh_host | default(inventory_hostname) }}" delay=240
-    when: cfmecheck.stdout == 'false'
 
-- include: "add-openstack-to-cfme.yml"
+  - include: "add-openstack-to-cfme.yml"
+
   when: cfmecheck.stdout == 'false'
+
