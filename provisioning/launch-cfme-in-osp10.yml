@@ -17,7 +17,7 @@
       state: present
       image: "CFME 4.5 For RHOSP"
       flavor: "m1.medium.performance"
-      network: "Provisioning_102"
+      network: "Dev_103"
       availability_zone: "nova"
       security_groups: Redhat_Lab-sg
       region_name: "RegionOne"

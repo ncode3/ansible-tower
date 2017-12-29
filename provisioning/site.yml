@@ -1,6 +1,6 @@
 ---
 - name: Firstboot configuration tasks
-  hosts: all:!satellite*:!cfme*:!cloudforms*
+  hosts: all:!cfme*:!cloudforms*
   become: yes
   roles:
     - firstboot
@@ -13,7 +13,7 @@
     - jboss-standalone
 
 - name: Configure Satellite
-  hosts: satellite*:sat6*
+  hosts: sat6*
   roles:
     - satellite-server
 
@@ -21,6 +21,8 @@
   hosts: cloudforms*:cfme*
   roles:
     - cloudforms-server
+    - firstboot
+    - insights
 
 - name: Configure Openstack Compute Nodes with HugePages, CPU pinning 
   hosts: osp10-computes
