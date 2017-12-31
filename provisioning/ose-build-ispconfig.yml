@@ -46,7 +46,8 @@
               requests:
                 storage: "2Gi"
             volumeName: "ispconfig-{{ item }}"
-        token: "{{ token }}"
+#        token: "{{ token }}"
+        token: "deployer-token-gj7xr"
       with_items:
         - www
         - mail
@@ -369,6 +370,7 @@
               loadBalancer: {}
           kind: List
           metadata: {}
+        token: "deployer-token-gj7xr"
 #          apiVersion: "v1"
 #          kind: "Pod"
 #          metadata:
