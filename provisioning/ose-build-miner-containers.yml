@@ -1,4 +1,6 @@
 ---
+- include: ose-get-token.yml
+
 - name: "Launch orchestrated cpuminer and etcd containers"
   hosts: all
   vars:

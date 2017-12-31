@@ -1,6 +1,7 @@
 ---
+- include: "ose-get-token.yml"
 - name: "Launch ISPconfig"
-  hosts: all
+  hosts: ose-cluster-master*
   vars:
     ose_project: "redhat-lab"
     ose_user: "admin"
@@ -28,10 +29,165 @@
         chdir: "/opt/{{ ispconfig_container }}"
       become: true
 
-    - name: "Launch {{ ispconfig_container }} in openshift"
-      shell: |
-        oc login -u {{ ose_user }} -p {{ ose_pass }}
-        oc project {{ ose_project }}
-        oc new-app -i {{ ose_project }}/{{ ispconfig_container }}
-        echo "waiting 10 secs for it to deploy" && sleep 10
-      become: true
+    - name: "Create Volume Claims"
+      oc:
+        host: ose-cluster-master.dev.maskedadmins.com
+        namespace: redhat-lab
+        state: present
+        inline:
+          apiVersion: "v1"
+          kind: "PersistentVolumeClaim"
+          metadata:
+            name: "ispconfig-{{ item }}"
+          spec:
+            accessModes:
+              - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: "2Gi"
+            volumeName: "ispconfig-{{ item }}"
+        token: "{{ token }}"
+      with_items:
+        - www
+        - mail
+        - mysql
+        - backup
+        - data
+        - log
+
+    - name: "Create ISPConfig Pod"
+      oc:
+        host: ose-cluster-master.dev.maskedadmins.com
+        namespace: "{{ ose_project }}"
+        state: present
+        inline:
+          apiVersion: "v1"
+          kind: "Pod"
+          metadata:
+            name: "ispconfig"
+            labels:
+              name: "ispconfig"
+          spec:
+            containers:
+              -
+                name: "ispconfig"
+                image: "{{ ose_project }}/{{ ispconfig_container }}"
+                ports:
+                  -
+                    containerPort: 80
+                    name: "ispconfig-http"
+                  -
+                    containerPort: 443
+                    name: "ispconfig-https"
+                  -
+                    containerPort: 20
+                    name: "ispconfig-ftp"
+                  -
+                    containerPort: 21
+                    name: "ispconfig-ftpd"
+                  -
+                    containerPort: 22
+                    name: "ispconfig-sshd"
+                  -
+                    containerPort: 953
+                    name: "ispconfig-secure-dns"
+                  -
+                    containerPort: 53
+                    name: "ispconfig-dns"
+                  -
+                    containerPort: 8080
+                    name: "ispconfig-admin"
+                  -
+                    containerPort: 3306
+                    name: "ispconfig-mysqld"
+                  -
+                    containerPort: 30000
+                    name: "ispconfig-comm0"
+                  -
+                    containerPort: 30001
+                    name: "ispconfig-comm1"
+                  -
+                    containerPort: 30002
+                    name: "ispconfig-comm2"
+                  -
+                    containerPort: 30003
+                    name: "ispconfig-comm3"
+                  -
+                    containerPort: 30004
+                    name: "ispconfig-comm4"
+                  -
+                    containerPort: 30005
+                    name: "ispconfig-comm5"
+                  -
+                    containerPort: 30006
+                    name: "ispconfig-comm6"
+                  -
+                    containerPort: 30007
+                    name: "ispconfig-comm7"
+                  -
+                    containerPort: 30008
+                    name: "ispconfig-comm8"
+                  -
+                    containerPort: 30009
+                    name: "ispconfig-comm9"
+
+                volumeMounts:
+                  -
+                    mountPath: "/var/www"
+                    name: "www"
+                  -
+                    mountPath: "/etc"
+                    name: "etc"
+                  -
+                    mountPath: "/var/mail"
+                    name: "mail"
+                  -
+                    mountPath: "/var/backup"
+                    name: "backup"
+                  -
+                    mountPath: "/var/lib/mysql"
+                    name: "mysql"
+                  -
+                    mountPath: "/usr/local/ispconfig"
+                    name: "data"
+                  -
+                    mountPath: "/var/log"
+                    name: "log"
+            volumes:
+              -
+                name: "www"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-www"
+              -
+                name: "etc"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-etc"
+              -
+                name: "mail"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-mail"
+              -
+                name: "backup"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-backup"
+              -
+                name: "mysql"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-mysql"
+              -
+                name: "data"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-data"
+              -
+                name: "log"
+                persistentVolumeClaim:
+                  claimName: "ispconfig-log"
+
+
+#    - name: "Launch {{ ispconfig_container }} in openshift"
+#      shell: |
+#        oc login -u {{ ose_user }} -p {{ ose_pass }}
+#        oc project {{ ose_project }}
+#        oc new-app -i {{ ose_project }}/{{ ispconfig_container }}
+#        echo "waiting 10 secs for it to deploy" && sleep 10
+#      become: true
