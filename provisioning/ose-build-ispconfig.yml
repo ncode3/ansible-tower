@@ -31,7 +31,7 @@
 
     - name: "Create Volume Claims"
       shell: |
-        cat >> /tmp/{{ item }}.yml <EOF
+        cat << EOF >> /tmp/{{ item }}.yml
         apiVersion: "v1"
         kind: "PersistentVolumeClaim"
         metadata:
@@ -43,6 +43,7 @@
             requests:
               storage: "2Gi"
           volumeName: "ispconfig-{{ item }}"
+        EOF
       with_items:
         - www
         - mail
