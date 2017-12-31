@@ -30,26 +30,33 @@
 #      become: true
 
     - name: "Create Volume Claims"
-      openshift_raw:
-        host: ose-cluster-master.dev.maskedadmins.com
-        username: "{{  ose_user }}"
-        password: "{{ ose_pass }}"
-#        namespace: redhat-lab
-        state: present
-        inline:
-          apiVersion: "v1"
-          kind: "PersistentVolumeClaim"
-          metadata:
-            name: "ispconfig-{{ item }}"
-          spec:
-            accessModes:
-              - "ReadWriteOnce"
-            resources:
-              requests:
-                storage: "2Gi"
-            volumeName: "ispconfig-{{ item }}"
-#        token: "{{ token }}"
-#        token: "builder-token-0kqq3"
+      shell: |
+        cat >> /tmp/{{ item }}.yml <EOF
+        apiVersion: "v1"
+        kind: "PersistentVolumeClaim"
+        metadata:
+          name: "ispconfig-{{ item }}"
+        spec:
+          accessModes:
+            - "ReadWriteOnce"
+          resources:
+            requests:
+              storage: "2Gi"
+          volumeName: "ispconfig-{{ item }}"
+      with_items:
+        - www
+        - mail
+        - mysql
+        - backup
+        - data
+        - log
+
+    - name: "Build and push {{ ispconfig_container }} container"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc create -f /tmp/{{ item }}.yml
+      become: true
       with_items:
         - www
         - mail
