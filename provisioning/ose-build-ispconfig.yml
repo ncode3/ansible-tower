@@ -32,7 +32,7 @@
     - name: "Create Volume Claims"
       oc:
         host: ose-cluster-master.dev.maskedadmins.com
-        namespace: redhat-lab
+#        namespace: redhat-lab
         state: present
         inline:
           apiVersion: "v1"
