@@ -31,18 +31,18 @@
 
     - name: "Create Volume Claims YAML Files"
       shell: |
-        cat <<-'EOF' > /tmp/{{ item }}.yml
+        cat <<EOF > /tmp/{{ item }}.yml
         apiVersion: "v1"
         kind: "PersistentVolumeClaim"
         metadata:
-                name: "ispconfig-{{ item }}"
+          name: "ispconfig-{{ item }}"
         spec:
-                accessModes:
-                        - "ReadWriteOnce"
-                resources:
-                        requests:
-                                storage: "2Gi"
-                volumeName: "ispconfig-{{ item }}"
+          accessModes:
+            - "ReadWriteOnce"
+          resources:
+            requests:
+              storage: "2Gi"
+          volumeName: "ispconfig-{{ item }}"
         EOF
       with_items:
         - www
