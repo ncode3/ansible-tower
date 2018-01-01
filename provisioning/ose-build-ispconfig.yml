@@ -44,17 +44,6 @@
                                 storage: "2Gi"
                 volumeName: "ispconfig-{{ item }}"
         EOF
-apiVersion: "v1"
-        kind: "PersistentVolumeClaim"
-        metadata:
-          name: "ispconfig-{{ item }}"
-        spec:
-          accessModes:
-            - "ReadWriteOnce"
-          resources:
-            requests:
-              storage: "2Gi"
-          volumeName: "ispconfig-{{ item }}"
       with_items:
         - www
         - mail
