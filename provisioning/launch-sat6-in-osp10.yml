@@ -13,9 +13,9 @@
     os_volume_size: 5
     os_volume_name: ose-volume
     os_server:
-      name: "Satellite 6 Demo"
+      name: "sat6"
       state: present
-      image: "QCI Template"
+      image: "RHEL 7.3 Cloud"
       flavor: "m1.large"
       #network: "Management_101"
       network: "Provisioning_102"
