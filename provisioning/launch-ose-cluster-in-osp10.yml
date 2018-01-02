@@ -93,11 +93,11 @@
       with_items:
         - "master"
 
-    - name: "create 2g volume for each node for {{ os_server['name'] }}"
+    - name: "create 25g volume for each node for {{ os_server['name'] }}"
       os_volume:
         state: present
         availability_zone: "{{ os_server['availability_zone'] }}"
-        size: "5"
+        size: "25"
         display_name: "{{ os_volume_name }}-{{ item }}"
       when: os_create_volume == "yes"
       with_items:
