@@ -49,8 +49,16 @@
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
-        oc create -f /tmp/ispconfig-volumes.yml
+        sed -e 's/REPLACEME/{{ item }}/' /tmp/ispconfig-volumes.yml | oc create -f -
       become: true
+      with_items:
+        - www
+        - mail
+        - mysql
+        - backup
+        - data
+        - log
+
 
     - name: "Create volume claims via oc binary"
       shell: |
