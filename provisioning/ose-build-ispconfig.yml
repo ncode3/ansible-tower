@@ -31,6 +31,14 @@
 
     - name: "create template for volume claims"
       template:
+        src: ose/ispconfig-volume-claims.yml.j2
+        dest: /tmp/ispconfig-volume-claims.yml
+        mode: 0644
+        owner: root
+        group: root
+
+    - name: "create template for volume"
+      template:
         src: ose/ispconfig-volumes.yml.j2
         dest: /tmp/ispconfig-volumes.yml
         mode: 0644
@@ -41,7 +49,14 @@
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
-        sed -e 's/REPLACEME/{{ item }}/' /tmp/ispconfig-volumes.yml | oc create -f -
+        oc create -f /tmp/ispconfig-volumes.yml
+      become: true
+
+    - name: "Create volume claims via oc binary"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        sed -e 's/REPLACEME/{{ item }}/' /tmp/ispconfig-volume-claims.yml | oc create -f -
       become: true
       with_items:
         - www

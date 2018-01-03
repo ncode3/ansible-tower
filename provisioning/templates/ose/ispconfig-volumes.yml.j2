@@ -1,11 +1,14 @@
 apiVersion: "v1"
-kind: "PersistentVolumeClaim"
+kind: "PersistentVolume"
 metadata:
-  name: "ispconfig-REPLACEME"
+  name: "ispconfig"
 spec:
+  capacity:
+    storage: "50Gi"
+  nfs:
+    server: "10.55.2.155"
+    path: "/mnt/datastore1/ocp"
   accessModes:
+    - "ReadWriteMany"
     - "ReadWriteOnce"
-  resources:
-    requests:
-      storage: "2Gi"
-  volumeName: "ispconfig-REPLACEME"
+  persistentVolumeReclaimPolicy: "Recycle"
