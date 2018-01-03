@@ -45,7 +45,7 @@
         owner: root
         group: root
 
-    - name: "Create volume claims via oc binary"
+    - name: "Create persistent volume via oc binary"
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
