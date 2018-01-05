@@ -8,27 +8,22 @@
     ose_pass: "redhat123"
     github_url: "https://github.com/syspimp/docker-ispconfig.git"
     ispconfig_container: "docker-ispconfig"
+    mntpoints:
+      - name: www
+        mnt: /var/www
+      - name: mail
+        mnt: /var/mail
+      - name: mysql
+        mnt: /var/lib/mysql
+      - name: backup
+        mnt: /var/backup
+      - name: data
+        mnt: /usr/local/ispconfig
+      - name: log
+        mnt: /var/log
+      - name: etc
+        mnt: /etc
   tasks:
-#    - name: "Pull custom configuration from github"
-#      git:
-#        repo: "{{ github_url }}"
-#        dest: "/opt/{{ ispconfig_container }}"
-#
-#    - name: "Build and push {{ ispconfig_container }} container"
-#      shell: |
-#        docker build --no-cache -t {{ ispconfig_container }} .
-#        oc login -u {{ ose_user }} -p {{ ose_pass }}
-#        oc project default
-#        server=$(oc get svc|grep docker-reg| awk '{print $2}')
-#        id=$(docker images|grep ^{{ ispconfig_container }}|awk '{print $3}')
-#        token=$(oc whoami -t)
-#        docker login -u {{ ose_user }} -p $token ${server}:5000
-#        docker tag {{ ispconfig_container }} ${server}:5000/{{ ose_project }}/{{ ispconfig_container }}
-#        docker push ${server}:5000/{{ ose_project }}/{{ ispconfig_container }}
-#      args:
-#        chdir: "/opt/{{ ispconfig_container }}"
-#      become: true
-
     - name: "create template for volume claims"
       template:
         src: ose/ispconfig-volume-claims.yml.j2
@@ -49,15 +44,9 @@
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
-        sed -e 's/REPLACEME/{{ item }}/' /tmp/ispconfig-volumes.yml | oc create -f -
+        sed -e 's/REPLACEME/{{ item.name }}/' /tmp/ispconfig-volumes.yml | oc create -f -
       become: true
-      with_items:
-        - www
-        - mail
-        - mysql
-        - backup
-        - data
-        - log
+      with_items: "{{ mntpoints }}"
 
 
     - name: "Create volume claims via oc binary"
@@ -66,20 +55,26 @@
         oc project {{ ose_project }}
         sed -e 's/REPLACEME/{{ item }}/' /tmp/ispconfig-volume-claims.yml | oc create -f -
       become: true
-      with_items:
-        - www
-        - mail
-        - mysql
-        - backup
-        - data
-        - log
+      with_items: "{{ mntpoints }}"
 
-    - name: "Build and push {{ ispconfig_container }} container"
+    - name: "Have openshift create the application pods"
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
         oc new-app {{ github_url }}
       become: true
+
+    - name: "Add volumes to the generated deploy config"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc volume dc/{{ ispconfig_container }} --add --name=ispconfig-{{ item.name }} \
+        --type=persistentVolumeClaim \
+        --claim-name=ispconfig-{{ item.name }} \
+        --mount-path={{ item.mnt }}
+      become: true
+      with_items: "{{ mntpoints }}"
+
 #
 #    - name: "Create ISPConfig Pod"
 #      oc:
