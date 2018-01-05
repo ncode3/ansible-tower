@@ -1,7 +1,8 @@
 ---
-- include: "ose-get-token.yml"
+#- include: "ose-get-token.yml"
 - name: "Launch ISPconfig"
   hosts: ose-cluster-master*
+  gather_facts: no
   vars:
     ose_project: "redhat-lab"
     ose_user: "admin"
