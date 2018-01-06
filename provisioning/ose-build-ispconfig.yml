@@ -11,19 +11,19 @@
     ispconfig_container: "docker-ispconfig"
     mntpoints:
       - name: www
-        mnt: /var/www
+        mnt: /copy/var/www
       - name: mail
-        mnt: /var/mail
+        mnt: /copy/var/mail
       - name: mysql
-        mnt: /var/lib/mysql
+        mnt: /copy/var/lib/mysql
       - name: backup
-        mnt: /var/backup
+        mnt: /copy/var/backup
       - name: data
-        mnt: /usr/local/ispconfig
+        mnt: /copy/usr/local/ispconfig
       - name: log
-        mnt: /var/log
+        mnt: /copy/var/log
       - name: etc
-        mnt: /etc
+        mnt: /copy/etc
   tasks:
     - name: "create template for volume claims"
       template:
