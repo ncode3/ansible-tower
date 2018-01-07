@@ -51,12 +51,13 @@
         oc delete dc {{ ispconfig_container }}
       become: true
 
-    - name: "Destroy old persistent volumes and claims"
+    - name: "Destroy old persistent volumes claims"
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
         oc delete pvc ispconfig-{{ item.name }}
-        oc delete pv ispconfig-{{ item.name }}
+        # deleting the pv deletes the data in the volume
+        #oc delete pv ispconfig-{{ item.name }}
       become: true
       with_items: "{{ mntpoints }}"
 
@@ -64,7 +65,7 @@
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
         oc project {{ ose_project }}
-        sed -e 's/REPLACEME/{{ item.name }}/' /tmp/ispconfig-volumes.yml | oc create -f -
+        oc get pv | grep {{ item.name }} || sed -e 's/REPLACEME/{{ item.name }}/' /tmp/ispconfig-volumes.yml | oc create -f -
       become: true
       with_items: "{{ mntpoints }}"
 
