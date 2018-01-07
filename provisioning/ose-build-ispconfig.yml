@@ -41,6 +41,25 @@
         owner: root
         group: root
 
+    - name: "Destroy old configurations"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc delete is {{ ispconfig_container }}
+        oc delete svc {{ ispconfig_container }}
+        oc delete bc {{ ispconfig_container }}
+        oc delete dc {{ ispconfig_container }}
+      become: true
+
+    - name: "Destroy old persistent volumes and claims"
+      shell: |
+        oc login -u {{ ose_user }} -p {{ ose_pass }}
+        oc project {{ ose_project }}
+        oc delete pvc ispconfig-{{ item.name }}
+        oc delete pv ispconfig-{{ item.name }}
+      become: true
+      with_items: "{{ mntpoints }}"
+
     - name: "Create persistent volume via oc binary"
       shell: |
         oc login -u {{ ose_user }} -p {{ ose_pass }}
