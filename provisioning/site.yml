@@ -13,7 +13,7 @@
     - jboss-standalone
 
 - name: Configure Satellite
-  hosts: sat6*
+  hosts: !sat6*
   roles:
     - satellite-server
 
