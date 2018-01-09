@@ -12,10 +12,10 @@
   roles:
     - jboss-standalone
 
-- name: Configure Satellite
-  hosts: !sat6*
-  roles:
-    - satellite-server
+#- name: Configure Satellite
+#  hosts: sat6*
+#  roles:
+#    - satellite-server
 
 - name: Configure Cloudforms Management Engine
   hosts: cloudforms*:cfme*
