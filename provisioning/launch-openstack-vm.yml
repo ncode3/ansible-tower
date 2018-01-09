@@ -7,8 +7,8 @@
     vault_os_project: Redhat_Lab
     vault_os_projectid: ""
     vault_os_user: dtaylor
-    vault_os_pass: redhat123
-    vault_os_url: "http://{{ osp10_controller }}:5000/v2.0"
+    vault_os_pass: n0t1ck3t
+    vault_os_url: "http://{{ osp8_controller }}:5000/v2.0"
     os_create_volume: "no"
     os_server:
       name: "Satellite 6 Demo"
