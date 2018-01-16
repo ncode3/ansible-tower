@@ -73,9 +73,8 @@
         --foreman-admin-password {{ sat6_pass }} \
         --foreman-proxy-puppetca true \
         --foreman-proxy-tftp true \
+        --disable-system-checks \
         --enable-foreman-plugin-discovery && touch /root/.setup/fusor.success
-        # for 6.3 beta
-        #--disable-system-checks
       become: true
       args:
         creates: /root/.setup/fusor.success
