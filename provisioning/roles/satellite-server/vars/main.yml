@@ -1,4 +1,5 @@
 ---
+redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 dns_domain: "dev.maskedadmins.com"
 compute_resources:
 #  - name: 'OSP8 Redhat Lab'
