@@ -206,7 +206,7 @@
   block:
     - name: "Creating domains"
       shell: |
-          [[ "{{ dns_domain }}" != "{{ item }}" ]] && hammer domain create --name "{{ item }}" || true
+          hammer domain create --name "{{ item }}" || true
       with_items: "{{ sat6.domains }}"
       ignore_errors: yes
       args:
@@ -236,6 +236,7 @@
         creates: /root/.setup/step5
   
     - name: "Adding Domains to Orgs and Locations"
+      ignore_errors: yes
       shell: |
           domainid=$(hammer domain list  | grep {{ item.1 }} | awk '{print $1}')
           hammer organization add-domain --domain-id=${domainid} --name '{{ item.0.name }}'
