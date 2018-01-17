@@ -118,7 +118,8 @@ sat6_default_hostgroup: "RHEL_7_x86_64_Hostgroup"
 sat6_default_domain: "dev.maskedadmins.com"
 sat6_default_subnet: "Dev_103"
 sat6_default_environment: "development"
-sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
+#sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
+sat6_manifest: "manifest_45ae3ee1-3c5f-4a90-8b3b-341b46c7db21.zip"
 sat6_pool_ids: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           37303861666631306262666162306133616361623137373735653234623232333436313238316239
