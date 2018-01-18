@@ -10,7 +10,7 @@
     vault_os_pass: redhat123
     vault_os_url: "http://{{ osp10_controller }}:5000/v2.0"
     os_create_volume: "yes"
-    os_volume_size: 2
+    os_volume_size: 1
     os_volume_name: cfme-volume
     os_server:
       name: "cloudforms"
