@@ -19,6 +19,7 @@
     operatingsystem: "RedHat 7.3"
     vmname: "test vm"
     vmimage: "test image"
+    vmflavor: "m1.medium"
     vmrootpassword: "{{ ipmi_pass }}"
     tower_server: 10.55.102.248
     tower_key: dc7c0b52cd29cacceb8d3571257801ea
@@ -94,6 +95,7 @@
                 OSID=$(hammer --csv os list | grep '{{ operatingsystem }}' | awk -F, {'print $1'})
                 COMPUTEID=$(hammer --csv compute-resource list | grep '{{ osp10_resource }}' | awk -F, {'print $1'})
                 IMAGEID=$(hammer --csv compute-resource image list --compute-resource-id ${COMPUTEID} | grep '{{ vmimage }}' | awk -F, {'print $1'})
+                FLAVORID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; nova flavor-list | grep '{{ vmflavor }}' | cut -f2 -d\| | xargs")
                 IMAGEUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; glance image-list | grep '{{ vmimage }}' | cut -f2 -d\| | xargs")
                 SUBNETUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-list | grep {{ osp10_subnet }} | cut -f2 -d\| | xargs")
                 TENANTUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; openstack project list | grep '{{ sat6_org }}' | cut -f2 -d\| | xargs")
@@ -102,7 +104,7 @@
                 --compute-resource '{{ osp10_resource }}' --provision-method image --enabled true --managed true \
                 --interface managed=true,primary=true,provision=true --lifecycle-environment "{{ sat6_lifecycle_env }}" \
                 --content-view "{{ sat6_content_view }}"  --root-pass {{ vmrootpassword }} \
-                --compute-attributes nics=["$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-show ${SUBNETUUID} | grep network_id | cut -d\|  -f3 | xargs")"],flavor_ref=3,image_ref=${IMAGEUUID},tenant_id=${TENANTUUID},security_groups={{ osp10_sg }} \
+                --compute-attributes nics=["$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-show ${SUBNETUUID} | grep network_id | cut -d\|  -f3 | xargs")"],flavor_ref=${FLAVORID},image_ref=${IMAGEUUID},tenant_id=${TENANTUUID},security_groups={{ osp10_sg }} \
                 --parameters tower_jobid={{ tower_jobid }},tower_server={{ tower_server }},tower_key={{tower_key }}
               register: vmprovider
               become: true
