@@ -35,14 +35,21 @@ sat6:
       prior: 'testing'
   locations:
     - "Private_Cloud"
-#    - "Legacy_Servers"
-#    - "Public_Cloud"
   domains:
+    - "maskedadmins.com"
     - "dev.maskedadmins.com"
     - "test.maskedadmins.com"
     - "prod.maskedadmins.com"
     - "strg.maskedadmins.com"
   subnets:
+    - name: "Prov_102"
+      gw: "10.55.102.1"
+      network: "10.55.102.0"
+      mask: "255.255.255.0"
+      dns: "10.55.102.5"
+      domain: "maskedadmins.com"
+      location: "Private_Cloud"
+      org: "Redhat_Lab"
     - name: "Dev_103"
       gw: "10.55.103.1"
       network: "10.55.103.0"
@@ -76,34 +83,19 @@ sat6:
       location: "Private_Cloud"
       org: "Redhat_Lab"
   orgs:
-#    - name: "Infra"
-#      label: "infrastructure"
-#      description: "Our example infra organization for managing content."
-#      locations:
-#        - 'Legacy_Servers'
-#        - 'Private_Cloud'
-#        - 'Public_Cloud'
-#      domains:
-#        - "dev.maskedadmins.com"
-#        - "test.maskedadmins.com"
-#        - "prod.maskedadmins.com"
-#        - "strg.maskedadmins.com"
-#      subnets:
-#        - "Dev_103"
-#        - "Test_104"
-#        - "Storage_105"
-#        - "Prod_106"
     - name: "Redhat_Lab"
       label: "redhatlab"
       description: "Our example sub organization for managing content."
       locations:
         - 'Private_Cloud'
       domains:
+        - "maskedadmins.com"
         - "dev.maskedadmins.com"
         - "test.maskedadmins.com"
         - "prod.maskedadmins.com"
         - "strg.maskedadmins.com"
       subnets:
+        - "Prov_102"
         - "Dev_103"
         - "Test_104"
         - "Storage_105"
@@ -118,7 +110,6 @@ sat6_default_hostgroup: "RHEL_7_x86_64_Hostgroup"
 sat6_default_domain: "dev.maskedadmins.com"
 sat6_default_subnet: "Dev_103"
 sat6_default_environment: "development"
-#sat6_manifest: "manifest_569d1776-9ed2-4d09-8a3e-86e8f92b59e9.zip"
 sat6_manifest: "manifest_45ae3ee1-3c5f-4a90-8b3b-341b46c7db21.zip"
 sat6_pool_ids: !vault |
           $ANSIBLE_VAULT;1.1;AES256

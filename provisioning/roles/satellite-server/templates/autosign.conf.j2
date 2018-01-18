@@ -1,1 +1,3 @@
-*.dev.maskedadmins.com
+{% for domain in sat6.domains %}
+*.{{ domain }}
+{% endfor %}
