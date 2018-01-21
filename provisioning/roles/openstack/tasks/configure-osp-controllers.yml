@@ -11,6 +11,20 @@
   with_items: "{{ openstack.controller_packages }}"
   become: true
 
+- name: "installing private key"
+  template:
+    src: openstack/blank.key.j2
+    dest: /root/.ssh/id_rsa
+    owner: root
+    group: root
+    mode: 0600
+
+- name: "copying authorized key to id_rsa.pub"
+  shell: |
+    cp /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub
+  args:
+    creates: "/root/.ssh/id_rsa.pub"
+
 - name: "apply fix for packstack bugzilla 1147811"
   template:
     src: openstack/compute.pp.j2
@@ -40,6 +54,7 @@
     chdir: /root
   become: true
   ignore_errors: yes
+
 - name: "Check if project exists, ignore the failure if it doesn't exist"
   shell: |
     . /root/keystonerc_admin
