@@ -62,14 +62,14 @@
     regexp: "^dhcp_domain=*"
     state: present
 
-- name: "Enabling and restarting services openstack nova "
-  service:
-    name: "{{ item }}"
-    state: restarted
-    enabled: yes
-  with_items:
-    - openstack-nova-compute
-  become: true
+#- name: "Enabling and restarting services openstack nova "
+#  service:
+#    name: "{{ item }}"
+#    state: restarted
+#    enabled: yes
+#  with_items:
+#    - openstack-nova-compute
+#  become: true
 
 - name: "Reboot to new settings. Back in 10 mins or so"
   shell: |
