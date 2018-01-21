@@ -7,7 +7,7 @@
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
 osp10_controller: 10.55.102.158
-osp10_computes: "10.55.102.158,10.55.102.157,10.55.102.156"
+osp10_computes: "10.55.102.158,10.55.102.157,10.55.102.156,10.55.102.159"
 redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
