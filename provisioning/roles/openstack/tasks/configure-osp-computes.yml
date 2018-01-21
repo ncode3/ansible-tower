@@ -1,4 +1,16 @@
 ---
+- name: "Enabling needed repos for Openstack 10"
+  shell: "subscription-manager repos --enable={{ item }}"
+  with_items: "{{ openstack.enabled_repos }}"
+  become: true
+
+- name: "Install Openstack 10 Yum packages"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ openstack.compute_packages }}"
+  become: true
+
 - name: "Configure compute nodes for Huge Pages"
   shell: |
     grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"

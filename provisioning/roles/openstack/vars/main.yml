@@ -1,5 +1,8 @@
 ---
 openstack:
+  enabled_repos: ['rhel-7-server-openstack-10-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-10-devtools-rpms']
+  controller_packages: ['yum-utils','openstack-packstack']
+  compute_packages: ['openstack-nova']
   project_name: Redhat_Lab
   project_user: dtaylor
   project_pass: redhat123

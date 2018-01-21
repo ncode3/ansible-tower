@@ -1,4 +1,45 @@
 ---
+- name: "Enabling needed repos for Openstack 10"
+  shell: "subscription-manager repos --enable={{ item }}"
+  with_items: "{{ openstack.enabled_repos }}"
+  become: true
+
+- name: "Install Openstack 10 Yum packages"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ openstack.controller_packages }}"
+  become: true
+
+- name: "apply fix for packstack bugzilla 1147811"
+  template:
+    src: openstack/compute.pp.j2
+    dest: /usr/share/openstack-puppet/modules/packstack/manifests/nova/compute.pp
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "copy over pre-generated answer file"
+  template:
+    src: openstack/packstack-answer.txt.j2
+    dest: /root/packstack-answer.txt
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "Run packstack against answer file"
+  shell: "packstack --answer-file=/root/packstack-answer.txt"
+  become: true
+
+- name: "Create lab project and user"
+  shell: |
+    . /root/keystone_admin
+    openstack project create --description 'Redhat_Lab' Redhat_Lab
+    openstack user create --project Redhat_Lab --password redhat123 dtaylor
+  args:
+    chdir: /root
+  become: true
+  ignore_errors: yes
 - name: "Check if project exists, ignore the failure if it doesn't exist"
   shell: |
     . /root/keystonerc_admin
