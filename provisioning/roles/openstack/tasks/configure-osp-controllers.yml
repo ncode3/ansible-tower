@@ -22,6 +22,7 @@
 - name: "copying authorized key to id_rsa.pub"
   shell: |
     cp /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub
+    chmod 600 /root/.ssh/id_rsa.pub
   args:
     creates: "/root/.ssh/id_rsa.pub"
 
@@ -41,9 +42,47 @@
     group: root
     mode: 0644
 
-- name: "Run packstack against answer file"
-  shell: "packstack --answer-file=/root/packstack-answer.txt"
+- name: "Check if cinder-volume exists"
+  shell: "vgdisplay | grep cinder || true"
+  register: cinder
+  ignore_errors: yes
+
+- name: "Add cinder-volumes vol group"
+  shell: |
+    echo "n
+    p
+    
+    
+    
+    t
+    
+    8e
+    w
+    "|fdisk /dev/sda
+    partprobe
+    vgcreate cinder-volumes /dev/sda3
+  ignore_errors: yes
   become: true
+  when: "'cinder' not in cinder.stdout"
+
+- name: "Block for packstack"
+  block:
+  - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
+    shell: "packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup"
+    become: true
+    when: os_packstack_use_answerfile == "yes"
+    args:
+      creates: /opt/.packstack-setup
+
+  - name: "Run packstack --allinone for demo on a single server"
+    shell: "packstack --allinone && touch /opt/.packstack-setup"
+    become: true
+    when: os_packstack_use_answerfile == "no"
+    args:
+      creates: /opt/.packstack-setup
+  rescue:
+  - name: "Remove packstack touched file"
+    shell: rm -f /opt/.packstack-setup
 
 - name: "Create lab project and user"
   shell: |
