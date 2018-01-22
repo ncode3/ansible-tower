@@ -1,5 +1,10 @@
 ---
 - include: ose-get-token.yml
+- name: "Check if CFME is up"
+  shell: |
+    ping -c 1 {{ cfme_server }}
+  register: cfme_check
+
 - name: "Add Openshift provider to CFME using the token acquired earlier"
   shell: |
     curl -k --user {{ cfme_creds }} \
@@ -14,3 +19,4 @@
             "password" : "{{ ose_token }}"
           }' \
     https://{{ cfme_server }}/api/providers
+  when: "'1 received' in cfme_check.stdout"
