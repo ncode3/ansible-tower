@@ -92,7 +92,7 @@
     - name: "Enabling and restarting services openstack nova "
       service:
         name: "{{ item }}"
-        state: restarted
+#        state: restarted
         enabled: yes
       with_items:
         - openstack-nova-compute

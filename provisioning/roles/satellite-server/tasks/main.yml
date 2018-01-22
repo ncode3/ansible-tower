@@ -239,7 +239,7 @@
     - name: "Adding Domains to Orgs and Locations"
       ignore_errors: yes
       shell: |
-          domainid=$(hammer domain list  | grep {{ item.1 }} | awk '{print $1}')
+          domainid=$(hammer domain list  | grep "| {{ item.1 }}" | awk '{print $1}')
           hammer organization add-domain --domain-id=${domainid} --name '{{ item.0.name }}'
       with_subelements:
         - "{{ sat6.orgs }}"
@@ -249,7 +249,7 @@
   
     - name: "Adding Default Domain to Orgs and Locations"
       shell: |
-          domainid=$(hammer domain list  | grep {{ sat6_default_domain }} | awk '{print $1}')
+          domainid=$(hammer domain list  | grep "| {{ sat6_default_domain }}" | awk '{print $1}')
           hammer organization add-domain --domain-id=${domainid} --name '{{ sat6_default_org }}'
       args:
         creates: /root/.setup/step6
@@ -283,7 +283,7 @@
   
     - name: "Adding Domains to Locations"
       shell: |
-          domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
+          domainid=$(hammer domain list  | grep "| {{ item.domain }}" | awk '{print $1}')
           hammer location add-domain --domain-id=${domainid} --name '{{ item.location }}'
       with_items: "{{ sat6.subnets }}"
       args:
@@ -291,7 +291,7 @@
   
     - name: "Adding Default Domain to Locations"
       shell: |
-          domainid=$(hammer domain list  | grep {{ sat6_default_domain }} | awk '{print $1}')
+          domainid=$(hammer domain list  | grep "| {{ sat6_default_domain }}" | awk '{print $1}')
           hammer location add-domain --domain-id=${domainid} --name '{{ sat6_default_location }}'
       args:
         creates: /root/.setup/step8
