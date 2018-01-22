@@ -219,7 +219,7 @@
   
     - name: "Creating subnets and adding to domains"
       shell: |
-          domainid=$(hammer domain list  | grep {{ item.domain }} | awk '{print $1}')
+          domainid=$(hammer domain list  | grep "| {{ item.domain }}" | awk '{print $1}')
           hammer subnet create --domain-ids=${domainid} \
           --gateway={{ item.gw }} \
           --mask={{ item.mask }} \
@@ -227,6 +227,7 @@
           --tftp-id=1 --network={{ item.network }} \
           --dns-primary={{ item.dns }}
       with_items: "{{ sat6.subnets }}"
+      ignore_errors: yes
       args:
         creates: /root/.setup/step5
   
