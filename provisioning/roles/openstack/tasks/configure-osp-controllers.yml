@@ -61,7 +61,7 @@
 - name: "Block for packstack"
   block:
   - name: "Copy public key into place"
-    shell: "cp /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub"
+    shell: "cp -f /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub"
     become: true
     args:
       creates: /opt/.packstack-setup
