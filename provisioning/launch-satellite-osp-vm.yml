@@ -98,7 +98,7 @@
                 FLAVORID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; nova flavor-list | grep '{{ vmflavor }}' | cut -f2 -d\| | xargs")
                 IMAGEUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; glance image-list | grep '{{ vmimage }}' | cut -f2 -d\| | xargs")
                 SUBNETUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-list | grep {{ osp10_subnet }} | cut -f2 -d\| | xargs")
-                TENANTUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; openstack project list | grep '{{ sat6_org }}' | cut -f2 -d\| | xargs")
+                TENANTUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_admin ; openstack project list | grep '{{ sat6_org }}' | cut -f2 -d\| | xargs")
                 hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}' --organization '{{ sat6_org }}' \
                 --location {{ sat6_location }} --hostgroup '{{ sat6_hostgroup }}' \
                 --compute-resource '{{ osp10_resource }}' --provision-method image --enabled true --managed true \
