@@ -60,6 +60,12 @@
 
 - name: "Block for packstack"
   block:
+  - name: "Copy public key into place"
+    shell: "cp /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub"
+    become: true
+    args:
+      creates: /opt/.packstack-setup
+
   - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
     shell: "packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup"
     become: true
@@ -85,13 +91,13 @@
   args:
     chdir: /root
   become: true
-  ignore_errors: yes
+  #ignore_errors: yes
 
 - name: "Check if project exists, ignore the failure if it doesn't exist"
   shell: |
     . /root/keystonerc_admin
     openstack project list | grep {{ openstack['project_name'] }} || true
-  ignore_errors: yes
+  #ignore_errors: yes
   register: proj_stat
 
 - name: "Create lab project and user, updating cores quota for project to 40"
