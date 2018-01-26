@@ -1,0 +1,23 @@
+---
+- name: "copy bridged interface into network-scripts"
+  template:
+    src: ifcfg-br-em2.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-br-em2
+    owner: root
+    group: root
+    mode: 0755
+  
+- name: "copy network-scripts/ifcfg-em2"
+  template:
+    src: ifcfg-em2.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-em2
+    owner: root
+    group: root
+    mode: 0755
+  
+- name: "Fix bridged interface in neutron and reboot"
+  shell: |
+    sed -e 's/br-enp10s0f1/br-em2/g' -i /etc/neutron/plugins/ml2/openvswitch_agent.ini
+    shutdown -r +1 && /bin/true || /bin/true
+  become: true
+  ignore_errors: yes
