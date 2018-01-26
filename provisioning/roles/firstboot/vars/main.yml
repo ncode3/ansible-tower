@@ -3,6 +3,11 @@ dns_domain: "dev.maskedadmins.com"
 host_config_server: "10.55.102.248"
 redhat_insights_key: ""
 redhat_insights_jobid: ""
+redhat_packages: ['puppet','nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
+centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
+fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
+enabled_svcs: ['sshd','network','rsyslog']
+disabled_svcs: ['NetworkManager']
 rh_satellite_url: https://subscription.rhn.redhat.com
 rh_satellite_org: None
 rh_satellite_user: !vault |
