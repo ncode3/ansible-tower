@@ -5,5 +5,5 @@
 - include: "configure-osp-computes.yml"
   when: osp_mode == 'computes'
 
-- include: "fix-compute5.yml"
-  when: inventory_hostname == 'compute5.maskedadmins.com'
+#- include: "fix-compute5.yml"
+#  when: inventory_hostname == 'compute5.maskedadmins.com'
