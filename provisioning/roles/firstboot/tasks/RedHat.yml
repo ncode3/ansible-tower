@@ -97,7 +97,7 @@
         -L {{ sat6['location'] }} \
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
-        --force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root
+        --force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root --skip-puppet
         #--rex  --skip-foreman --skip-puppet \
         #--rex-user root \
         #/bin/false
@@ -157,11 +157,11 @@
       args:
         creates: /opt/.firstboot
     
-#    - name: "Perform a yum update"
-#      shell:  yum -y update
-#      become: true
-#      args:
-#        creates: /opt/.firstboot
+    - name: "Perform a yum clean all"
+      shell:  yum clean all
+      become: true
+      args:
+        creates: /opt/.firstboot
 
     - name: "Installing rpms {{ redhat_packages }}"
       yum:
