@@ -88,7 +88,7 @@
     mkfs.ext4 {{ os_swift_devicepart }}
   ignore_errors: yes
   become: true
-  when: "'os_swift_devicepart' not in swift.stdout and 'openstack['swift']['use']'  == 'yes'"
+  when: '"{{ os_swift_devicepart }}" not in swift.stdout and "{{ openstack['swift']['use'] }}"  == "yes"'
 
 - name: "Block for packstack"
   block:
