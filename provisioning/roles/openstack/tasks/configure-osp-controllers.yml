@@ -42,6 +42,7 @@
 
 - name: "Check if swift device exists"
   shell: "fdisk -l {{ os_swift_device }} || true"
+  when: "openstack['swift']['use']  == 'yes'"
   register: swift
   ignore_errors: yes
 
@@ -70,15 +71,13 @@
     
     
     
-    t
-    
-    8e
     w
     "|fdisk {{ os_swift_device }}
     partprobe
+    mkfs.ext4 {{ os_swift_devicepart }}
   ignore_errors: yes
   become: true
-  when: "'{{ os_swift_devicepart }}' not in swift.stdout"
+  when: "'{{ os_swift_devicepart }}' not in swift.stdout and {{ openstack['swift']['use'] }}  == 'yes'"
 
 - name: "Block for packstack"
   block:
