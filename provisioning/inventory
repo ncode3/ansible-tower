@@ -1,0 +1,10 @@
+[osp10-nodes]
+10.55.102.159
+[osp10-controllers]
+10.55.102.159
+[osp10-computes]
+10.55.102.159
+[osp10-storage]
+10.55.102.159
+[osp10-network]
+10.55.102.159
