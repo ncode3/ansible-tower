@@ -40,6 +40,11 @@
   register: cinder
   ignore_errors: yes
 
+- name: "Check if swift device exists"
+  shell: "fdisk -l {{ os_swift_device }} || true"
+  register: swift
+  ignore_errors: yes
+
 - name: "Add cinder-volumes vol group"
   shell: |
     echo "n
@@ -51,12 +56,29 @@
     
     8e
     w
-    "|fdisk /dev/sda
+    "|fdisk {{ os_cinder_device }}
     partprobe
-    vgcreate cinder-volumes /dev/sda3
+    vgcreate cinder-volumes {{ os_cinder_devicepart }}
   ignore_errors: yes
   become: true
   when: "'cinder' not in cinder.stdout"
+
+- name: "Add swift device"
+  shell: |
+    echo "n
+    p
+    
+    
+    
+    t
+    
+    8e
+    w
+    "|fdisk {{ os_swift_device }}
+    partprobe
+  ignore_errors: yes
+  become: true
+  when: "'{{ os_swift_devicepart }}' not in swift.stdout"
 
 - name: "Block for packstack"
   block:

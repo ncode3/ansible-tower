@@ -12,9 +12,11 @@ os_cinder_volumesgroup_size: "1000G"
 os_amqp_nodes: "{{ osp10_controller }}"
 os_mariadb_nodes: "{{ osp10_controller }}"
 os_cinder_device: "/dev/sda"
+os_cinder_devicepart: "/dev/sda2"
 # for shelf
 #os_cinder_device: "/dev/sda1"
-os_swift_device: "/dev/sda2"
+os_swift_device: "/dev/sda"
+os_swift_devicepart: "/dev/sda3"
 ml2_drivers: "local,vlan"
 ml2_networks: "local,vlan"
 ml2_bridge_name: "inter-vlan"
@@ -33,19 +35,19 @@ openstack:
   dhcp_domain: dev.maskedadmins.com
   dhcp_mtu: 1454
   cpupinning:
-    use: "no"
-    #device: /dev/sda
-    device: /dev/sdb
+    use: "yes"
+    device: /dev/sda
+    #device: /dev/sdb
   hugepages:
-    use: "no"
-    #device: /dev/sda
-    device: /dev/sdb
+    use: "yes"
+    device: /dev/sda
+    #device: /dev/sdb
   glance:
     mount_nfs: "yes"
     import: "yes"
     image_path: /mnt/compute1/glance-images
     nfs_target: 10.55.2.155:/mnt/drobo/software/BackUp/openstack/glance-images
-    image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.1.5-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2','QCI-Template-bare.qcow2']
+    image_names: ['PXE-client-bare.raw','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
     #image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
   networks:
     Management_101:
