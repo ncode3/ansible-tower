@@ -40,6 +40,11 @@
   register: cinder
   ignore_errors: yes
 
+- name: "Check if cinder device exists"
+  shell: "fdisk -l {{ os_cinder_device }} || true"
+  register: cinderdev
+  ignore_errors: yes
+
 - name: "Check if swift device exists"
   shell: "fdisk -l {{ os_swift_device }} || true"
   when: "openstack['swift']['use']  == 'yes'"
@@ -59,6 +64,12 @@
     w
     "|fdisk {{ os_cinder_device }}
     partprobe
+  ignore_errors: yes
+  become: true
+  when: "'os_cinder_devicepart' not in cinderdev.stdout"
+
+- name: "Add cinder-volumes vol group"
+  shell: |
     vgcreate cinder-volumes {{ os_cinder_devicepart }}
   ignore_errors: yes
   become: true
@@ -77,7 +88,7 @@
     mkfs.ext4 {{ os_swift_devicepart }}
   ignore_errors: yes
   become: true
-  when: "'{{ os_swift_devicepart }}' not in swift.stdout and {{ openstack['swift']['use'] }}  == 'yes'"
+  when: "'os_swift_devicepart' not in swift.stdout and 'openstack['swift']['use']'  == 'yes'"
 
 - name: "Block for packstack"
   block:
