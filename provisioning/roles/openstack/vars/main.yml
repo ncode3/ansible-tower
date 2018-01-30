@@ -35,13 +35,13 @@ openstack:
   dhcp_domain: dev.maskedadmins.com
   dhcp_mtu: 1454
   swift:
-    use: "no"
-  cpupinning:
     use: "yes"
+  cpupinning:
+    use: "no"
     device: /dev/sda
     #device: /dev/sdb
   hugepages:
-    use: "yes"
+    use: "no"
     device: /dev/sda
     #device: /dev/sdb
   glance:
