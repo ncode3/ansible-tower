@@ -315,7 +315,7 @@
   args:
     chdir: /root
   become: true
-  #ignore_errors: yes
+  ignore_errors: yes
 
 - name: "Configure the system for Huge Pages"
   shell: |
