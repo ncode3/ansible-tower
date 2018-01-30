@@ -478,7 +478,7 @@
     owner: root
     group: root
     mode: 0755
-  when: openstack['hugepages']['use']  == "yes"
+  #when: openstack['hugepages']['use']  == "yes"
 
 - name: "/opt/firstboot-stop.sh file"
   template:
@@ -487,7 +487,7 @@
     owner: root
     group: root
     mode: 0755
-  when: openstack['hugepages']['use']  == "yes"
+  #when: openstack['hugepages']['use']  == "yes"
 
 - name: "Reloading systemctl for firstboot script to launch demos"
   shell: |
@@ -508,41 +508,41 @@
   become: true
   when: ( openstack['hugepages']['use']  == "yes" ) or ( openstack['cpupinning']['use']  == "yes" )
 
-- name: "update all the ansible tower osp10 repos and sleep 3 mins"
-  shell: |
-    curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' \
-    -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
-    sleep 30
-  with_items:
-    - 226
-    - 1141
-    - 349
-    - 310
-    - 719
-    - 720
-  ignore_errors: yes
-
-- name: "Launching demos"
-  shell: |
-    chmod 666 /var/log/nova/nova-manage.log
-    echo "update the firewall port"
-    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8445\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
-    # we sleep to allow time for the inventory to update between launching vms
-    #echo "Configure compute nodes"
-    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
-    #sleep 700
-    #echo "Sat 6 launch job"
-    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
-    #sleep 120
-    #echo "CMFE launch job"
-    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
-    #sleep 120
-    echo "OSE 3.5 launch job"
-    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
-    sleep 600
-    echo "Tower launch job"
-    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
-  args:
-    chdir: /root
-  become: true
-  when: ( openstack['hugepages']['use']  == "no" ) and ( openstack['cpupinning']['use']  == "no" )
+#- name: "update all the ansible tower osp10 repos and sleep 3 mins"
+#  shell: |
+#    curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k -H 'Content-Type: application/json' \
+#    -XPOST --user admin:ansible https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+#    sleep 30
+#  with_items:
+#    - 226
+#    - 1141
+#    - 349
+#    - 310
+#    - 719
+#    - 720
+#  ignore_errors: yes
+#
+#- name: "Launching demos"
+#  shell: |
+#    chmod 666 /var/log/nova/nova-manage.log
+#    echo "update the firewall port"
+#    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8445\"}"}' --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/660/launch/
+#    # we sleep to allow time for the inventory to update between launching vms
+#    #echo "Configure compute nodes"
+#    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/361/launch/
+#    #sleep 700
+#    #echo "Sat 6 launch job"
+#    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/259/launch/
+#    #sleep 120
+#    #echo "CMFE launch job"
+#    #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/260/launch/
+#    #sleep 120
+#    echo "OSE 3.5 launch job"
+#    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/258/launch/
+#    sleep 600
+#    echo "Tower launch job"
+#    curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://10.55.102.248:443/api/v1/job_templates/294/launch/
+#  args:
+#    chdir: /root
+#  become: true
+#  when: ( openstack['hugepages']['use']  == "no" ) and ( openstack['cpupinning']['use']  == "no" )
