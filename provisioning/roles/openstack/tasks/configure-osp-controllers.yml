@@ -53,16 +53,8 @@
 
 - name: "Add cinder-volumes vol group"
   shell: |
-    echo "n
-    p
-    
-    
-    
-    t
-    
-    8e
-    w
-    "|fdisk {{ os_cinder_device }}
+    parted {{ os_cinder_device }} mkpart primary ext2 421GB 585GB
+    parted {{ os_cinder_device }} set 3 lvm on
     partprobe
   ignore_errors: yes
   become: true
@@ -77,13 +69,7 @@
 
 - name: "Add swift device"
   shell: |
-    echo "n
-    p
-    
-    
-    
-    w
-    "|fdisk {{ os_swift_device }}
+    parted {{ os_swift_device }} mkpart primary ext2 586GB 750GB
     partprobe
     mkfs.ext4 {{ os_swift_devicepart }}
   ignore_errors: yes
@@ -114,16 +100,6 @@
   rescue:
   - name: "Remove packstack touched file"
     shell: rm -f /opt/.packstack-setup
-
-#- name: "Create lab project and user"
-#  shell: |
-#    . /root/keystonerc_admin
-#    openstack project create --description 'Redhat_Lab' Redhat_Lab
-#    openstack user create --project Redhat_Lab --password redhat123 dtaylor
-#  args:
-#    chdir: /root
-#  become: true
-#  #ignore_errors: yes
 
 - name: "Check if project exists, ignore the failure if it doesn't exist"
   shell: |
