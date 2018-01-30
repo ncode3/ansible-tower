@@ -16,7 +16,7 @@ os_cinder_devicepart: "/dev/sda3"
 # for shelf
 #os_cinder_device: "/dev/sda1"
 os_swift_device: "/dev/sda"
-os_swift_devicepart: "/dev/sda5"
+os_swift_devicepart: "/dev/sda4"
 ml2_drivers: "local,vlan"
 ml2_networks: "local,vlan"
 ml2_bridge_name: "inter-vlan"
