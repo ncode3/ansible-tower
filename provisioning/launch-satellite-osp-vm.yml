@@ -96,7 +96,7 @@
                 COMPUTEID=$(hammer --csv compute-resource list | grep '{{ osp10_resource }}' | awk -F, {'print $1'})
                 IMAGEID=$(hammer --csv compute-resource image list --compute-resource-id ${COMPUTEID} | grep '{{ vmimage }}' | awk -F, {'print $1'})
                 FLAVORID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; nova flavor-list | grep -m 1 '{{ vmflavor }}' | cut -f2 -d\| | xargs")
-                IMAGEUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; glance image-list | grep -m 1'{{ vmimage }}' | cut -f2 -d\| | xargs")
+                IMAGEUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; glance image-list | grep -m 1 '{{ vmimage }}' | cut -f2 -d\| | xargs")
                 SUBNETUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-list | grep -m 1 {{ osp10_subnet }} | cut -f2 -d\| | xargs")
                 TENANTUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_admin ; openstack project list | grep -m 1 '{{ sat6_org }}' | cut -f2 -d\| | xargs")
                 hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}' --organization '{{ sat6_org }}' \
