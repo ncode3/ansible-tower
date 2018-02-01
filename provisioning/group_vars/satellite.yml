@@ -8,7 +8,7 @@ sat6_default_domain: "dev.maskedadmins.com"
 sat6_default_subnet: "default"
 sat6_default_environment: "Development"
 tower_key: dc7c0b52cd29cacceb8d3571257801ea
-tower_server: 10.55.102.248
+tower_server: tower.dev.maskedadmins.com
 tower_jobid: 287
 sat6:
   compute_resources:
