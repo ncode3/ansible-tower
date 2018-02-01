@@ -119,7 +119,7 @@ write_files:
 <% if @host.params['tower_key'].present? && @host.params['tower_server'].present? && @host.params['tower_jobid'].present? -%>
     curl -k --data 'host_config_key=<%= @host.params['tower_key'] %>' https://<%= @host.params['tower_server'] %>:443/api/v1/job_templates/<%= @host.params['tower_jobid'] %>/callback/
 <% else -%>
-    curl -k --data 'host_config_key=dc7c0b52cd29cacceb8d3571257801ea' https://10.55.102.248:443/api/v1/job_templates/287/callback/
+    curl -k --data 'host_config_key=dc7c0b52cd29cacceb8d3571257801ea' https://tower.dev.maskedadmins.com:443/api/v1/job_templates/287/callback/
 <% end -%>
 phone_home:
  url: <%= foreman_url('built') %>
