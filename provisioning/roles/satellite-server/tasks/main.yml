@@ -641,6 +641,7 @@
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "tower_key"  --value "{{ tower_key }}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "tower_server"  --value "{{ tower_server }}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "tower_jobid"  --value "{{ tower_jobid }}"
+      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "kt_activation_keys"  --value "{{ item.activation_key }}"
     done
   args:
     creates: /root/.setup/step24
