@@ -1,6 +1,7 @@
 ---
 dns_domain: "dev.maskedadmins.com"
-host_config_server: "10.55.102.248"
+host_config_server: "{{ default_tower_server }}"
+tower_server: "{{ default_tower_server }}"
 redhat_insights_key: ""
 redhat_insights_jobid: ""
 redhat_packages: ['puppet','nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
