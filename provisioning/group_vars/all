@@ -14,11 +14,8 @@ centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','g
 fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
-## tower related
-tower_tarball_location: http://ec2-54-234-230-108.compute-1.amazonaws.com/tower/ansible-tower-setup-latest.tar.gz
-tower_pkgs: ['python2-boto','python2-pip','python-heatclient','python-openstackclient','python2-shade']
 ## ansible api server
-host_config_server: 10.55.102.248
+host_config_server: tower.dev.maskedadmins.com
 ## redhat insights job id
 redhat_insights_key: 990c2493aefba904a89081496fc0319b
 redhat_insights_jobid: 117
