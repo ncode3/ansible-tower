@@ -53,7 +53,8 @@
 
 - name: "Add cinder-volumes vol group"
   shell: |
-    parted {{ os_cinder_device }} mkpart primary ext2 421GB 585GB
+    parted {{ os_cinder_device }} print
+    parted {{ os_cinder_device }} mkpart primary ext2 721GB 900GB
     parted {{ os_cinder_device }} set 3 lvm on
     partprobe
   ignore_errors: yes
@@ -69,7 +70,7 @@
 
 - name: "Add swift device"
   shell: |
-    parted {{ os_swift_device }} mkpart primary ext2 586GB 750GB
+    parted {{ os_swift_device }} mkpart primary ext2 901GB 1499GB
     partprobe
     mkfs.ext4 {{ os_swift_devicepart }}
   ignore_errors: yes
