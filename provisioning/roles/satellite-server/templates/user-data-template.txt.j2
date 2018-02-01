@@ -119,6 +119,9 @@ write_files:
 <%= indent 4 do
       snippet 'ansible_provisioning_callback'
     end %>
+    sed -i -e 's/api\/v2/api\/v1/g' /etc/systemd/system/ansible-callback.service
+    systemctl daemon-reload
+    systemctl start ansible-callback
 phone_home:
  url: <%= foreman_url('built') %>
  post: []
