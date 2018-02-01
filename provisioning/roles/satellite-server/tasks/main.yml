@@ -638,10 +638,11 @@
       --query-organization="{{ sat6_default_org }}" --name="{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --subnet="{{ item.name }}" --partition-table-id="${PARTID}" \
       --operatingsystem-id="${os}" --puppet-ca-proxy-id="${CAID}" --puppet-proxy-id="${PROXYID}" --content-view="Base" --lifecycle-environment-id="${LCID}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "sshkey"  --value "{{ cloud_user_pub_key }}"
-      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "tower_key"  --value "{{ tower_key }}"
-      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "tower_server"  --value "{{ tower_server }}"
-      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "tower_jobid"  --value "{{ tower_jobid }}"
+      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_host_config_key"  --value "{{ tower_key }}"
+      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_tower_fqdn"  --value "{{ tower_server }}"
+      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_job_template_id"  --value "{{ tower_jobid }}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "kt_activation_keys"  --value "{{ item.activation_key }}"
+      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_tower_provisioning"  --value "{{ item.activation_key }}"
     done
   args:
     creates: /root/.setup/step24

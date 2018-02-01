@@ -15,6 +15,7 @@
 - name: "Install development tools"
   shell: |
     yum -y groupinstall "Development Tools"
+    yum -y install python2-pip
   become: true
 
 - name: "Install pycrypto tower dependency for ansible versions < 2.4"
