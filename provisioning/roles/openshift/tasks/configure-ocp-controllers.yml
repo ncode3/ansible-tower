@@ -214,7 +214,7 @@
 - name: "Install OCP variant {{ ocp_variant }} - takes 50 mins for 3 nodes"
   shell: |
     setenforce 0
-    atomic-openshift-installer -u install && touch /root/.setupcomplete
+    atomic-openshift-installer -u install --force && touch /root/.setupcomplete
     lead='^    method: auto$'
     tail='^  masterCA: ca-bundle.crt$'
     sed -i -e "/$lead/,/$tail/{ /$lead/{p; r /tmp/fix-ose-auth.txt
