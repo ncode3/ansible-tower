@@ -163,7 +163,7 @@
 
 ## this is needed to update dns with the real hostname given in openstack
 - template:
-    src: vms/dns-updater.sh.j2
+    src: dns-vmupdater.sh.j2
     dest: /usr/sbin/ifup-local
     owner: root
     group: root

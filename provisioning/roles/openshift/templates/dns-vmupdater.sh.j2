@@ -1,0 +1,27 @@
+#!/bin/bash
+key="{{ dhcp_server_key }}"
+server="10.55.102.5"
+zone="{{ dns_domain }}"
+hostname="$(hostname --short)"
+reverse=$(echo {{ ansible_default_ipv4['address'] }} | awk -F. '{print $4"."$3"." $2"."$1}')
+reversezone=$(echo {{ ansible_default_ipv4['address'] }} | awk -F. '{print $3"." $2"."$1}')
+temp=/tmp.$$
+touch $temp
+cat > ${temp} <<EOF
+server ${server}
+key dhcpupdate ${key}
+zone ${reversezone}.in-addr.arp
+update delete ${reverse}.in-addr.arpa. PTR
+update add ${reverse}.in-addr.arpa. 300 IN PTR ${hostname}.${zone}.
+send
+zone ${zone}
+update delete ${hostname}.${zone}. A
+update add ${hostname}.${zone}. 300 IN A {{ ansible_default_ipv4['address'] }}
+send
+EOF
+
+nsupdate -v ${temp}
+echo "$*" >> /tmp/dnsmasq.updater.txt
+rm -f ${temp}
+extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
+curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/655/launch/
