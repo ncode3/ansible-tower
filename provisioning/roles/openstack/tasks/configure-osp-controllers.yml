@@ -38,26 +38,26 @@
 - name: "Check if cinder-volume exists"
   shell: "vgdisplay | grep cinder || true"
   register: cinder
-  ignore_errors: yes
+  #ignore_errors: yes
 
 - name: "Check if cinder device exists"
   shell: "fdisk -l {{ os_cinder_device }} || true"
   register: cinderdev
-  ignore_errors: yes
+  #ignore_errors: yes
 
 - name: "Check if swift device exists"
   shell: "fdisk -l {{ os_swift_device }} || true"
   when: "openstack['swift']['use']  == 'yes'"
   register: swift
-  ignore_errors: yes
+  #ignore_errors: yes
 
 - name: "Add cinder-volumes vol group"
   shell: |
     parted {{ os_cinder_device }} print
-    parted {{ os_cinder_device }} mkpart primary ext2 721GB 900GB
+    parted {{ os_cinder_device }} mkpart primary ext2 736GB 900GB
     parted {{ os_cinder_device }} set 3 lvm on
     partprobe
-  ignore_errors: yes
+  #ignore_errors: yes
   become: true
   when: "'os_cinder_devicepart' not in cinderdev.stdout"
 
@@ -73,7 +73,7 @@
     parted {{ os_swift_device }} mkpart primary ext2 901GB 1499GB
     partprobe
     mkfs.ext4 {{ os_swift_devicepart }}
-  ignore_errors: yes
+  #ignore_errors: yes
   become: true
   when: ( 'os_swift_devicepart' not in swift.stdout ) and ( openstack['swift']['use']  == 'yes' )
 
