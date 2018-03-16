@@ -13,7 +13,7 @@
 
 - name: "installing private key"
   template:
-    src: openstack/blank.key.j2
+    src: blank.key.j2
     dest: /root/.ssh/id_rsa
     owner: root
     group: root
@@ -21,7 +21,7 @@
 
 - name: "apply fix for packstack bugzilla 1147811"
   template:
-    src: openstack/compute.pp.j2
+    src: compute.pp.j2
     dest: /usr/share/openstack-puppet/modules/packstack/manifests/nova/compute.pp
     owner: root
     group: root
@@ -29,7 +29,7 @@
 
 - name: "copy over pre-generated answer file"
   template:
-    src: openstack/packstack-answer.txt.j2
+    src: packstack-answer.txt.j2
     dest: /root/packstack-answer.txt
     owner: root
     group: root
@@ -133,7 +133,7 @@
 
 - name: "copy over glance import script"
   template:
-    src: openstack/glance-import.sh.j2
+    src: glance-import.sh.j2
     dest: /root/glance-import.sh
     owner: root
     group: root
@@ -151,7 +151,7 @@
 
 - name: copy over dns script  used by openstack dnsmasq to update the vm's dns entry
   template:
-    src: openstack/dns-updater.sh.j2
+    src: dns-updater.sh.j2
     dest: /usr/local/bin/dns-updater.sh
     owner: root
     group: root
@@ -159,7 +159,7 @@
 
 - name: openstack dnsmasq config file to use the dns script and custom mtu settings etc
   template:
-    src: openstack/dnsmasq.conf.j2
+    src: dnsmasq.conf.j2
     dest: /etc/neutron/dnsmasq.conf
     owner: root
     group: root
@@ -442,7 +442,7 @@
 
 - name: "firstboot.service file"
   template:
-    src: openstack/firstboot-setup.service.j2
+    src: firstboot-setup.service.j2
     dest: /etc/systemd/system/firstboot-setup.service
     owner: root
     group: root
@@ -450,7 +450,7 @@
 
 - name: "/opt/firstboot-start.sh file"
   template:
-    src: openstack/firstboot-start.sh.j2
+    src: firstboot-start.sh.j2
     dest: /opt/firstboot-start.sh
     owner: root
     group: root
@@ -459,7 +459,7 @@
 
 - name: "/opt/firstboot-stop.sh file"
   template:
-    src: openstack/firstboot-stop.sh.j2
+    src: firstboot-stop.sh.j2
     dest: /opt/firstboot-stop.sh
     owner: root
     group: root
