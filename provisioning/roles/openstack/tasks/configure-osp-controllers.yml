@@ -54,12 +54,12 @@
 - name: "Add cinder-volumes vol group"
   shell: |
     parted {{ os_cinder_device }} print
-    parted {{ os_cinder_device }} mkpart primary ext2 736GB 900GB
+    parted {{ os_cinder_device }} mkpart primary ext2 736GB 1100GB
     parted {{ os_cinder_device }} set 3 lvm on
     partprobe
   #ignore_errors: yes
   become: true
-  when: "'os_cinder_devicepart' not in cinderdev.stdout"
+  when: "os_cinder_devicepart not in cinderdev.stdout"
 
 - name: "Add cinder-volumes vol group"
   shell: |
@@ -70,12 +70,12 @@
 
 - name: "Add swift device"
   shell: |
-    parted {{ os_swift_device }} mkpart primary ext2 901GB 1499GB
+    parted {{ os_swift_device }} mkpart primary ext2 1101GB 1499GB
     partprobe
     mkfs.ext4 {{ os_swift_devicepart }}
   #ignore_errors: yes
   become: true
-  when: ( 'os_swift_devicepart' not in swift.stdout ) and ( openstack['swift']['use']  == 'yes' )
+  when: ( os_swift_devicepart not in swift.stdout ) and ( openstack['swift']['use']  == 'yes' )
 
 - name: "Block for packstack"
   block:
