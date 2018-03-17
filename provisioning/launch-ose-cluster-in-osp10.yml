@@ -97,7 +97,7 @@
       os_volume:
         state: present
         availability_zone: "{{ os_server['availability_zone'] }}"
-        size: "25"
+        size: "{{ os_volume_size }}"
         display_name: "{{ os_volume_name }}-{{ item }}"
       when: os_create_volume == "yes"
       with_items:
