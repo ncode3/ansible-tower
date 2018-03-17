@@ -37,7 +37,7 @@
           curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
           -H 'Content-Type: application/json' -XPOST \
           --user admin:ansible \
-          https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+          https://{{ default_tower_server }}/api/v1/inventory_sources/{{ item }}/update/
           sleep 15
         with_items:
           - 226

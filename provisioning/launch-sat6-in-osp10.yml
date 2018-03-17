@@ -18,7 +18,8 @@
       image: "RHEL 7.3 Cloud"
       flavor: "m1.large"
       #network: "Management_101"
-      network: "Provisioning_102"
+      #network: "Provisioning_102"
+      network: "Dev_103"
       availability_zone: "nova"
       security_groups: Redhat_Lab-sg
       region_name: "RegionOne"
@@ -188,7 +189,7 @@
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
         -H 'Content-Type: application/json' -XPOST \
         --user admin:ansible \
-        https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+        https://{{ default_tower_server }}/api/v1/inventory_sources/{{ item }}/update/
         sleep 5
       with_items:
         - 226

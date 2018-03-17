@@ -25,7 +25,7 @@
       key_name: "dtaylor-openstack"
     ## this calls the install tower playbook
     host_config_key: 0c4fbc7946308401af78735e800f45e3
-    host_config_server: 10.55.102.248
+    host_config_server: "{{ default_tower_server }}"
     host_config_jobid: 295
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"

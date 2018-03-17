@@ -46,7 +46,7 @@
         curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
         -H 'Content-Type: application/json' -XPOST \
         --user admin:ansible \
-        https://10.55.102.248/api/v1/inventory_sources/{{ item }}/update/
+        https://{{ default_tower_server }}/api/v1/inventory_sources/{{ item }}/update/
       with_items:
         - 226
         - 1141
@@ -60,7 +60,7 @@
         curl -f -k \
         -H 'Content-Type: application/json' -XPOST \
         --user admin:ansible \
-        https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/
+        https://{{ default_tower_server }}:443/api/v1/job_templates/{{ item.id }}/launch/
         sleep 180
       with_items:
         - name: 'Satellite'
@@ -74,7 +74,7 @@
 # this is too fast
 #    - name: "Launching demos"
 #      uri:
-#        url: "https://10.55.102.248:443/api/v1/job_templates/{{ item.id }}/launch/"
+#        url: "https://{{ default_tower_server }}:443/api/v1/job_templates/{{ item.id }}/launch/"
 #        validate_certs: no
 #        method: POST
 #        status_code: 201
