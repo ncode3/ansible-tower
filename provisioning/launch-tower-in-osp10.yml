@@ -16,7 +16,7 @@
       name: "tower"
       state: present
       image: "RHEL 7.3 Cloud"
-      flavor: "m1.small"
+      flavor: "m1.medium"
       network: "Dev_103"
       availability_zone: "nova"
       security_groups: Redhat_Lab-sg
