@@ -27,5 +27,6 @@
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
         --force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root
+        #--force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root
       become: true
       register: satbootstrap
