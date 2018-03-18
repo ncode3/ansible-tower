@@ -16,3 +16,4 @@ tower_server: "tower.dev.maskedadmins.com"
 tower_security: ssl
 tower_user: "admin"
 tower_pass: "ansible"
+openstack_inventory_domain: "dev.maskedadmins.com"
