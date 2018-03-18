@@ -1,6 +1,6 @@
 ---
 # Creates a new instance with provisioning userdata using Cloud-Init
-- name: launch Openshift 3.3 three node cluster with nodes in high performance zones
+- name: launch Openshift 3.X three node cluster with nodes in high performance zones
   hosts: localhost
   gather_facts: no
   vars:
@@ -29,7 +29,7 @@
       key_name: "dtaylor-openstack"
     ## this calls the install ose playbook
     host_config_key: firstboot
-    host_config_jobid: 11
+    host_config_jobid: 19
     ## this calls the osp10 firstboot playbook
     host_config_osp10key: firstboot
     host_config_osp10jobid: 11
