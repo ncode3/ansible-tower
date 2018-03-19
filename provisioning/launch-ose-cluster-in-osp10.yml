@@ -163,6 +163,21 @@
           - "{{ os_volume_name }}-node-1"
       register: atomic_node1
 
+    - name: "update all the ansible tower osp10 repos"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+        -H 'Content-Type: application/json' -XPOST \
+        --user admin:ansible \
+        https://{{ default_tower_server }}/api/v2/inventories/{{ item }}/update_inventory_sources/
+        sleep 5
+      with_items:
+        - 3
+
+      ignore_errors: yes
+    - name: "Pause for 2 minutes"
+      pause:
+        seconds: 120
+
     - name: launch a high performance instance for node 2
       os_server:
         name: "{{ os_server['name'] }}-node-2"
@@ -210,6 +225,21 @@
         volumes:
           - "{{ os_volume_name }}-node-2"
       register: atomic_node2
+
+    - name: "update all the ansible tower osp10 repos"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+        -H 'Content-Type: application/json' -XPOST \
+        --user admin:ansible \
+        https://{{ default_tower_server }}/api/v2/inventories/{{ item }}/update_inventory_sources/
+        sleep 5
+      with_items:
+        - 3
+      ignore_errors: yes
+
+    - name: "Pause for 2 minutes"
+      pause:
+        seconds: 120
 
     - name: launch a Master OSE instance with volume in the normal perforance zone
       os_server:
@@ -269,6 +299,17 @@
           - "{{ os_volume_name }}-master"
       register: ose_master
 
+    - name: "update all the ansible tower osp10 repos"
+      shell: |
+        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+        -H 'Content-Type: application/json' -XPOST \
+        --user admin:ansible \
+        https://{{ default_tower_server }}/api/v2/inventories/{{ item }}/update_inventory_sources/
+        sleep 5
+      with_items:
+        - 3
+
+      ignore_errors: yes
     - name: Show OSE Masters IP
       debug: var=ose_master.server.public_v4
 
