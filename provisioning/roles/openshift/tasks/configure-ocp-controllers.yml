@@ -190,7 +190,7 @@
 - name: "Enabling and restarting services {{ ose_svcs }}"
   service:
     name: "{{ item }}"
-    state: restarted
+#    state: restarted
     enabled: yes
   with_items: "{{ ose_svcs }}"
   become: true

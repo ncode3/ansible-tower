@@ -24,4 +24,4 @@ nsupdate -v ${temp}
 echo "$*" >> /tmp/dnsmasq.updater.txt
 rm -f ${temp}
 extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
-curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/655/launch/
+curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user admin:ansible https://{{ default_tower_server }}:443/api/v1/job_templates/20/launch/
