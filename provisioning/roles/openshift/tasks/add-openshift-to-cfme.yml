@@ -2,7 +2,7 @@
 - include: ose-get-token.yml
 - name: "Check if CFME is up"
   shell: |
-    ping -c 1 {{ cfme_server }}
+    ping -c 1 {{ cfme_server }} || true
   register: cfme_check
 
 - name: "Add Openshift provider to CFME using the token acquired earlier"
