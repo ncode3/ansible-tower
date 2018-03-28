@@ -18,7 +18,7 @@
           6233
   hosts: 10.55.102.159
   gather_facts: no
-  connection: local
+  #connection: local
   tasks:
 #  - name: DEFINE PROVIDER
 #    set_fact:
@@ -58,11 +58,11 @@
       dest: /opt/addnat.py
       owner: root
       group: root
-      mode: 0755
+      mode: 0777
 
   - name: "Use script to update router"
     shell: |
       /opt/addnat.py -u {{ auth['username'] }} -p {{ auth['password'] }} -x {{ auth['host'] }} \
       --int-ip {{ int_ip }} --int-port {{ int_port }} \
       --ext-ip {{ ext_ip }} --ext-port {{ ext_port }}   
-    become: true
+    #become: true
