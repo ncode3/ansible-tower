@@ -181,6 +181,7 @@
 
 - name: "Setup docker storage, requires a separate volume on /dev/vdb"
   shell: |
+    container-storage-setup --reset
     docker-storage-setup
   become: true
   ignore_errors: yes
