@@ -181,6 +181,7 @@
 
 - name: "Setup docker storage, requires a separate volume on /dev/vdb"
   shell: |
+    container-storage-setup --reset
     docker-storage-setup
   become: true
   ignore_errors: yes
@@ -248,7 +249,7 @@
     oc expose service/simplephp
     /opt/dns-updater.sh add mac {{ ansible_default_ipv4['address'] }} simplephp-{{ ose_add_project }}
     echo "calling update firewall port for workshopper"
-    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/20/launch/
+    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"80\",\"ext_port\":\"8444\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/23/launch/
     # this command will make the master a scheduled node. since we are launching multinode, lets use those and comment this out
     echo -e '#!/bin/bash\noadm manage-node ose-cluster-master.dev.maskedadmins.com --schedulable\noc project default\noc deploy router --retry\noc deploy registry-console --retry' > /root/fix-demo.sh
     chmod +x /root/fix-demo.sh
@@ -257,7 +258,7 @@
     #echo "calling app deploy because I am lazy"
     #curl -f -k -H 'Content-Type: application/json' -XPOST --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/239/launch/
     #echo "calling update firewall port for ose"
-    #curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"8443\",\"ext_port\":\"8443\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/660/launch/
+    curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"8443\",\"ext_port\":\"8443\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/23/launch/
   args:
     creates: /root/.setupcomplete
   become: true

@@ -158,7 +158,7 @@
                 Defaults:cloud-user !requiretty
           runcmd:
            # this is firstboot configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
+           - "sleep 90 ; curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
         volumes:
           - "{{ os_volume_name }}-node-1"
       register: atomic_node1
@@ -206,7 +206,7 @@
                 Defaults:cloud-user !requiretty
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
+           - "sleep 90; curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
         volumes:
           - "{{ os_volume_name }}-node-2"
       register: atomic_node2
@@ -258,7 +258,7 @@
               permissions: '0755'
               content: |
                 #!/bin/bash
-                curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.public_v4 }}\",\"node1_hostname\":\"{{ atomic_node1.server.name }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.public_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/launch/ 
+                sleep 120; curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.public_v4 }}\",\"node1_hostname\":\"{{ atomic_node1.server.name }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.public_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/launch/ 
             - path: /etc/sudoers.d/999-cloud-user
               permissions: '0440'
               content: |
@@ -269,15 +269,15 @@
           - "{{ os_volume_name }}-master"
       register: ose_master
 
-    - name: "update all the ansible tower osp10 repos"
-      shell: |
-        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
-        -H 'Content-Type: application/json' -XPOST \
-        --user admin:ansible \
-        https://{{ default_tower_server }}/api/v2/inventories/{{ item }}/update_inventory_sources/
-        sleep 5
-      with_items:
-        - 3
+#    - name: "update all the ansible tower osp10 repos"
+#      shell: |
+#        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+#        -H 'Content-Type: application/json' -XPOST \
+#        --user admin:ansible \
+#        https://{{ default_tower_server }}/api/v2/inventories/{{ item }}/update_inventory_sources/
+#        sleep 5
+#      with_items:
+#        - 3
 
       ignore_errors: yes
     - name: Show OSE Masters IP
