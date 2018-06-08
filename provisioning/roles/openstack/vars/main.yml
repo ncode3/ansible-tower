@@ -50,7 +50,7 @@ openstack:
     import: "yes"
     image_path: /mnt/compute1/glance-images
     nfs_target: 10.55.102.155:/mnt/drobo/software/BackUp/openstack/glance-images
-    image_names: ['PXE-client-bare.raw','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
+    image_names: ['PXE-client-bare.raw','RHEL-7.3-Cloud-bare.qcow2','RHEL-7.3-Cloud-bare.qcow2']
     #image_names: ['PXE-client-bare.raw','cfme-rhos-5.8.0.17-1.x86_64.qcow2','RHEL-7.3-Cloud-bare.qcow2','RHEL-Atomic-7.2.6-1-bare.qcow2']
   networks:
     Management_101:
