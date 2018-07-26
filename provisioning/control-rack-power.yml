@@ -33,7 +33,7 @@
 #       -Z   set slave address of local MC
 #
 ---
-- name: "Control power on {{ ipmi_target }}, set to {{ powerstate }}"
+- name: "Control power on {{ ipmi_targets }}, set to {{ powerstate }}"
   gather_facts: no
   ## use localhost inventory
   hosts: localhost
@@ -43,8 +43,8 @@
   vars:
     package: ipmiutil
     # use the ipmi address, not host address
-    ipmi_target: 10.55.101.156
-    powerstate: "on"
+    #ipmi_target: 10.55.101.156
+    powerstate: "pxe"
   tasks:
 #    - name: "who am i"
 #      shell: "sudo who am i"
@@ -128,6 +128,7 @@
         - "{{ ipmi_targets }}"
       when: ( powerstate == "on" ) or
             ( powerstate == "hard" ) or
+            ( powerstate == "pxe" ) or
             ( powerstate == "cycle" ) or
             ( powerstate == "reset" )
 
