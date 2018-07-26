@@ -43,7 +43,7 @@
   vars:
     package: ipmiutil
     # use the ipmi address, not host address
-    ipmi_target: 10.55.101.158
+    ipmi_target: 10.55.101.156
     powerstate: "on"
   tasks:
 #    - name: "who am i"
@@ -120,10 +120,12 @@
     - name: Wait for server to restart
       local_action:
         module: wait_for
-          host=10.55.102.158
+          host={{ item }}
           port=22
           delay=1
           timeout=300
+      with_items:
+        - "{{ ipmi_targets }}"
       when: ( powerstate == "on" ) or
             ( powerstate == "hard" ) or
             ( powerstate == "cycle" ) or
