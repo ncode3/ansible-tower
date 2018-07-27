@@ -41,38 +41,42 @@
   #ignore_errors: yes
 
 - name: "Check if cinder device exists"
-  shell: "fdisk -l {{ os_cinder_device }} || true"
+  shell: "parted {{ openstack['cinder']['device'] }} print | grep "^ {{ openstack['cinder']['devicepart'] }}" || true"
   register: cinderdev
   #ignore_errors: yes
 
 - name: "Check if swift device exists"
-  shell: "fdisk -l {{ openstack['swift']['device'] }} || true"
-  #when: "openstack['swift']['use']  == 'yes'"
+  shell: "parted {{ openstack['swift']['device'] }} print | grep "^ {{ openstack['swift']['devicepart'] }}" || true"
   register: swift
   #ignore_errors: yes
 
 - name: "Add cinder-volumes vol group"
   shell: |
-    parted {{ os_cinder_device }} print
-    parted {{ os_cinder_device }} mkpart primary ext2 736GB 1100GB
-    parted {{ os_cinder_device }} set 3 lvm on
+    parted {{ openstack['cinder']['device'] }} print
+    END=$(parted {{ openstack['cinder']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
+    START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}'))
+    parted {{ openstack['cinder']['device'] }} mkpart primary ext2 $START $END
+    parted {{ openstack['cinder']['device'] }} set 3 lvm on
     partprobe
   #ignore_errors: yes
   become: true
-  when: "os_cinder_devicepart not in cinderdev.stdout"
+  when: "openstack['cinder']['devicepart'] not in cinderdev.stdout"
 
 - name: "Add cinder-volumes vol group"
   shell: |
-    vgcreate cinder-volumes {{ os_cinder_devicepart }}
+    vgcreate cinder-volumes {{ openstack['cinder']['device'] }}{{ openstack['cinder']['devicepart'] }}
   ignore_errors: yes
   become: true
   when: "'cinder' not in cinder.stdout"
 
 - name: "Add swift device"
   shell: |
-    parted {{ openstack['swift']['device'] }} mkpart primary ext2 1101GB 1499GB
+    parted {{ openstack['swift']['device'] }} print
+    END=$(parted {{ openstack['swift']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
+    START=$(parted {{ openstack['swift']['device'] }} print| grep "^ $(( {{ openstack['swift']['devicepart'] }} - 1 ))" | awk '{print $3}'))
+    parted {{ openstack['swift']['device'] }} mkpart primary ext2 $START $END
     partprobe
-    mkfs.ext4 {{ openstack['swift']['devicepart'] }}
+    mkfs.ext4 {{ openstack['swift']['device'] }}{{ openstack['swift']['devicepart'] }}
   #ignore_errors: yes
   become: true
   when: ( openstack['swift']['devicepart']  not in swift.stdout ) and ( openstack['swift']['use']  == 'yes' )

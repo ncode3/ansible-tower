@@ -12,8 +12,8 @@ os_storage_node: "{{ osp10_controller }}"
 os_cinder_volumesgroup_size: "1000G"
 os_amqp_nodes: "{{ osp10_controller }}"
 os_mariadb_nodes: "{{ osp10_controller }}"
-os_cinder_device: "/dev/sda"
-os_cinder_devicepart: "/dev/sda3"
+#os_cinder_device: "/dev/sda"
+#os_cinder_devicepart: "/dev/sda3"
 # for shelf
 #os_cinder_device: "/dev/sda1"
 #os_swift_device: "/dev/sda"
@@ -35,18 +35,22 @@ openstack:
   dhcp_server: 10.55.102.5
   dhcp_domain: dev.maskedadmins.com
   dhcp_mtu: 1454
+  cinder:
+    use: "no"
+    device: "/dev/sda"
+    devicepart: "2"
+    size=150GB
   swift:
     use: "no"
     device: "/dev/sda"
-    devicepart: "/dev/sda4"
+    devicepart: "3"
+    size=150GB
   cpupinning:
     use: "no"
     device: "/dev/sda"
-    #device: /dev/sdb
   hugepages:
     use: "no"
     device: /dev/sda
-    #device: /dev/sdb
   glance:
     mount_nfs: "yes"
     import: "yes"
