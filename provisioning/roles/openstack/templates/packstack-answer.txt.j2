@@ -1138,7 +1138,7 @@ CONFIG_SWIFT_KS_PW=124c33fee79b4aa8
 # device; Packstack does not create the filesystem, you must do this
 # first). If left empty, Packstack creates a loopback device for test
 # setup.
-CONFIG_SWIFT_STORAGES={{ os_swift_devicepart }}
+CONFIG_SWIFT_STORAGES={{ openstack['swift']['devicepart'] }}
 
 # Number of Object Storage storage zones; this number MUST be no
 # larger than the number of configured storage devices.
