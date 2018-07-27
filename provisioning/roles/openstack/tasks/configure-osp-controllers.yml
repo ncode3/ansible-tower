@@ -47,7 +47,7 @@
 
 - name: "Check if swift device exists"
   shell: "fdisk -l {{ openstack['swift']['device'] }} || true"
-  when: "openstack['swift']['use']  == 'yes'"
+  #when: "openstack['swift']['use']  == 'yes'"
   register: swift
   #ignore_errors: yes
 
