@@ -16,8 +16,8 @@ os_cinder_device: "/dev/sda"
 os_cinder_devicepart: "/dev/sda3"
 # for shelf
 #os_cinder_device: "/dev/sda1"
-os_swift_device: "/dev/sda"
-os_swift_devicepart: "/dev/sda4"
+#os_swift_device: "/dev/sda"
+#os_swift_devicepart: "/dev/sda4"
 ml2_drivers: "local,vlan"
 ml2_networks: "local,vlan"
 ml2_bridge_name: "inter-vlan"
@@ -37,9 +37,11 @@ openstack:
   dhcp_mtu: 1454
   swift:
     use: "no"
+    device: "/dev/sda"
+    devicepart: "/dev/sda4"
   cpupinning:
     use: "no"
-    device: /dev/sda
+    device: "/dev/sda"
     #device: /dev/sdb
   hugepages:
     use: "no"

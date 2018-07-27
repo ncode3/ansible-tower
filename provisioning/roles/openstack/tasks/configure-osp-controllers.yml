@@ -46,7 +46,7 @@
   #ignore_errors: yes
 
 - name: "Check if swift device exists"
-  shell: "fdisk -l {{ os_swift_device }} || true"
+  shell: "fdisk -l {{ openstack['swift']['device'] }} || true"
   when: "openstack['swift']['use']  == 'yes'"
   register: swift
   #ignore_errors: yes
@@ -70,12 +70,12 @@
 
 - name: "Add swift device"
   shell: |
-    parted {{ os_swift_device }} mkpart primary ext2 1101GB 1499GB
+    parted {{ openstack['swift']['device'] }} mkpart primary ext2 1101GB 1499GB
     partprobe
-    mkfs.ext4 {{ os_swift_devicepart }}
+    mkfs.ext4 {{ openstack['swift']['devicepart'] }}
   #ignore_errors: yes
   become: true
-  when: ( os_swift_devicepart not in swift.stdout ) and ( openstack['swift']['use']  == 'yes' )
+  when: ( openstack['swift']['devicepart']  not in swift.stdout ) and ( openstack['swift']['use']  == 'yes' )
 
 - name: "Block for packstack"
   block:
