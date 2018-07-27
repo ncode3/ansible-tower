@@ -1,9 +1,9 @@
 ---
 tower_server: "{{ default_tower_server }}"
 osp8_controller: 10.55.102.155
-osp10_controller: 10.55.102.159
+osp10_controller: 10.55.102.156
 #osp10_computes: "10.55.102.158,10.55.102.157,10.55.102.156,10.55.102.159"
-osp10_computes: "10.55.102.159"
+osp10_computes: "10.55.102.156"
 os_packstack_use_answerfile: "yes"
 os_controller_nodes: "{{ osp10_controller }}"
 os_compute_nodes: "{{ osp10_computes }}"
