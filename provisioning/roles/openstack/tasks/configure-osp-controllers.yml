@@ -58,7 +58,7 @@
     END=$(parted {{ openstack['cinder']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
     START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}')
     parted {{ openstack['cinder']['device'] }} mkpart primary ext2 $START $END
-    parted {{ openstack['cinder']['device'] }} set 3 lvm on
+    parted {{ openstack['cinder']['device'] }} set {{ openstack['cinder']['devicepart'] }} lvm on
     partprobe
   #ignore_errors: yes
   become: true
