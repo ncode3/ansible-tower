@@ -56,7 +56,7 @@
   shell: |
     parted {{ openstack['cinder']['device'] }} print
     END=$(parted {{ openstack['cinder']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
-    START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}'))
+    START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}')
     parted {{ openstack['cinder']['device'] }} mkpart primary ext2 $START $END
     parted {{ openstack['cinder']['device'] }} set 3 lvm on
     partprobe
@@ -75,7 +75,7 @@
   shell: |
     parted {{ openstack['swift']['device'] }} print
     END=$(parted {{ openstack['swift']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
-    START=$(parted {{ openstack['swift']['device'] }} print| grep "^ $(( {{ openstack['swift']['devicepart'] }} - 1 ))" | awk '{print $3}'))
+    START=$(parted {{ openstack['swift']['device'] }} print| grep "^ $(( {{ openstack['swift']['devicepart'] }} - 1 ))" | awk '{print $3}')
     parted {{ openstack['swift']['device'] }} mkpart primary ext2 $START $END
     partprobe
     mkfs.ext4 {{ openstack['swift']['device'] }}{{ openstack['swift']['devicepart'] }}
