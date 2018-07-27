@@ -93,7 +93,7 @@
 
   - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
     shell: |
-      exec &> >(tee -a "/tmp/tower.output")
+      exec &> >(tee -a /tmp/tower.output)
       packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup
     become: true
     when: os_packstack_use_answerfile == "yes"
