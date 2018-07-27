@@ -38,12 +38,12 @@ openstack:
   cinder:
     use: "no"
     device: "/dev/sda"
-    devicepart: "2"
+    devicepart: "3"
     size: "150GB"
   swift:
     use: "no"
     device: "/dev/sda"
-    devicepart: "3"
+    devicepart: "4"
     size: "150GB"
   cpupinning:
     use: "no"
