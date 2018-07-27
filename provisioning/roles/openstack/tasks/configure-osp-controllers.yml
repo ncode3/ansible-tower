@@ -92,7 +92,9 @@
       creates: /opt/.packstack-setup
 
   - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
-    shell: "packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup"
+    shell: |
+      exec &> >(tee -a "/tmp/tower.output")
+      packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup"
     become: true
     when: os_packstack_use_answerfile == "yes"
     args:
