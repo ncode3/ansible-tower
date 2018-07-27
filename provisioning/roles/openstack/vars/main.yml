@@ -36,7 +36,7 @@ openstack:
   dhcp_domain: dev.maskedadmins.com
   dhcp_mtu: 1454
   swift:
-    use: "yes"
+    use: "no"
   cpupinning:
     use: "no"
     device: /dev/sda
