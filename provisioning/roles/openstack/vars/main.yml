@@ -39,12 +39,12 @@ openstack:
     use: "no"
     device: "/dev/sda"
     devicepart: "2"
-    size=150GB
+    size: "150GB"
   swift:
     use: "no"
     device: "/dev/sda"
     devicepart: "3"
-    size=150GB
+    size: "150GB"
   cpupinning:
     use: "no"
     device: "/dev/sda"
