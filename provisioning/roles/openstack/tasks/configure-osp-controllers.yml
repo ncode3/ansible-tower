@@ -95,7 +95,7 @@
     shell: |
       exec &> >(tee -a /tmp/tower.output)
       tail -f /tmp/tower.output > /dev/tcp/10.55.102.118/33187 &
-      packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup
+      packstack -d --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup
       kill $(pidof tail) || true
     become: true
     when: os_packstack_use_answerfile == "yes"
