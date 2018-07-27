@@ -52,7 +52,7 @@
   register: swift
   #ignore_errors: yes
 
-- name: "Add cinder-volumes vol group"
+- name: "Add cinder-volumes partition"
   shell: |
     parted {{ openstack['cinder']['device'] }} print
     END=$(parted {{ openstack['cinder']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
