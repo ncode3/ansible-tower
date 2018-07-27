@@ -41,12 +41,14 @@
   #ignore_errors: yes
 
 - name: "Check if cinder device exists"
-  shell: "parted {{ openstack['cinder']['device'] }} print | grep "^ {{ openstack['cinder']['devicepart'] }}" || true"
+  shell: |
+    parted {{ openstack['cinder']['device'] }} print | grep "^ {{ openstack['cinder']['devicepart'] }}" || true
   register: cinderdev
   #ignore_errors: yes
 
 - name: "Check if swift device exists"
-  shell: "parted {{ openstack['swift']['device'] }} print | grep "^ {{ openstack['swift']['devicepart'] }}" || true"
+  shell: |
+    parted {{ openstack['swift']['device'] }} print | grep "^ {{ openstack['swift']['devicepart'] }}" || true
   register: swift
   #ignore_errors: yes
 
