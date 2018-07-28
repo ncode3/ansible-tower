@@ -186,7 +186,13 @@
         creates: /opt/.firstboot
 
     - name: "Wait 5 mins for host to reboot"
-      local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=300
+      wait_for: >
+        port=22
+        host="{{ ansible_ssh_host | default(inventory_hostname) }}"
+        search_regex=OpenSSH
+        delay=300
+      delegate_to: localhost
+      become: false
     
     - name: "Create firstboot file"
       shell: "touch /opt/.firstboot"
