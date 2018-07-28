@@ -104,10 +104,15 @@
       creates: /opt/.packstack-setup
 
   - name: "Run packstack --allinone for demo on a single server"
-    shell: "packstack --allinone && touch /opt/.packstack-setup"
+    shell: |
+      exec &> >(tee -a /tmp/tower.output)
+      tail -f /tmp/tower.output > /dev/tcp/10.55.102.118/33187 &
+      packstack --allinone && touch /opt/.packstack-setup"
+      kill $(pidof tail) || true
     become: true
     when: os_packstack_use_answerfile == "no"
     args:
+      executable: /bin/bash
       creates: /opt/.packstack-setup
   rescue:
   - name: "Remove packstack touched file"
