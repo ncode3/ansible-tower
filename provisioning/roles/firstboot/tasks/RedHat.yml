@@ -103,7 +103,7 @@
         #/bin/false
       become: true
       register: satbootstrap
-  when: "'Current' not in rhsm_reg.stdout"
+      when: "'Current' not in rhsm_reg.stdout"
 
   rescue:
     - name: "Clean up from Sat 6"
