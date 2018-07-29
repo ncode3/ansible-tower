@@ -185,12 +185,13 @@
         executable: /bin/bash
         creates: /opt/.firstboot
 
-    - name: "Wait 2 to 6 mins for host to reboot"
+    - name: "Wait 5 to 10 mins for host to reboot"
       wait_for:
         port: 22
         host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
         search_regex: OpenSSH
-        delay: 400
+        delay: 300
+        timeout: 600
       delegate_to: localhost
       become: false
     
