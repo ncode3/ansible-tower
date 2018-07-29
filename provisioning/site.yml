@@ -24,15 +24,15 @@
     - firstboot
     - insights
 
-- name: Configure Openstack Compute Nodes with HugePages, CPU pinning 
-  hosts: osp10-computes
-  roles:
-    - { role: openstack, osp_mode: computes, cfme: false }
+#- name: Configure Openstack Compute Nodes with HugePages, CPU pinning 
+#  hosts: osp10-computes
+#  roles:
+#    - { role: openstack, osp_mode: computes, cfme: false }
 
-- name: Customize Openstack -  create networks, projects, users, and import glance images from nfs share
-  hosts: osp10-controllers
-  roles:
-    - { role: openstack, osp_mode: controllers, cfme: true }
+#- name: Customize Openstack -  create networks, projects, users, and import glance images from nfs share
+#  hosts: osp10-controllers
+#  roles:
+#    - { role: openstack, osp_mode: controllers, cfme: true }
 
 - name: Customize Openshift Container Platform nodes
   hosts: ose-cluster-node-1.dev.maskedadmins.com,ose-cluster-node-2.dev.maskedadmins.com
@@ -45,6 +45,6 @@
     - { role: openshift, ocp_mode: controllers, cfme: true }
 
 - name: Customize Ansible Tower
-  hosts: tower*
+  hosts: tower*:compute2.dev.maskedadmins.com
   roles:
     - ansible-tower
