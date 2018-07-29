@@ -32,7 +32,7 @@ do_all()
       DISK=$(grep "disk_format" ${IMAGE}.metadata |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
       PUBLIC=$(grep "public" ${IMAGE}.metadata |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
       #glance image-create --name="${NAME}" ${PROPS} --is-public=${PUBLIC} --container-format=${CONTAINER} --disk-format=${DISK} < ${IMAGE}
-      glance image-create --name="${NAME}" --visibility=${public_private} ${PROPS} --container-format=${CONTAINER} --disk-format=${DISK} < ${IMAGE}
+      glance image-create "${NAME}" --visibility=${public_private} ${PROPS} --container-format=${CONTAINER} --disk-format=${DISK} < ${IMAGE}
       PROPS=''
     done
   done
@@ -61,7 +61,7 @@ do_image()
     CONTAINER=$(grep "container_format" ${IMAGE}.metadata |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
     DISK=$(grep "disk_format" ${IMAGE}.metadata |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
     PUBLIC=$(grep "public" ${IMAGE}.metadata |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
-    glance image-create --name="${NAME}" --visibility=${public_private} ${PROPS} --container-format=${CONTAINER} --disk-format=${DISK} < ${IMAGE}
+    openstack image create --name="${NAME}" --${public_private} ${PROPS} --container-format=${CONTAINER} --disk-format=${DISK} < ${IMAGE}
   else
     echo "${IMAGE} does not exist. Give full path or try again."
   fi
