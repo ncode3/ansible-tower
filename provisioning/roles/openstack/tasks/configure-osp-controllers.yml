@@ -238,7 +238,7 @@
   with_items:
     - neutron-dhcp-agent
     - openstack-nova-api
-    - openstack-nova-cert
+#    - openstack-nova-cert
     - openstack-nova-consoleauth
     - openstack-nova-scheduler
     - openstack-nova-conductor
