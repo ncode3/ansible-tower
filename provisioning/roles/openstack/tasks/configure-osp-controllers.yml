@@ -310,6 +310,11 @@
   become: true
   ignore_errors: yes
 
+- name: "Map the hypervisor to a cell"
+  shell: |
+    nova-manage cell_v2 discover_hosts --verbose
+  become: true
+
 - name: "Configure the system for Huge Pages"
   shell: |
     grubby --update-kernel=ALL --args="hugepagesz=2M hugepages=2048"
