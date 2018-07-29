@@ -141,7 +141,7 @@
 
 - name: "copy over {{ openstack['project_user'] }} keystone file"
   template:
-    src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
+    src: "keystonerc_{{ openstack['project_user'] }}.j2"
     dest: "/root/keystonerc_{{ openstack['project_user'] }}"
     owner: root
     group: root
