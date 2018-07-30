@@ -196,8 +196,7 @@
         port: 22
         host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
         search_regex: OpenSSH
-        delay: 300
-        timeout: 700
+        delay: 660
       delegate_to: localhost
       become: false
     
