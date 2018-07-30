@@ -45,6 +45,6 @@
     - { role: openshift, ocp_mode: controllers, cfme: true }
 
 - name: Customize Ansible Tower
-  hosts: tower*:compute2.dev.maskedadmins.com
+  hosts: tower*:compute2*
   roles:
     - ansible-tower
