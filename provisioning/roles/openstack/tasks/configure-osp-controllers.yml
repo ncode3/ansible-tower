@@ -1,5 +1,5 @@
 ---
-- name: "Enabling needed repos for Openstack 10"
+- name: "Enabling needed repos for Redhat Openstack Platform"
   shell: "subscription-manager repos --enable={{ item }}"
   with_items: "{{ openstack.enabled_repos }}"
   register: subscriberepos
@@ -7,7 +7,7 @@
   until: subscriberepos.stdout.find("is enabled") != -1
   become: true
 
-- name: "Install Openstack 10 Yum packages"
+- name: "Install OSP Yum packages"
   yum:
     name: "{{ item }}"
     state: latest
