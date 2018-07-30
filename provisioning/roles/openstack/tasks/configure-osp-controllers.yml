@@ -55,10 +55,13 @@
 - name: "Add cinder-volumes partition"
   shell: |
     parted {{ openstack['cinder']['device'] }} print
-    END=$(parted {{ openstack['cinder']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
     START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}')
+    NEXTEND=${START%%GB}
+    END=$(( NEXTEND + {{ openstack['cinder']['size'] }} ))
+    END="${END}GB"
     parted {{ openstack['cinder']['device'] }} mkpart primary ext2 $START $END
     parted {{ openstack['cinder']['device'] }} set {{ openstack['cinder']['devicepart'] }} lvm on
+    parted {{ openstack['cinder']['device'] }} print
     partprobe
   #ignore_errors: yes
   become: true
@@ -74,9 +77,12 @@
 - name: "Add swift device"
   shell: |
     parted {{ openstack['swift']['device'] }} print
-    END=$(parted {{ openstack['swift']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
     START=$(parted {{ openstack['swift']['device'] }} print| grep "^ $(( {{ openstack['swift']['devicepart'] }} - 1 ))" | awk '{print $3}')
+    NEXTEND=${START%%GB}
+    END=$(( NEXTEND + {{ openstack['swift']['size'] }} ))
+    END="${END}GB"
     parted {{ openstack['swift']['device'] }} mkpart primary ext2 $START $END
+    parted {{ openstack['swift']['device'] }} print
     partprobe
     mkfs.ext4 {{ openstack['swift']['device'] }}{{ openstack['swift']['devicepart'] }}
   #ignore_errors: yes

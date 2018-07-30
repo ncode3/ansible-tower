@@ -36,15 +36,15 @@ openstack:
   dhcp_domain: dev.maskedadmins.com
   dhcp_mtu: 1454
   cinder:
-    use: "no"
+    use: "yes"
     device: "/dev/sda"
     devicepart: "3"
-    size: "150GB"
+    size: "364GB"
   swift:
-    use: "no"
+    use: "yes"
     device: "/dev/sda"
     devicepart: "4"
-    size: "150GB"
+    size: "398GB"
   cpupinning:
     use: "no"
     device: "/dev/sda"
