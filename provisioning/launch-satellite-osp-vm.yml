@@ -14,7 +14,7 @@
     aws_resource: "Not Configured"
     rhev_resource: "Not Configured"
     osp8_resource: "OSP8 Redhat Lab"
-    osp10_resource: "OSP10 Redhat Lab"
+    osp10_resource: "OSP13 Redhat Lab"
     osp10_subnet: "NET103"
     #operatingsystem: "RedHat 7.3"
     operatingsystem: "RHEL Server 7.3"
@@ -88,7 +88,7 @@
                 - "{{ vmmetadata }}"
           when: provider == "OSP8"
 
-        - name: "OSP10 Block"
+        - name: "OSP13 Block"
           block:
             - name: "Create VM in Openstack 10"
               shell: |
@@ -121,8 +121,8 @@
                 - "{{ vmmetadata }}"
                 - name: tower_jobid
                   value: "{{ tower_jobid }}"
-          when: provider == "OSP10"
-      when: provider == "OSP10" or provider == "OSP8"
+          when: provider == "OSP13"
+      when: provider == "OSP13" or provider == "OSP8"
 
     - name: "AWS Block"
       block:
