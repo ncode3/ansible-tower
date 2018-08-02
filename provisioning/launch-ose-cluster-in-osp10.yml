@@ -10,7 +10,7 @@
     vault_os_projectid: ""
     vault_os_user: dtaylor
     vault_os_pass: redhat123
-    vault_os_url: "http://{{ osp10_controller }}:5000/v2.0"
+    vault_os_url: "http://{{ osp10_controller }}:5000/v3/auth/tokens"
     os_create_volume: "yes"
     os_destroy_old_volumes: "no"
     os_volume_size: 50
@@ -40,6 +40,11 @@
     OS_USERNAME: "{{ vault_os_user }}"
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
+    OS_PROJECT_NAME: "{{ vault_os_project }}"
+    OS_USER_DOMAIN_NAME: Default
+    OS_PROJECT_DOMAIN_NAME: Default
+    OS_IDENTITY_API_VERSION: 3
+
   tasks:
     - name: delete the old nodes
       os_server:
