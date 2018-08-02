@@ -105,9 +105,9 @@ sat6:
         - "Test_104"
         - "Storage_105"
         - "Prod_106"
-tower_key: dc7c0b52cd29cacceb8d3571257801ea
+tower_key: firstboot
 tower_server: "{{ default_tower_server }}"
-tower_jobid: 287
+tower_jobid: 11
 sat6_default_org: Redhat_Lab
 sat6_default_location: Private_Cloud
 sat6_default_hostcollection: RHEL_7_x86_64

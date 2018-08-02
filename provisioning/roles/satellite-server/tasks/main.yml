@@ -640,7 +640,7 @@
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_tower_fqdn"  --value "{{ tower_server }}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_job_template_id"  --value "{{ tower_jobid }}"
       hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "kt_activation_keys"  --value "{{ item.activation_key }}"
-      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_tower_provisioning"  --value "{{ item.activation_key }}"
+      hammer hostgroup set-parameter --hostgroup "{{ sat6_default_hostgroup }} for {{ item.domain }} ${osname}" --name "ansible_tower_provisioning"  --value "true"
     done
   args:
     creates: /root/.setup/step24
