@@ -116,12 +116,12 @@
 #              pause:
 #                minutes: 1
 
-            - name: "Set some meta data about the vm for cloud-init"
-              command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
-              with_items:
-                - "{{ vmmetadata }}"
-                - name: tower_jobid
-                  value: "{{ tower_jobid }}"
+#            - name: "Set some meta data about the vm for cloud-init"
+#              command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
+#              with_items:
+#                - "{{ vmmetadata }}"
+#                - name: tower_jobid
+#                  value: "{{ tower_jobid }}"
           when: provider == "OSP13"
       when: provider == "OSP13" or provider == "OSP8"
 
