@@ -2,6 +2,9 @@
 - name: "Enabling needed repos for Openstack 10"
   shell: "subscription-manager repos --enable={{ item }}"
   with_items: "{{ openstack.enabled_repos }}"
+  register: subscriberepos
+  retries: 3
+  until: subscriberepos.stdout.find("is enabled") != -1
   become: true
 
 - name: "Install Openstack 10 Yum packages"

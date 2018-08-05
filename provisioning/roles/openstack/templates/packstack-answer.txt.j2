@@ -46,11 +46,11 @@ CONFIG_SWIFT_INSTALL=y
 {% endif %}
 
 # Specify 'y' to install OpenStack Metering (ceilometer). ['y', 'n']
-CONFIG_CEILOMETER_INSTALL=y
+CONFIG_CEILOMETER_INSTALL=n
 
 # Specify 'y' to install OpenStack Telemetry Alarming (Aodh). Note
 # Aodh requires Ceilometer to be installed as well. ['y', 'n']
-CONFIG_AODH_INSTALL=y
+CONFIG_AODH_INSTALL=n
 
 # Specify 'y' to install OpenStack Metering as a Service (gnocchi).
 # ['y', 'n']
@@ -81,7 +81,7 @@ CONFIG_NTP_SERVERS=
 # Specify 'y' to install Nagios to monitor OpenStack hosts. Nagios
 # provides additional tools for monitoring the OpenStack environment.
 # ['n']
-CONFIG_NAGIOS_INSTALL=n
+CONFIG_NAGIOS_INSTALL=y
 
 # Comma-separated list of servers to be excluded from the
 # installation. This is helpful if you are running Packstack a second
@@ -347,7 +347,7 @@ CONFIG_KEYSTONE_ADMIN_PW=b313868e60134da4
 CONFIG_KEYSTONE_DEMO_PW=6f145ba6e2fe443e
 
 # Identity service API version string. ['v2.0', 'v3']
-CONFIG_KEYSTONE_API_VERSION=v2.0
+CONFIG_KEYSTONE_API_VERSION=v3
 
 # Identity service token format (UUID or PKI). The recommended format
 # for new deployments is UUID. ['UUID', 'PKI']
@@ -1138,7 +1138,7 @@ CONFIG_SWIFT_KS_PW=124c33fee79b4aa8
 # device; Packstack does not create the filesystem, you must do this
 # first). If left empty, Packstack creates a loopback device for test
 # setup.
-CONFIG_SWIFT_STORAGES={{ openstack['swift']['devicepart'] }}
+CONFIG_SWIFT_STORAGES={{ openstack['swift']['device'] }}{{ openstack['swift']['devicepart'] }}
 
 # Number of Object Storage storage zones; this number MUST be no
 # larger than the number of configured storage devices.

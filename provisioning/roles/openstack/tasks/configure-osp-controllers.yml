@@ -1,10 +1,13 @@
 ---
-- name: "Enabling needed repos for Openstack 10"
+- name: "Enabling needed repos for Redhat Openstack Platform"
   shell: "subscription-manager repos --enable={{ item }}"
   with_items: "{{ openstack.enabled_repos }}"
+  register: subscriberepos
+  retries: 3
+  until: subscriberepos.stdout.find("is enabled") != -1
   become: true
 
-- name: "Install Openstack 10 Yum packages"
+- name: "Install OSP Yum packages"
   yum:
     name: "{{ item }}"
     state: latest
@@ -55,10 +58,13 @@
 - name: "Add cinder-volumes partition"
   shell: |
     parted {{ openstack['cinder']['device'] }} print
-    END=$(parted {{ openstack['cinder']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
-    START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}'))
+    START=$(parted {{ openstack['cinder']['device'] }} print| grep "^ $(( {{ openstack['cinder']['devicepart'] }} - 1 ))" | awk '{print $3}')
+    NEXTEND=${START%%GB}
+    END=$(( NEXTEND + {{ openstack['cinder']['size'] }} ))
+    END="${END}GB"
     parted {{ openstack['cinder']['device'] }} mkpart primary ext2 $START $END
-    parted {{ openstack['cinder']['device'] }} set 3 lvm on
+    parted {{ openstack['cinder']['device'] }} set {{ openstack['cinder']['devicepart'] }} lvm on
+    parted {{ openstack['cinder']['device'] }} print
     partprobe
   #ignore_errors: yes
   become: true
@@ -74,9 +80,12 @@
 - name: "Add swift device"
   shell: |
     parted {{ openstack['swift']['device'] }} print
-    END=$(parted {{ openstack['swift']['device'] }} print| grep "Disk /dev"| cut -f3 -d\ )
-    START=$(parted {{ openstack['swift']['device'] }} print| grep "^ $(( {{ openstack['swift']['devicepart'] }} - 1 ))" | awk '{print $3}'))
+    START=$(parted {{ openstack['swift']['device'] }} print| grep "^ $(( {{ openstack['swift']['devicepart'] }} - 1 ))" | awk '{print $3}')
+    NEXTEND=${START%%GB}
+    END=$(( NEXTEND + {{ openstack['swift']['size'] }} ))
+    END="${END}GB"
     parted {{ openstack['swift']['device'] }} mkpart primary ext2 $START $END
+    parted {{ openstack['swift']['device'] }} print
     partprobe
     mkfs.ext4 {{ openstack['swift']['device'] }}{{ openstack['swift']['devicepart'] }}
   #ignore_errors: yes
@@ -92,17 +101,27 @@
       creates: /opt/.packstack-setup
 
   - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
-    shell: "packstack --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup"
+    shell: |
+      exec &> >(tee -a /tmp/tower.output) 2>&1
+      tail -f /tmp/tower.output > /dev/tcp/10.55.102.118/33187 &
+      packstack -d --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup
+      kill $(pidof tail) || true
     become: true
     when: os_packstack_use_answerfile == "yes"
     args:
+      executable: /bin/bash
       creates: /opt/.packstack-setup
 
   - name: "Run packstack --allinone for demo on a single server"
-    shell: "packstack --allinone && touch /opt/.packstack-setup"
+    shell: |
+      exec &> >(tee -a /tmp/tower.output) 2>&1
+      tail -f /tmp/tower.output > /dev/tcp/10.55.102.118/33187 &
+      packstack --allinone && touch /opt/.packstack-setup
+      kill $(pidof tail) || true
     become: true
     when: os_packstack_use_answerfile == "no"
     args:
+      executable: /bin/bash
       creates: /opt/.packstack-setup
   rescue:
   - name: "Remove packstack touched file"
@@ -131,7 +150,7 @@
 
 - name: "copy over {{ openstack['project_user'] }} keystone file"
   template:
-    src: "openstack/keystonerc_{{ openstack['project_user'] }}.j2"
+    src: "keystonerc_{{ openstack['project_user'] }}.j2"
     dest: "/root/keystonerc_{{ openstack['project_user'] }}"
     owner: root
     group: root
@@ -228,7 +247,7 @@
   with_items:
     - neutron-dhcp-agent
     - openstack-nova-api
-    - openstack-nova-cert
+#    - openstack-nova-cert
     - openstack-nova-consoleauth
     - openstack-nova-scheduler
     - openstack-nova-conductor
@@ -255,7 +274,7 @@
 
 - name: "Import a couple of glance images ... takes 10 mins"
   shell: |
-    . /root/keystonerc_admin
+    . /root/keystonerc_dtaylor
     NAME=$(grep -v "_type_name" {{ openstack['glance']['image_path'] }}/{{ item }}.metadata | grep name |  cut -d\| -f3| sed -e 's/^ *//' -e 's/ *$//')
     openstack image list | grep "${NAME}" || /root/glance-import.sh  -f {{ openstack['glance']['image_path'] }}/{{ item }}
   args:
@@ -299,6 +318,11 @@
     chdir: /root
   become: true
   ignore_errors: yes
+
+- name: "Map the hypervisor to a cell"
+  shell: |
+    nova-manage cell_v2 discover_hosts --verbose
+  become: true
 
 - name: "Configure the system for Huge Pages"
   shell: |

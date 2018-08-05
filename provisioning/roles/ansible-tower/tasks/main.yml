@@ -17,10 +17,10 @@
     yum -y install python2-pip python-dev
   become: true
 
-- name: "Install pycrypto tower dependency for ansible versions < 2.4"
-  shell: |
-   pip install pycrypto 
-  become: true
+#- name: "Install pycrypto tower dependency for ansible versions < 2.4"
+#  shell: |
+#   pip install pycrypto 
+#  become: true
 
 - name: "Grab tower tarball"
   unarchive:

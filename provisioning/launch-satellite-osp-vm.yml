@@ -14,10 +14,10 @@
     aws_resource: "Not Configured"
     rhev_resource: "Not Configured"
     osp8_resource: "OSP8 Redhat Lab"
-    osp10_resource: "OSP10 Redhat Lab"
+    osp10_resource: "OSP13 Redhat Lab"
     osp10_subnet: "NET103"
-    #operatingsystem: "RedHat 7.3"
-    operatingsystem: "RHEL Server 7.3"
+    operatingsystem: "RedHat 7.3"
+    operatingsystem2: "RHEL Server 7.3"
     vmname: "test vm"
     vmimage: "test image"
     vmflavor: "m1.medium"
@@ -88,12 +88,13 @@
                 - "{{ vmmetadata }}"
           when: provider == "OSP8"
 
-        - name: "OSP10 Block"
+        - name: "OSP13 Block"
           block:
             - name: "Create VM in Openstack 10"
               shell: |
                 set -x
                 OSID=$(hammer --csv os list | grep '{{ operatingsystem }}' | awk -F, {'print $1'})
+                [ -z "$OSID" ] && OSID=$(hammer --csv os list | grep '{{ operatingsystem2 }}' | awk -F, {'print $1'})
                 COMPUTEID=$(hammer --csv compute-resource list | grep '{{ osp10_resource }}' | awk -F, {'print $1'})
                 IMAGEID=$(hammer --csv compute-resource image list --compute-resource-id ${COMPUTEID} | grep '{{ vmimage }}' | awk -F, {'print $1'})
                 FLAVORID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; nova flavor-list | grep -m 1 '{{ vmflavor }}' | cut -f2 -d\| | xargs")
@@ -115,14 +116,14 @@
 #              pause:
 #                minutes: 1
 
-            - name: "Set some meta data about the vm for cloud-init"
-              command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
-              with_items:
-                - "{{ vmmetadata }}"
-                - name: tower_jobid
-                  value: "{{ tower_jobid }}"
-          when: provider == "OSP10"
-      when: provider == "OSP10" or provider == "OSP8"
+#            - name: "Set some meta data about the vm for cloud-init"
+#              command: hammer host set-parameter --host "{{ vmname }}.{{ dns_domain }}" --name {{ item.name }} --value "{{ item.value }}"
+#              with_items:
+#                - "{{ vmmetadata }}"
+#                - name: tower_jobid
+#                  value: "{{ tower_jobid }}"
+          when: provider == "OSP13"
+      when: provider == "OSP13" or provider == "OSP8"
 
     - name: "AWS Block"
       block:

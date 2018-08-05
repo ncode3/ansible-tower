@@ -1,9 +1,9 @@
 ---
 tower_server: "{{ default_tower_server }}"
 osp8_controller: 10.55.102.155
-osp10_controller: 10.55.102.156
+osp10_controller: 10.55.102.159
 #osp10_computes: "10.55.102.158,10.55.102.157,10.55.102.156,10.55.102.159"
-osp10_computes: "10.55.102.156"
+osp10_computes: "10.55.102.159"
 os_packstack_use_answerfile: "yes"
 os_controller_nodes: "{{ osp10_controller }}"
 os_compute_nodes: "{{ osp10_computes }}"
@@ -18,13 +18,14 @@ os_mariadb_nodes: "{{ osp10_controller }}"
 #os_cinder_device: "/dev/sda1"
 #os_swift_device: "/dev/sda"
 #os_swift_devicepart: "/dev/sda4"
-ml2_drivers: "local,vlan"
+ml2_drivers: "local,flat,vlan"
 ml2_networks: "local,vlan"
 ml2_bridge_name: "inter-vlan"
 ml2_vlan_ranges: "2:120"
 #ovs_bridged_interface: "enp10s0f1"
 ovs_bridged_interface: "em2"
 openstack:
+  version: 13
   enabled_repos: ['rhel-7-server-openstack-13-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-13-devtools-rpms']
   controller_packages: ['yum-utils','openstack-packstack']
   compute_packages: ['openstack-nova']
@@ -36,15 +37,15 @@ openstack:
   dhcp_domain: dev.maskedadmins.com
   dhcp_mtu: 1454
   cinder:
-    use: "no"
+    use: "yes"
     device: "/dev/sda"
     devicepart: "3"
-    size: "150GB"
+    size: "364"
   swift:
-    use: "no"
+    use: "yes"
     device: "/dev/sda"
     devicepart: "4"
-    size: "150GB"
+    size: "398"
   cpupinning:
     use: "no"
     device: "/dev/sda"
