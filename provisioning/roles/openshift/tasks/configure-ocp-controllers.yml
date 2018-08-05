@@ -39,8 +39,8 @@
 
 - name: "Enabling OCP needed repos"
   shell: |
-    ssh root@{{ node1_ip }} 'subscription-manager repos --enable={{ item }}'
-    ssh root@{{ node2_ip }} 'subscription-manager repos --enable={{ item }}'
+    ssh root@{{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_eth0']['ipv4']['address'] }} 'subscription-manager repos --enable={{ item }}'
+    ssh root@{{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_eth0']['ipv4']['address'] }} 'subscription-manager repos --enable={{ item }}'
   with_items: "{{ ose_repos }}"
 
 - name: "Install OCP yum packages"
