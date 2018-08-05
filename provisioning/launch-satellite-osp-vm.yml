@@ -112,6 +112,10 @@
               become: true
               ignore_errors: yes
 
+            - name: Show Server's IP
+              debug: var=vmprovider
+
+
 #            - name: "Pause to wait for host to be created"
 #              pause:
 #                minutes: 1
@@ -165,9 +169,6 @@
       when: provider == "RHEV"
     
      
-    - name: Show Server's IP
-      debug: var=vmprovider
-
     - name: Update the Satellite Inventory
       uri:
         url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
