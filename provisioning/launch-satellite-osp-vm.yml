@@ -155,17 +155,29 @@
             --computeattributes="flavor_ref=1"  --operatingsystem-id ${OSID}
           register: vmprovider
 
-        - name: "Set some meta data about the vm for cloud-init"
-          command: hammer host set-parameter --host {{ vmname }} --name {{ item.name }} --value "{{ item.value }}"
-          with_items:
-            - "{{ vmmetadata }}"
-            - name: tower_jobid
-              value: "{{ tower_jobid }}"
+#        - name: "Set some meta data about the vm for cloud-init"
+#          command: hammer host set-parameter --host {{ vmname }} --name {{ item.name }} --value "{{ item.value }}"
+#          with_items:
+#            - "{{ vmmetadata }}"
+#            - name: tower_jobid
+#              value: "{{ tower_jobid }}"
       when: provider == "RHEV"
     
      
     - name: Show Server's IP
-      debug: var=vmprovider.stdout
+      debug: var=vmprovider
+
+    - name: Update the Satellite Inventory
+      uri:
+        url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
+        validate_certs: no
+        method: POST
+        user: admin
+        password: ansible
+        status_code: [201,202]
+        body_format: json
+      with_items:
+        - 9
 
 #    - name: "update all the ansible tower osp10 repos"
 #      shell: |
