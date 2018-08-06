@@ -38,7 +38,7 @@
   become: true
 
 - name: "debug the hostvars"
-  debug: var=hostvars['ose-cluster-node-1.dev.maskedadmin.com']
+  debug: var=hostvars
 
 - name: "Enabling OCP needed repos"
   shell: |
