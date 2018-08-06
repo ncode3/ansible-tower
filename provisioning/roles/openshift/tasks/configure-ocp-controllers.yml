@@ -194,13 +194,13 @@
   become: true
 
 ## this is needed because a search domain will break things, so we update the dhcp script to comment it out
-- template:
-    src: 99-origin-dns.sh.j2
-    dest: /usr/share/ansible/openshift-ansible/roles/openshift_node_dnsmasq/files/networkmanager/99-origin-dns.sh
-    owner: root
-    group: root
-    mode: 0755
-  become: true
+#- template:
+#    src: 99-origin-dns.sh.j2
+#    dest: /usr/share/ansible/openshift-ansible/roles/openshift_node_dnsmasq/files/networkmanager/99-origin-dns.sh
+#    owner: root
+#    group: root
+#    mode: 0755
+#  become: true
 
 - name: "Setup docker storage, requires a separate volume on /dev/vdb"
   shell: |
