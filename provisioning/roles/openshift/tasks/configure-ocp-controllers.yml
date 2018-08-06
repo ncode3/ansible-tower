@@ -48,7 +48,7 @@
   register: getnode2_ip
 
 - name: "Set facts"
-  set_facts:
+  set_fact:
     node1_ip: getnode1_ip.stdout
     node2_ip: getnode2_ip.stdout
 
