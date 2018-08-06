@@ -52,10 +52,10 @@
     node1_ip: "{{ getnode1_ip.stdout }}"
     node2_ip: "{{ getnode2_ip.stdout }}"
 
-- name: "Enabling OCP needed repos"
+#- name: "Enabling OCP needed repos"
   shell: |
-    ssh root@ose-cluster-node-1.dev.maskedadmin.com 'subscription-manager repos --enable={{ item }}'
-    ssh root@ose-cluster-node-2.dev.maskedadmin.com 'subscription-manager repos --enable={{ item }}'
+    ssh root@ose-cluster-node-1.dev.maskedadmins.com 'subscription-manager repos --enable={{ item }}'
+    ssh root@ose-cluster-node-2.dev.maskedadmins.com 'subscription-manager repos --enable={{ item }}'
   with_items: "{{ ose_repos }}"
 
 - name: "Install OCP yum packages"
