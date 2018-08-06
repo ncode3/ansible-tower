@@ -65,6 +65,14 @@
   with_items: "{{ ose_pkgs }}"
   become: true
 
+- name: "Install openshift-ansible package"
+  shell: |
+    yum -y install openshift-ansible
+
+- name: "Install docker-1.13.1"
+  shell: |
+    yum -y install docker-1.13.1
+
 - file:
     path: /root/.config/openshift
     state: directory
