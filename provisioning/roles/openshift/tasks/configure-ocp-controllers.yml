@@ -49,8 +49,8 @@
 
 - name: "Set facts"
   set_fact:
-    node1_ip: getnode1_ip.stdout
-    node2_ip: getnode2_ip.stdout
+    node1_ip: "{{ getnode1_ip.stdout }}"
+    node2_ip: "{{ getnode2_ip.stdout }}"
 
 - name: "Enabling OCP needed repos"
   shell: |
