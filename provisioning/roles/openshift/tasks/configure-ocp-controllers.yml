@@ -37,13 +37,24 @@
   with_items: "{{ ose_repos }}"
   become: true
 
-- name: "debug the hostvars"
-  debug: var=hostvars
+- name: "set ip for node 1"
+  shell: |
+    host ose-cluster-node-1 | awk '{ print $4}'
+  register: getnode1_ip
+
+- name: "set ip for node 2"
+  shell: |
+    host ose-cluster-node-2 | awk '{ print $4}'
+  register: getnode2_ip
+
+- name: "Set facts"
+  node1_ip: getnode1_ip.stdout
+  node2_ip: getnode2_ip.stdout
 
 - name: "Enabling OCP needed repos"
   shell: |
-    ssh root@{{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_eth0']['ipv4']['address'] }} 'subscription-manager repos --enable={{ item }}'
-    ssh root@{{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_eth0']['ipv4']['address'] }} 'subscription-manager repos --enable={{ item }}'
+    ssh root@ose-cluster-node-1.dev.maskedadmin.com 'subscription-manager repos --enable={{ item }}'
+    ssh root@ose-cluster-node-2.dev.maskedadmin.com 'subscription-manager repos --enable={{ item }}'
   with_items: "{{ ose_repos }}"
 
 - name: "Install OCP yum packages"

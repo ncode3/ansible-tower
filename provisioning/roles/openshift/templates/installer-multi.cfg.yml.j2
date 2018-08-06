@@ -15,21 +15,21 @@ deployment:
     - etcd
     - node
     - storage
-  - connect_to: {{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_default_ipv4']['address'] }}
-    hostname: {{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_nodename'] }}
-    ip: {{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_default_ipv4']['address'] }}
+  - connect_to: {{ node1_ip }}
+    hostname: ose-cluster-node-1.dev.maskedadmin.com
+    ip: {{ node1_ip }}
     node_labels: '{''region'': ''infra''}'
-    public_hostname: {{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_nodename'] }}
-    public_ip: {{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_default_ipv4']['address'] }}
+    public_hostname: ose-cluster-node-1.dev.maskedadmin.com
+    public_ip: {{ node1_ip }}
     roles:
     - node
     containerized: false
-  - connect_to: {{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_default_ipv4']['address'] }}
-    hostname: {{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_nodename'] }}
-    ip: {{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_default_ipv4']['address'] }}
+  - connect_to: {{ node2_ip }}
+    hostname: ose-cluster-node-2.dev.maskedadmin.com
+    ip: {{ node2_ip }}
     node_labels: '{''region'': ''infra''}'
-    public_hostname: {{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_nodename'] }}
-    public_ip: {{ hostvars['ose-cluster-node-2.dev.maskedadmin.com']['ansible_default_ipv4']['address'] }}
+    public_hostname: ose-cluster-node-2.dev.maskedadmin.com
+    public_ip: {{ node2_ip }}
     roles:
     - node
     containerized: false
