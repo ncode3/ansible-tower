@@ -37,6 +37,9 @@
   with_items: "{{ ose_repos }}"
   become: true
 
+- name: "debug the hostvars"
+  debug: var=hostvars['ose-cluster-node-1.dev.maskedadmin.com']
+
 - name: "Enabling OCP needed repos"
   shell: |
     ssh root@{{ hostvars['ose-cluster-node-1.dev.maskedadmin.com']['ansible_eth0']['ipv4']['address'] }} 'subscription-manager repos --enable={{ item }}'
