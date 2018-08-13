@@ -4,7 +4,6 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
-#default_tower_server: tower.dev.maskedadmins.com
 default_tower_server: 10.55.102.156
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
@@ -296,8 +295,8 @@ ipmi_pass: !vault |
           37366462313466323763313364633962616434643231386661343361343666623237333163616163
           3430333830386536350a626538653934623932306366616439376466363065333839633930626432
           3164
-ose_repos: ['rhel-7-server-ose-3.5-rpms','rhel-7-fast-datapath-rpms']
-ose_pkgs: ['atomic-openshift-utils','docker','net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools','iptables-services','sos','psacct']
+ose_repos: ['rhel-7-server-ose-3.10-rpms','rhel-7-fast-datapath-rpms']
+ose_pkgs: ['net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools','iptables-services','sos','psacct','bash-completion','yum-utils','git','wget','kexec-tools']
 ose_svcs: ['docker','chronyd','NetworkManager']
 # openshift on openstack values
 os_create_volume: "no"

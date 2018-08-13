@@ -2,8 +2,8 @@
 #tower_tarball_location: http://ec2-54-234-230-108.compute-1.amazonaws.com/tower/ansible-tower-setup-latest.tar.gz
 tower_pkgs: ['python2-boto','python2-pip','python-heatclient','python-openstackclient','python2-shade','python-devel']
 tower_tarball_location: http://10.55.102.5/ansible-tower-setup-latest.tar.gz
-restore_backup: "no"
-backup_file_src: "/opt/ansible-tower-setup-3.1.3/tower-backup-latest.tar.gz"
+restore_backup: "yes"
+backup_file_src: "/opt/ansible-tower-setup-3.2.3/tower-backup-latest.tar.gz"
 backup_file_dest: "/opt/tower-backup-latest.tar.gz"
 cfme_user: "admin"
 cfme_pass: "smartvm"

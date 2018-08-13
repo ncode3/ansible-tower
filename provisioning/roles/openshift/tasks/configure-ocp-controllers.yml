@@ -37,10 +37,25 @@
   with_items: "{{ ose_repos }}"
   become: true
 
+- name: "set ip for node 1"
+  shell: |
+    host ose-cluster-node-1 | awk '{ print $4}'
+  register: getnode1_ip
+
+- name: "set ip for node 2"
+  shell: |
+    host ose-cluster-node-2 | awk '{ print $4}'
+  register: getnode2_ip
+
+- name: "Set facts"
+  set_fact:
+    node1_ip: "{{ getnode1_ip.stdout }}"
+    node2_ip: "{{ getnode2_ip.stdout }}"
+
 - name: "Enabling OCP needed repos"
   shell: |
-    ssh root@{{ node1_ip }} 'subscription-manager repos --enable={{ item }}'
-    ssh root@{{ node2_ip }} 'subscription-manager repos --enable={{ item }}'
+    ssh root@ose-cluster-node-1.dev.maskedadmins.com 'subscription-manager repos --enable={{ item }}'
+    ssh root@ose-cluster-node-2.dev.maskedadmins.com 'subscription-manager repos --enable={{ item }}'
   with_items: "{{ ose_repos }}"
 
 - name: "Install OCP yum packages"
@@ -49,6 +64,14 @@
     state: latest
   with_items: "{{ ose_pkgs }}"
   become: true
+
+- name: "Install openshift-ansible package"
+  shell: |
+    yum -y install openshift-ansible
+
+- name: "Install docker-1.13.1"
+  shell: |
+    yum -y install docker-1.13.1
 
 - file:
     path: /root/.config/openshift
@@ -171,13 +194,13 @@
   become: true
 
 ## this is needed because a search domain will break things, so we update the dhcp script to comment it out
-- template:
-    src: 99-origin-dns.sh.j2
-    dest: /usr/share/ansible/openshift-ansible/roles/openshift_node_dnsmasq/files/networkmanager/99-origin-dns.sh
-    owner: root
-    group: root
-    mode: 0755
-  become: true
+#- template:
+#    src: 99-origin-dns.sh.j2
+#    dest: /usr/share/ansible/openshift-ansible/roles/openshift_node_dnsmasq/files/networkmanager/99-origin-dns.sh
+#    owner: root
+#    group: root
+#    mode: 0755
+#  become: true
 
 - name: "Setup docker storage, requires a separate volume on /dev/vdb"
   shell: |

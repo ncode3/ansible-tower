@@ -16,20 +16,20 @@ deployment:
     - node
     - storage
   - connect_to: {{ node1_ip }}
-    hostname: {{ node1_hostname }}
+    hostname: ose-cluster-node-1.dev.maskedadmin.com
     ip: {{ node1_ip }}
     node_labels: '{''region'': ''infra''}'
-    public_hostname: {{ node1_hostname }}
-    public_ip: {{ node1_ip }} 
+    public_hostname: ose-cluster-node-1.dev.maskedadmin.com
+    public_ip: {{ node1_ip }}
     roles:
     - node
     containerized: false
   - connect_to: {{ node2_ip }}
-    hostname: {{ node2_hostname }}
+    hostname: ose-cluster-node-2.dev.maskedadmin.com
     ip: {{ node2_ip }}
     node_labels: '{''region'': ''infra''}'
-    public_hostname: {{ node2_hostname }}
-    public_ip: {{ node2_ip }} 
+    public_hostname: ose-cluster-node-2.dev.maskedadmin.com
+    public_ip: {{ node2_ip }}
     roles:
     - node
     containerized: false

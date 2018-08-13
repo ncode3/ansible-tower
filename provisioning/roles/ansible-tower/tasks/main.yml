@@ -48,20 +48,20 @@
     chdir: /opt
   become: true
 
-- name: "Disable PRoot to allow local_actions"
-  lineinfile: 
-    line: "AWX_PROOT_ENABLED=False"
-    dest: /etc/tower/settings.py
-    regexp: "^AWX_PROOT_ENABLED=*"
-    state: present
+#- name: "Disable PRoot to allow local_actions"
+#  lineinfile: 
+#    line: "AWX_PROOT_ENABLED=False"
+#    dest: /etc/tower/settings.py
+#    regexp: "^AWX_PROOT_ENABLED=*"
+#    state: present
 
-- name: "Add in patched openstack.py inventory"
-  template:
-    src: openstack-inventory.py.j2
-    dest: /var/lib/awx/venv/awx/lib/python2.7/site-packages/awx/plugins/inventory/openstack.py
-    owner: root
-    group: root
-    mode: 0755
+#- name: "Add in patched openstack.py inventory"
+#  template:
+#    src: openstack-inventory.py.j2
+#    dest: /var/lib/awx/venv/awx/lib/python2.7/site-packages/awx/plugins/inventory/openstack.py
+#    owner: root
+#    group: root
+#    mode: 0755
 
 - name: "Restart Tower"
   shell: |
@@ -86,4 +86,4 @@
   become: true
   when: restore_backup == "yes"
 
-- include: add-tower-to-cfme.yml
+#- include: add-tower-to-cfme.yml
