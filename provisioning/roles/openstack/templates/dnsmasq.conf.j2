@@ -3,4 +3,4 @@ dhcp-no-override
 dhcp-option=26,{{ openstack['dhcp_mtu'] }}
 domain={{ openstack['dhcp_domain'] }}
 log-dhcp
-dhcp-script=/opt/dns-updater.sh
+dhcp-script=/usr/local/bin/dns-updater.sh

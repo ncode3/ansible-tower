@@ -222,14 +222,14 @@
   lineinfile:
     dest: /etc/neutron/dhcp_agent.ini
     line: "dnsmasq_config_file = /etc/neutron/dnsmasq.conf"
-    regexp: "^dnsmasq_config_file =*"
+    regexp: "^#dnsmasq_config_file =*"
     state: present
 
 - name: update neutron dhcp_agent.ini isolated network values so cloud-init will work when not using a neutron router
   lineinfile:
     line: "enable_isolated_metadata = True"
     dest: /etc/neutron/dhcp_agent.ini
-    regexp: "^enable_isolated_metadata = False"
+    regexp: "^#enable_isolated_metadata = False"
     state: present
 
 - name: "killing dnsmasq, ignore the failure if no process found"
