@@ -123,9 +123,6 @@
     args:
       executable: /bin/bash
       creates: /opt/.packstack-setup
-  rescue:
-  - name: "Remove packstack touched file"
-    shell: rm -f /opt/.packstack-setup
 
 - name: "Check if project exists, ignore the failure if it doesn't exist"
   shell: |
@@ -262,6 +259,7 @@
     opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min
     state: present
   when: openstack['glance']['mount_nfs']  == "yes"
+  ignore_errors: yes
 
 - name: "Ensure nfs is mounted, ignore the failure if it is already mounted"
   shell: |
@@ -282,7 +280,7 @@
   become: true
   with_items: "{{ openstack['glance']['image_names'] }}"
   when: openstack['glance']['import'] == "yes"
-  #ignore_errors: yes
+  ignore_errors: yes
 
 - name: "Ensure nfs is unmounted"
   shell: |
@@ -291,7 +289,7 @@
     chdir: /root
   become: true
   when: openstack['glance']['mount_nfs']  == "yes"
-  #ignore_errors: yes
+  ignore_errors: yes
 
 - name: "Create the networks and subnets ..."
   shell: |
