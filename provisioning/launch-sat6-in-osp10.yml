@@ -27,12 +27,10 @@
       key_name: "dtaylor-openstack"
       
     ## this calls the install satellite playbook
-    host_config_key: dc7c0b52cd29cacceb8d3571257801ea
+    host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
-    host_config_jobid: 246
+    host_config_jobid: 25
     
-    redhat_insights_key: 990c2493aefba904a89081496fc0319b
-    redhat_insights_jobid: 117
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
     OS_TENANT_ID: "{{ vault_os_projectid }}"
