@@ -133,11 +133,26 @@
           group: root
           mode: 0644
 
+#    - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
+#      ignore_errors: yes
+#      shell: |
+#        echo "calling update firewall port for sat6"
+#        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/660/launch/
+
     - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
       ignore_errors: yes
-      shell: |
-        echo "calling update firewall port for sat6"
-        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/660/launch/
+      uri:
+        url: "https://{{ tower_server }}:443/api/v1/job_templates/660/launch/"
+        method: PUT
+        user: "admin"
+        password: "ansible"
+        status_code: 204
+        body: 
+          extra_vars:
+            int_ip: "{{ ansible_default_ipv4['address'] }}"
+            int_port: 443
+            ext_port: 8448
+        body_format: json
   when: initialsetup.stdout == "false"
 
 
