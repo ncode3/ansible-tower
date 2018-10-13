@@ -4,7 +4,7 @@ host_config_server: "{{ default_tower_server }}"
 tower_server: "{{ default_tower_server }}"
 redhat_insights_key: ""
 redhat_insights_jobid: ""
-redhat_packages: ['puppet','nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
+redhat_packages: ['puppet','nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils','nfs-utils']
 centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
 enabled_svcs: ['sshd','network','rsyslog']
