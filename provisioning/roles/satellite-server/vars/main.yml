@@ -1,4 +1,7 @@
 ---
+satellite_version: 6.4
+openstack_version: 13
+openshift_version: 3.11
 redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 dns_domain: "dev.maskedadmins.com"
 compute_resources:
@@ -141,17 +144,17 @@ sat6_enabled_repos:
   - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Fast Datapath"
 sat6_enabled_repos_tools:
-  - name: "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)"
+  - name: "Red Hat Satellite Tools {{ satellite_version }} (for RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Server"
   - name: "Red Hat Enterprise Linux 7 Server - Extras (RPMs)"
     product: "Red Hat Enterprise Linux Server"
 sat6_enabled_repos_openstack:
-  - name: "Red Hat OpenStack Platform 10 for RHEL 7 (RPMs)"
+  - name: "Red Hat OpenStack Platform {{ openstack_version }} for RHEL 7 (RPMs)"
     product: "Red Hat OpenStack"
-  - name: "Red Hat OpenStack Platform 10 Developer Tools for RHEL 7 (RPMs)"
+  - name: "Red Hat OpenStack Platform {{ openstack_version }} Developer Tools for RHEL 7 (RPMs)"
     product: "Red Hat OpenStack"
 sat6_enabled_repos_openshift:
-  - name: "Red Hat OpenShift Container Platform 3.5 (RPMs)"
+  - name: "Red Hat OpenShift Container Platform {{ openshift_version }} (RPMs)"
     product: "Red Hat OpenShift Container Platform"
 sat6_url: "https://{{ ansible_fqdn }}/"
 sat6_user: "admin"
