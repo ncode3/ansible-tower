@@ -105,7 +105,7 @@
                 --location {{ sat6_location }} --hostgroup '{{ sat6_hostgroup }}' \
                 --compute-resource '{{ osp10_resource }}' --provision-method image --enabled true --managed true \
                 --interface managed=true,primary=true,provision=true --lifecycle-environment "{{ sat6_lifecycle_env }}" \
-                --content-view "{{ sat6_content_view }}"  --root-pass {{ vmrootpassword }} \
+                --content-view "{{ sat6_content_view }}"  --root-password {{ vmrootpassword }} \
                 --compute-attributes nics=["$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-show ${SUBNETUUID} | grep network_id | cut -d\|  -f3 | xargs")"],flavor_ref=${FLAVORID},image_ref=${IMAGEUUID},tenant_id=${TENANTUUID},security_groups={{ osp10_sg }} \
                 --parameters tower_jobid={{ tower_jobid }},tower_server={{ tower_server }},tower_key={{tower_key }}
               register: vmprovider
