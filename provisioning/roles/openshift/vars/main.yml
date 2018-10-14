@@ -23,7 +23,7 @@ ose_server: "ose-cluster-master.dev.maskedadmins.com"
 ose_security: ssl
 ose_repos: ['rhel-7-server-ose-3.11-rpms','rhel-7-fast-datapath-rpms']
 ose_pkgs: ['net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools','iptables-services','sos','psacct','bash-completion','yum-utils','git','wget','kexec-tools']
-ose_svcs: ['docker','chronyd','NetworkManager']
+ose_svcs: ['chronyd','NetworkManager']
 rh_openshift_pool_id: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           36643733623133376163663039653136363732653433313334623062663865656533306365346638

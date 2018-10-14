@@ -69,9 +69,9 @@
   shell: |
     yum -y install openshift-ansible
 
-- name: "Install docker-1.13.1"
-  shell: |
-    yum -y install docker-1.13.1
+#- name: "Install docker-1.13.1"
+#  shell: |
+#    yum -y install docker-1.13.1
 
 - file:
     path: /root/.config/openshift
