@@ -28,10 +28,6 @@ This template accepts the following parameters:
 hostname: <%= @host.shortname %>
 fqdn: <%= @host %>
 manage_etc_hosts: true
-<% if ssh_pwauth -%>
-<%# Don't enable this in production. It is very insecure! Use ssh_authorized_keys instead...
-    http://cloudinit.readthedocs.io/en/latest/topics/examples.html#including-users-and-groups -%>
-ssh_pwauth: true
 groups:
 - admin
 users:
@@ -42,20 +38,30 @@ users:
   shell: /bin/bash
   sudo: ['ALL=(ALL) ALL']
   lock-passwd: false
+<% if ssh_pwauth -%>
+<%# Don't enable this in production. It is very insecure! Use ssh_authorized_keys instead...
+    http://cloudinit.readthedocs.io/en/latest/topics/examples.html#including-users-and-groups -%>
+  ssh_pwauth: true
   passwd: <%= @host.root_pass %>
 <% end -%>
 <% if host_param('ssh_authorized_keys') -%>
-ssh_authorized_keys:
+  ssh_authorized_keys:
 <% host_param('ssh_authorized_keys').split("\n").each do |ssh_key| -%>
-- <%= ssh_key %>
+  - <%= ssh_key %>
 <% end -%>
 <% end -%>
-- name: cloud-user
+ name: cloud-user
   primary-group: cloud-user
   groups: wheel
   shell: /bin/bash
   sudo: ['ALL=(ALL) NOPASSWD:ALL']
   lock-passwd: false
+<% if ssh_pwauth -%>
+<%# Don't enable this in production. It is very insecure! Use ssh_authorized_keys instead...
+    http://cloudinit.readthedocs.io/en/latest/topics/examples.html#including-users-and-groups -%>
+  ssh_pwauth: true
+  passwd: <%= @host.root_pass %>
+<% end -%>
 <% if host_param('ssh_authorized_keys') -%>
 <%# Allow user to specify additional SSH key as host paramter -%>
   ssh_authorized_keys:
