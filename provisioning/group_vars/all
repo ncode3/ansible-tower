@@ -20,7 +20,7 @@ host_config_server: tower.dev.maskedadmins.com
 redhat_insights_key: 990c2493aefba904a89081496fc0319b
 redhat_insights_jobid: 117
 ## redhat subscription management related
-rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-satellite-tools-6.2-rpms']
+rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-satellite-tools-6.4-rpms']
 rh_disabled_repos: ['*']
 #rh_satellite_url: https://subscription.rhn.redhat.com
 #rh_satellite_org: None
