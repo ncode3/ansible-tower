@@ -29,7 +29,7 @@
     ## this calls the install satellite playbook
     host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
-    host_config_jobid: 25
+    host_config_jobid: 11
     
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
@@ -176,7 +176,7 @@
           #    cloud-user:redhat123
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/"
       when: os_create_volume == "no"
       register: server_with_no_volume
 
