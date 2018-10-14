@@ -483,7 +483,7 @@
 
 - name: "Creating Base Content View"
   shell: |
-      sattoolsid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Satellite Tools 6.2" | awk '{print $1}')
+      sattoolsid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Satellite Tools 6.3" | awk '{print $1}')
       rhelrepoid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Linux 7 Server RPMs x86_64 7Server" | awk '{print $1}')
       ksid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Linux 7 Server Kickstart x86_64 7Server" | awk '{print $1}')
       commonid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Common" | awk '{print $1}')

@@ -1,7 +1,7 @@
 ---
 satellite_version: 6-beta
-openstack_version: 10
-openshift_version: 3.5
+openstack_version: 13
+openshift_version: 3.11
 redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 dns_domain: "dev.maskedadmins.com"
 compute_resources:
@@ -144,7 +144,7 @@ sat6_enabled_repos:
   - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Fast Datapath"
 sat6_enabled_repos_tools:
-  - name: "Red Hat Satellite Tools 6.2 (for RHEL 7 Server) (RPMs)"
+  - name: "Red Hat Satellite Tools 6.3 (for RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Server"
   - name: "Red Hat Enterprise Linux 7 Server - Extras (RPMs)"
     product: "Red Hat Enterprise Linux Server"
