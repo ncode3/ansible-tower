@@ -8,7 +8,7 @@
     vault_os_projectid: ""
     vault_os_user: dtaylor
     vault_os_pass: redhat123
-    vault_os_url: "http://{{ osp10_controller }}:5000/v2.0"
+    vault_os_url: "http://{{ osp10_controller }}:5000/v3"
     os_create_volume: "no"
     os_volume_size: 5
     os_volume_name: ose-volume
@@ -37,6 +37,8 @@
     OS_USERNAME: "{{ vault_os_user }}"
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
+    OS_PROJECT_DOMAIN_ID: "default"
+    OS_USER_DOMAIN_ID: "default"
   tasks:
     - name: delete the old sat server
       os_server:
