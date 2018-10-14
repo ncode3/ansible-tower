@@ -12,6 +12,7 @@
         status_code: 201
         user: admin
         password: ansible
+        force_basic_auth: yes
         headers:
           Content-Type: "application/json"
       delay: 120
