@@ -38,5 +38,5 @@ openstack:
   tenant: "{{ vault_os_project }}"
   region: "RegionOne"
   controller: "{{ osp10_controller }}"
-  auth: "http://{{ osp10_controller }}:5000/v2.0/tokens"
+  auth: "http://{{ osp10_controller }}:5000/v3"
   subnetid: "242b2296-f5e6-416b-b7c1-5d8293935921"
