@@ -162,11 +162,10 @@
       args:
         creates: /opt/.firstboot
 
-    - name: "Installing rpms {{ redhat_packages }}"
+    - name: "Installing base config rpms"
       yum:
-        name: "{{ item }}"
+        name: "{{ redhat_packages }}"
         state: latest
-      with_items: "{{ redhat_packages }}"
       become: true
 
     - name: "Update dns entry"
