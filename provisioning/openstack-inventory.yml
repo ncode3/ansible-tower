@@ -1,8 +1,7 @@
 ---
 - name: "Update inventory"
   gather_facts: no
-  hosts: localhost
-  connection: local
+  hosts: all
   become: true
   tasks:
     - name: "Switching controllers"
@@ -20,3 +19,4 @@
         - name: 'Openstack Inventory'
           id: '3'
       ignore_errors: yes
+      delegate_to: localhost
