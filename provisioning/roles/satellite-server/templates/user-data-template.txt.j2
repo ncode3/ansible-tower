@@ -1,67 +1,68 @@
 <%#
 kind: user_data
-name: Satellite Kickstart default user data
+name: RedHat UserData default
+model: ProvisioningTemplate
 oses:
-- CentOS 6
-- CentOS 7
-- Fedora 19
-- Fedora 20
-- Fedora 21
-- Fedora 22
-- Fedora 23
+- CentOS
+- Fedora
+- Debian
+- Ubuntu
+-%>
+<%#
+This template accepts the following parameters:
+- ssh_pwauth: boolean (default=true unless ssh_authorized_keys)
+- ssh_authorized_keys: string w newline seperated keys (default="")
+- package_upgrade: boolean (default=false)
+- reboot: boolean (default=false)
+-%>
+<%
+  ssh_pwauth = host_param('ssh_pwauth') ? host_param_true?('ssh_pwauth') : !host_param('ssh_authorized_keys')
+  rhel_compatible = @host.operatingsystem.family == 'Redhat' && @host.operatingsystem.name != 'Fedora'
+  # safemode renderer does not support unary negation
+  pm_set = @host.puppetmaster.empty? ? false : true
+  puppet_enabled = pm_set || host_param_true?('force-puppet')
+  salt_enabled = host_param('salt_master') ? true : false
+  chef_enabled = @host.respond_to?(:chef_proxy) && @host.chef_proxy
 -%>
 #cloud-config
 hostname: <%= @host.shortname %>
 fqdn: <%= @host %>
 manage_etc_hosts: true
-system_info:
-  default_user:
-    name: cloud-user
+<% if ssh_pwauth -%>
+<%# Don't enable this in production. It is very insecure! Use ssh_authorized_keys instead...
+    http://cloudinit.readthedocs.io/en/latest/topics/examples.html#including-users-and-groups -%>
+ssh_pwauth: true
 groups:
- - admin
- - cloud-user
-
+- admin
 users:
- - default
- - name: admin
-   primary-group: admin
-   groups: users
-   shell: /bin/bash
-   sudo: ['ALL=(ALL) ALL']
-   lock-passwd: false
-   passwd: <%= @host.root_pass %>
+- default
+- name: admin
+  primary-group: admin
+  groups: users
+  shell: /bin/bash
+  sudo: ['ALL=(ALL) ALL']
+  lock-passwd: false
+  passwd: <%= @host.root_pass %>
+<% end -%>
+<% if host_param('ssh_authorized_keys') -%>
+ssh_authorized_keys:
+<% host_param('ssh_authorized_keys').split("\n").each do |ssh_key| -%>
+- <%= ssh_key %>
+<% end -%>
+<% end -%>
+- name: cloud-user
+  primary-group: cloud-user
+  groups: wheel
+  shell: /bin/bash
+  sudo: ['ALL=(ALL) NOPASSWD:ALL']
+  lock-passwd: false
+<% if host_param('ssh_authorized_keys') -%>
 <%# Allow user to specify additional SSH key as host paramter -%>
-<% if @host.params['sshkey'].present? || @host.params['remote_execution_ssh_keys'].present? -%>
-   ssh_authorized_keys:
-<% if @host.params['sshkey'].present? -%>
-   - <%= @host.params['sshkey'] %>
-<% end -%>
-<% if @host.params['remote_execution_ssh_keys'].present? -%>
-<% @host.params['remote_execution_ssh_keys'].each do |key| -%>
-   - <%= key %>
+  ssh_authorized_keys:
+<% host_param('ssh_authorized_keys').split("\n").each do |ssh_key| -%>
+  - <%= ssh_key %>
 <% end -%>
 <% end -%>
-<% end -%>
- - name: cloud-user
-   primary-group: cloud-user
-   groups: wheel
-   shell: /bin/bash
-   sudo: ['ALL=(ALL) NOPASSWD:ALL']
-   lock-passwd: false
-   passwd: <%= @host.root_pass %>
-<%# Allow user to specify additional SSH key as host paramter -%>
-<% if @host.params['sshkey'].present? || @host.params['remote_execution_ssh_keys'].present? -%>
-   ssh_authorized_keys:
-<% if @host.params['sshkey'].present? -%>
-   - <%= @host.params['sshkey'] %>
-<% end -%>
-<% if @host.params['remote_execution_ssh_keys'].present? -%>
-<% @host.params['remote_execution_ssh_keys'].each do |key| -%>
-   - <%= key %>
-<% end -%>
-<% end -%>
-<% end -%>
-
 write_files:
 - path: /etc/sudoers.d/999-cloud-user
   permissions: '0440'
@@ -103,66 +104,57 @@ write_files:
   permissions: '0755'
   content: |
     #!/bin/bash
-<%= indent 4 do
-      snippet 'subscription_manager_registration'
+    <%= indent 4 do
+      snippet 'redhat_register'
     end %>
-<% if @host.info['parameters']['realm'] && @host.realm && @host.realm.realm_type == 'Red Hat Identity Management' -%>
-<%= indent 4 do
-      snippet 'idm_register'
-    end %>
-<% end -%>
-  <% unless @host.operatingsystem.atomic? -%>
-    # update all the base packages from the updates repository
-    #yum -t -y -e 0 update
-    # this  updates the dns entry
+    ## ansible tower callback
     yum -y install bind-utils
     /sbin/ifup-local
-  <% end -%>
-<%
-  # safemode renderer does not support unary negation
-  non_atomic = @host.operatingsystem.atomic? ? false : true
-  pm_set = @host.puppetmaster.empty? ? false : true
-  puppet_enabled = non_atomic && (pm_set || @host.params['force-puppet'])
-  salt_enabled = non_atomic && (@host.params['salt_master'] ? true : false)
-%>
-<% if salt_enabled %>
-    yum -t -y -e 0 install salt-minion
-    cat > /etc/salt/minion << EOF
-    <%= indent 4 do
-          snippet 'saltstack_minion'
-        end %>
-    EOF
-    # Setup salt-minion to run on system reboot
-    /sbin/chkconfig --level 345 salt-minion on
-    # Running salt-call to trigger key signing
-    salt-call --no-color --grains >/dev/null
-<% end -%>
-<% if puppet_enabled %>
-    yum install -y puppet
-    cat > /etc/puppet/puppet.conf << EOF
-    <%= indent 4 do
-          snippet 'puppet.conf'
-        end %>
-    EOF
-    # Setup puppet to run on system reboot
-    /sbin/chkconfig --level 345 puppet on
-
-    /usr/bin/puppet agent --config /etc/puppet/puppet.conf --onetime --tags no_such_tag <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
-    /sbin/service puppet start
-<% end -%>
-    ## ansible tower callback
 <%= indent 4 do
       snippet 'ansible_provisioning_callback'
     end %>
-    sed -i -e 's/api\/v2/api\/v1/g' /etc/systemd/system/ansible-callback.service
+    #sed -i -e 's/api\/v2/api\/v1/g' /etc/systemd/system/ansible-callback.service
     systemctl daemon-reload
     systemctl start ansible-callback
-phone_home:
- url: <%= foreman_url('built') %>
- post: []
- tries: 10
+
+<% if host_param_true?('package_upgrade') -%>
+package_upgrade: true
+<% end -%>
+
 runcmd:
- - [ cloud-init-per, once, foreman-userdata, /tmp/foreman-userdata.sh ]
+<% if rhel_compatible -%>
+- |
+<%= indent(2) { snippet('epel') } %>
+<% end -%>
+- |
+<%= indent(2) { snippet('remote_execution_ssh_keys') } %>
+<% if chef_enabled -%>
+- |
+<%= indent(2) { snippet('chef_client') } %>
+<% end -%>
+<% if puppet_enabled -%>
+- |
+<%= indent(2) { snippet('puppetlabs_repo') } %>
+- |
+<%= indent(2) { snippet('puppet_setup') } %>
+<% end -%>
+<% if salt_enabled -%>
+- |
+<%= indent(2) { snippet('saltstack_setup') } %>
+<% end -%>
+- [ cloud-init-per, once, foreman-userdata, /tmp/foreman-userdata.sh ]
 output: {all: '| tee -a /root/install.userdata.log'}
 
+<%# Contact Foreman to confirm instance is built -%>
+phone_home:
+  url: <%= foreman_url('built') %>
+  post: []
+  tries: 10
+
+<% if host_param_true?('reboot') -%>
+power_state:
+  mode: reboot
+  timeout: 30
+  condition: true
+<% end -%>
 

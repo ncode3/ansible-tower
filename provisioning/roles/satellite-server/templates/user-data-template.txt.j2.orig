@@ -1,0 +1,168 @@
+<%#
+kind: user_data
+name: Satellite Kickstart default user data
+oses:
+- CentOS 6
+- CentOS 7
+- Fedora 19
+- Fedora 20
+- Fedora 21
+- Fedora 22
+- Fedora 23
+-%>
+#cloud-config
+hostname: <%= @host.shortname %>
+fqdn: <%= @host %>
+manage_etc_hosts: true
+system_info:
+  default_user:
+    name: cloud-user
+groups:
+ - admin
+ - cloud-user
+
+users:
+ - default
+ - name: admin
+   primary-group: admin
+   groups: users
+   shell: /bin/bash
+   sudo: ['ALL=(ALL) ALL']
+   lock-passwd: false
+   passwd: <%= @host.root_pass %>
+<%# Allow user to specify additional SSH key as host paramter -%>
+<% if @host.params['sshkey'].present? || @host.params['remote_execution_ssh_keys'].present? -%>
+   ssh_authorized_keys:
+<% if @host.params['sshkey'].present? -%>
+   - <%= @host.params['sshkey'] %>
+<% end -%>
+<% if @host.params['remote_execution_ssh_keys'].present? -%>
+<% @host.params['remote_execution_ssh_keys'].each do |key| -%>
+   - <%= key %>
+<% end -%>
+<% end -%>
+<% end -%>
+ - name: cloud-user
+   primary-group: cloud-user
+   groups: wheel
+   shell: /bin/bash
+   sudo: ['ALL=(ALL) NOPASSWD:ALL']
+   lock-passwd: false
+   passwd: <%= @host.root_pass %>
+<%# Allow user to specify additional SSH key as host paramter -%>
+<% if @host.params['sshkey'].present? || @host.params['remote_execution_ssh_keys'].present? -%>
+   ssh_authorized_keys:
+<% if @host.params['sshkey'].present? -%>
+   - <%= @host.params['sshkey'] %>
+<% end -%>
+<% if @host.params['remote_execution_ssh_keys'].present? -%>
+<% @host.params['remote_execution_ssh_keys'].each do |key| -%>
+   - <%= key %>
+<% end -%>
+<% end -%>
+<% end -%>
+
+write_files:
+- path: /etc/sudoers.d/999-cloud-user
+  permissions: '0440'
+  content: |
+    Defaults:cloud-user !requiretty
+- path: /sbin/ifup-local
+  permissions: '0755'
+  content: |
+    #!/bin/bash
+    key="gf4EVCTbbAcmXctzrIZUvg=="
+    server="10.55.102.5"
+    zone="dev.maskedadmins.com"
+    hostname="$(hostname --short)"
+    hostip=$(ip addr list eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d / -f1)
+    reverse=$(echo $hostip | awk -F. '{print $4"."$3"." $2"."$1}')
+    reversezone=$(echo $hostip | awk -F. '{print $3"." $2"."$1}')
+    temp=/tmp.$$
+    touch $temp
+    cat > ${temp} <<EOF
+    server ${server}
+    key dhcpupdate ${key}
+    zone ${reversezone}.in-addr.arp
+    update delete ${reverse}.in-addr.arpa. PTR
+    update add ${reverse}.in-addr.arpa. 300 IN PTR ${hostname}.${zone}.
+    send
+    zone ${zone}
+    update delete ${hostname}.${zone}. A
+    update add ${hostname}.${zone}. 300 IN A $hostip
+    send
+    EOF
+    nsupdate -v ${temp}
+    echo "$*" >> /tmp/dnsmasq.updater.txt
+    rm -f ${temp}
+    extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
+    curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" \
+    --user admin:ansible https://compute5.dev.maskedadmins.com:443/api/v1/job_templates/20/launch/ \
+    || true
+- path: /tmp/foreman-userdata.sh
+  permissions: '0755'
+  content: |
+    #!/bin/bash
+<%= indent 4 do
+      snippet 'subscription_manager_registration'
+    end %>
+<% if @host.info['parameters']['realm'] && @host.realm && @host.realm.realm_type == 'Red Hat Identity Management' -%>
+<%= indent 4 do
+      snippet 'idm_register'
+    end %>
+<% end -%>
+  <% unless @host.operatingsystem.atomic? -%>
+    # update all the base packages from the updates repository
+    #yum -t -y -e 0 update
+    # this  updates the dns entry
+    yum -y install bind-utils
+    /sbin/ifup-local
+  <% end -%>
+<%
+  # safemode renderer does not support unary negation
+  non_atomic = @host.operatingsystem.atomic? ? false : true
+  pm_set = @host.puppetmaster.empty? ? false : true
+  puppet_enabled = non_atomic && (pm_set || @host.params['force-puppet'])
+  salt_enabled = non_atomic && (@host.params['salt_master'] ? true : false)
+%>
+<% if salt_enabled %>
+    yum -t -y -e 0 install salt-minion
+    cat > /etc/salt/minion << EOF
+    <%= indent 4 do
+          snippet 'saltstack_minion'
+        end %>
+    EOF
+    # Setup salt-minion to run on system reboot
+    /sbin/chkconfig --level 345 salt-minion on
+    # Running salt-call to trigger key signing
+    salt-call --no-color --grains >/dev/null
+<% end -%>
+<% if puppet_enabled %>
+    yum install -y puppet
+    cat > /etc/puppet/puppet.conf << EOF
+    <%= indent 4 do
+          snippet 'puppet.conf'
+        end %>
+    EOF
+    # Setup puppet to run on system reboot
+    /sbin/chkconfig --level 345 puppet on
+
+    /usr/bin/puppet agent --config /etc/puppet/puppet.conf --onetime --tags no_such_tag <%= @host.puppetmaster.blank? ? '' : "--server #{@host.puppetmaster}" %> --no-daemonize
+    /sbin/service puppet start
+<% end -%>
+    ## ansible tower callback
+<%= indent 4 do
+      snippet 'ansible_provisioning_callback'
+    end %>
+    sed -i -e 's/api\/v2/api\/v1/g' /etc/systemd/system/ansible-callback.service
+    systemctl daemon-reload
+    systemctl start ansible-callback
+phone_home:
+ url: <%= foreman_url('built') %>
+ post: []
+ tries: 10
+runcmd:
+ - [ cloud-init-per, once, foreman-userdata, /tmp/foreman-userdata.sh ]
+output: {all: '| tee -a /root/install.userdata.log'}
+
+
