@@ -15,7 +15,7 @@
     os_server:
       name: "sat6"
       state: present
-      image: "RHEL 7.3 Cloud"
+      image: "RHEL 7.5 Cloud"
       flavor: "m1.large"
       #network: "Management_101"
       #network: "Provisioning_102"
