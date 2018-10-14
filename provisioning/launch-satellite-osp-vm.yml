@@ -182,6 +182,7 @@
         body_format: json
       with_items:
         - 9
+        - 16
 
 #    - name: "update all the ansible tower osp10 repos"
 #      shell: |
