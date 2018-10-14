@@ -10,7 +10,7 @@
     vault_os_projectid: ""
     vault_os_user: dtaylor
     vault_os_pass: redhat123
-    vault_os_url: "http://{{ osp10_controller }}:5000/v3/auth/tokens"
+    vault_os_url: "http://{{ osp10_controller }}:5000/v3"
     os_create_volume: "yes"
     os_destroy_old_volumes: "no"
     os_volume_size: 50
@@ -18,7 +18,7 @@
     os_server:
       name: "ose-cluster"
       state: present
-      image: "RHEL 7.3 Cloud"
+      image: "RHEL 7.5 Cloud"
       #flavor: "m1.medium"
       flavor: "m1.medium.performance"
       network: "Dev_103"
@@ -50,7 +50,7 @@
       os_server:
         name: "{{ os_server['name'] }}-{{ item }}"
         state: absent
-        image: "RHEL 7.3 Cloud"
+        image: "RHEL 7.5 Cloud"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -66,7 +66,7 @@
       os_server:
         name: "{{ os_server['name'] }}-master"
         state: absent
-        image: "RHEL 7.3 Cloud"
+        image: "RHEL 7.5 Cloud"
         flavor: "m1.medium"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -125,7 +125,7 @@
         name: "{{ os_server['name'] }}-node-1"
         state: present
         #image: "RHEL Atomic 7.2.6-1"
-        image: "RHEL 7.3 Cloud"
+        image: "RHEL 7.5 Cloud"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -163,7 +163,7 @@
                 Defaults:cloud-user !requiretty
           runcmd:
            # this is firstboot configuration job template
-           - "sleep 90 ; curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
+           - "sleep 90 ; curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_osp10jobid }}/callback/"
         volumes:
           - "{{ os_volume_name }}-node-1"
       register: atomic_node1
@@ -173,7 +173,7 @@
         name: "{{ os_server['name'] }}-node-2"
         state: present
         #image: "RHEL Atomic 7.2.6-1"
-        image: "RHEL 7.3 Cloud"
+        image: "RHEL 7.5 Cloud"
         flavor: "{{ os_server['flavor'] }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -211,7 +211,7 @@
                 Defaults:cloud-user !requiretty
           runcmd:
            # this is post configuration job template
-           - "sleep 90; curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_osp10jobid }}/callback/"
+           - "sleep 90; curl -k --data 'host_config_key={{ host_config_osp10key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_osp10jobid }}/callback/"
         volumes:
           - "{{ os_volume_name }}-node-2"
       register: atomic_node2
@@ -263,7 +263,7 @@
               permissions: '0755'
               content: |
                 #!/bin/bash
-                sleep 120; curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.public_v4 }}\",\"node1_hostname\":\"{{ atomic_node1.server.name }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.public_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/launch/ 
+                sleep 120; curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"limit": "ose-cluster-master.{{ dns_domain }}","extra_vars":"{\"multinode\":\"yes\",\"node1_ip\":\"{{ atomic_node1.server.public_v4 }}\",\"node1_hostname\":\"{{ atomic_node1.server.name }}.{{ dns_domain }}\",\"node2_ip\":\"{{ atomic_node2.server.public_v4 }}\",\"node2_hostname\":\"{{ atomic_node2.server.name }}.{{ dns_domain }}\"}"}' --user admin:ansible https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/launch/ 
             - path: /etc/sudoers.d/999-cloud-user
               permissions: '0440'
               content: |

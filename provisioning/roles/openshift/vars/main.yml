@@ -11,7 +11,7 @@ ose_add_project: "redhat-lab"
 ose_add_project_description: "This is an example project to demonstrate OpenShift v3"
 ose_add_project_displayname: "Redhat Lab Demo Project"
 ose_outbound_network_cidr: "10.55.0.0/16"
-ocp_variant: "3.10"
+ocp_variant: "3.11"
 cfme_user: "admin"
 cfme_pass: "smartvm"
 cfme_creds: "admin:smartvm"
@@ -21,6 +21,9 @@ cfme_project: redhat-lab
 ose_name: "OCP"
 ose_server: "ose-cluster-master.dev.maskedadmins.com"
 ose_security: ssl
+ose_repos: ['rhel-7-server-ose-3.11-rpms','rhel-7-fast-datapath-rpms']
+ose_pkgs: ['net-tools','bind-utils','iptables-services','bridge-utils','httpd-tools','iptables-services','sos','psacct','bash-completion','yum-utils','git','wget','kexec-tools']
+ose_svcs: ['docker','chronyd','NetworkManager']
 rh_openshift_pool_id: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           36643733623133376163663039653136363732653433313334623062663865656533306365346638
@@ -30,8 +33,8 @@ rh_openshift_pool_id: !vault |
           38656438306238303537613466343036353430313861396335666631353939353732373261393132
           6539316534613831343062343039393137396663613130386330
 openstack:
-  name: 'OSP10 Redhat Lab'
-  description: 'Openstack 10'
+  name: 'OSP13 Redhat Lab'
+  description: 'Openstack 13'
   user: dtaylor
   pass: redhat123
   tenantid: "42703655d32d4506855b8815682567b2"
