@@ -16,7 +16,7 @@
       name: "sat6"
       state: present
       image: "RHEL 7.5 Cloud"
-      flavor: "m1.large"
+      flavor: "m1.xlarge"
       #network: "Management_101"
       #network: "Provisioning_102"
       network: "Dev_103"
