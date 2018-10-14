@@ -598,7 +598,7 @@
 
 - name: "Clone the Default User Data Kickstart"
   shell: |
-    hammer template clone --name 'Satellite Kickstart Default User Data' --new-name '{{ sat6_default_org }} User Data' && \
+    hammer template clone --name 'Kickstart default user data' --new-name '{{ sat6_default_org }} User Data' && \
     touch /root/.setup/step23a
   args:
     creates: /root/.setup/step23a
@@ -614,7 +614,7 @@
 - name: "Add kickstart pxe template to OS"
   shell: |
     PXEID=$(hammer --csv template list | grep 'Kickstart default PXELinux' | awk -F, {'print $1'})
-    SATID=$(hammer --csv template list | grep -v 'Satellite Kickstart Default User Data' | grep 'Satellite Kickstart Default' | awk -F, {'print $1'})
+    SATID=$(hammer --csv template list | grep 'Kickstart default' | grep 'provision' | awk -F, {'print $1'})
     USERDATAID=$(hammer --csv template list | grep "{{ sat6_default_org }}" | awk -F, {'print $1'})
     for i in $(hammer --csv os list | awk -F, {'print $1'} | grep -vi '^ID')
     do
