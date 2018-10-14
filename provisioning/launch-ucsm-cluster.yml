@@ -1,0 +1,79 @@
+---
+- name: Launch a Compute Resource via Satellite 6
+  hosts: satellite*:sat6*
+  gather_facts: no
+  vars_files:
+    - group_vars/satellite.yml
+  vars:
+    dns_domain: "dev.maskedadmins.com"
+    sat6_org: "{{ sat6_default_org }}"
+    sat6_location: "{{ sat6_default_location }}"
+    sat6_hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.5"
+    sat6_lifecycle_env: "development"
+    sat6_content_view: "Base"
+    aws_resource: "Not Configured"
+    rhev_resource: "Not Configured"
+    osp8_resource: "OSP8 Redhat Lab"
+    osp10_resource: "OSP13 Redhat Lab"
+    osp10_subnet: "NET103"
+    operatingsystem: "RedHat 7.5"
+    operatingsystem2: "RHEL Server 7.5"
+    vmname: "UCSm"
+    vmimage: "UCSPE_3.2.3e"
+    vmflavor: "m1.small"
+    vmrootpassword: "{{ ipmi_pass }}"
+  tasks:
+    - name: "Openstack Blocks"
+      block:
+        - name: "OSP13 Block"
+          block:
+            - name: "Create VM in Openstack 10"
+              shell: |
+                set -x
+                OSID=$(hammer --csv os list | grep '{{ operatingsystem }}' | awk -F, {'print $1'})
+                [ -z "$OSID" ] && OSID=$(hammer --csv os list | grep '{{ operatingsystem2 }}' | awk -F, {'print $1'})
+                COMPUTEID=$(hammer --csv compute-resource list | grep '{{ osp10_resource }}' | awk -F, {'print $1'})
+                IMAGEID=$(hammer --csv compute-resource image list --compute-resource-id ${COMPUTEID} | grep '{{ vmimage }}' | awk -F, {'print $1'})
+                FLAVORID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; nova flavor-list | grep -m 1 '{{ vmflavor }}' | cut -f2 -d\| | xargs")
+                IMAGEUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; glance image-list | grep -m 1 '{{ vmimage }}' | cut -f2 -d\| | xargs")
+                SUBNETUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_dtaylor ; neutron subnet-list | grep -m 1 {{ osp10_subnet }} | cut -f2 -d\| | xargs")
+                TENANTUUID=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} "source keystonerc_admin ; openstack project list | grep -m 1 '{{ sat6_org }}' | cut -f2 -d\| | xargs")
+                hammer host create --operatingsystem-id ${OSID} --name '{{ vmname }}{{ item }' --organization '{{ sat6_org }}' \
+                --location {{ sat6_location }} --hostgroup '{{ sat6_hostgroup }}' \
+                --compute-resource '{{ osp10_resource }}' --provision-method image --enabled true --managed true \
+                --interface managed=true,primary=true,provision=true --lifecycle-environment "{{ sat6_lifecycle_env }}" \
+                --content-view "{{ sat6_content_view }}"  --root-password {{ vmrootpassword }} \
+                --compute-attributes nics=["$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ osp10_controller }} \
+                "source keystonerc_dtaylor ; neutron subnet-show ${SUBNETUUID} | grep network_id | cut -d\|  -f3 | xargs")"],\
+                flavor_ref=${FLAVORID},image_ref=${IMAGEUUID},tenant_id=${TENANTUUID},security_groups=["{{ osp10_sg }}"]
+              become: true
+              ignore_errors: yes
+              with_items:
+              - 01
+              - 02
+              - 03
+              - 04
+              - 05
+              - 06
+              - 07
+              - 08
+              - 09
+              - 10
+
+          when: provider == "OSP13"
+      when: provider == "OSP13" or provider == "OSP8"
+
+    - name: Update the Satellite and Openstack Inventories
+      uri:
+        url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
+        validate_certs: no
+        method: POST
+        user: admin
+        password: ansible
+        force_basic_auth: yes
+        status_code: [201,202]
+        body_format: json
+      with_items:
+        - 9
+        - 16
+
