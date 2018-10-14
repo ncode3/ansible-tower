@@ -28,6 +28,14 @@
   register: initialsetup
   become: true
 
+- name: "Updated User data template"
+  template:
+    dest: /var/tmp/user-data-template.txt
+    src: user-data-template.txt.j2
+    owner: root
+    group: root
+    mode: 0644
+
 - name: "Block to perform initial setup"
   block:
     - name: "make setup tracking dir"
@@ -123,14 +131,6 @@
           src: autosign.conf.j2
           owner: foreman-proxy
           group: puppet
-          mode: 0644
-
-    - name: "Updated User data template"
-      template:
-          dest: /var/tmp/user-data-template.txt
-          src: user-data-template.txt.j2
-          owner: root
-          group: root
           mode: 0644
 
     - name: "Restart puppetmaster"
