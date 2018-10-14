@@ -158,6 +158,7 @@
     
     - name: "Perform a yum clean all"
       shell:  yum clean all
+      warn: false
       become: true
       args:
         creates: /opt/.firstboot
