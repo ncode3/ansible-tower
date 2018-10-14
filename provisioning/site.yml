@@ -35,12 +35,12 @@
     - { role: openstack, osp_mode: controllers, cfme: true }
 
 - name: Customize Openshift Container Platform nodes
-  hosts: ose-cluster-node-1.dev.maskedadmins.com,ose-cluster-node-2.dev.maskedadmins.com
+  hosts: ose-cluster-node-*
   roles:
     - { role: openshift, ocp_mode: nodes, cfme: false }
 
 - name: Customize Openshift Container Platform with 2 additional nodes
-  hosts: ose-cluster-master.dev.maskedadmins.com
+  hosts: ose-cluster-master*
   roles:
     - { role: openshift, ocp_mode: controllers, cfme: true }
 
