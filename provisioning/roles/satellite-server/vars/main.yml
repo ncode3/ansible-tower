@@ -1,5 +1,5 @@
 ---
-satellite_version: 6.4
+satellite_version: 6-beta
 openstack_version: 13
 openshift_version: 3.11
 redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
