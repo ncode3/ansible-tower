@@ -1,10 +1,10 @@
 ---
 - name: "Update inventory"
   gather_facts: no
-  hosts: all
+  hosts: sat6*
   become: true
   tasks:
-    - name: "Switching controllers"
+    - name: "Updating inventories"
       uri:
         url: "https://{{ default_tower_server }}/api/v2/inventories/{{ item.id }}/update_inventory_sources/"
         validate_certs: no
