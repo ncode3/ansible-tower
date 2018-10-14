@@ -32,7 +32,7 @@
     host_config_jobid: 32
     ## this calls the osp10 firstboot playbook
     host_config_osp10key: firstboot
-    host_config_osp10jobid: 11
+    host_config_osp10jobid: 35
     host_config_server: "{{ default_tower_server }}"
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
