@@ -65,6 +65,12 @@
   with_items: "{{ ose_pkgs }}"
   become: true
 
+- name: "Turn on notify_only=0 in search-disabled-repos.conf"
+  lineinfile:
+    path: /etc/yum/pluginconf.d/search-disabled-repos.conf
+    regexp: '^notify_only='
+    line: 'notify_only=0'
+
 - name: "Install openshift-ansible package"
   shell: |
     yum -y install openshift-ansible

@@ -35,6 +35,18 @@
     yum clean all
   become: true
 
+- name: "Turn on notify_only=0 in search-disabled-repos.conf"
+  lineinfile:
+    path: /etc/yum/pluginconf.d/search-disabled-repos.conf
+    regexp: '^notify_only=*'
+    line: 'notify_only=0'
+
+- name: "Modify ignore_repo in search-disabled-repos.conf"
+  lineinfile:
+    path: /etc/yum/pluginconf.d/search-disabled-repos.conf
+    regexp: '^ignored_repos=*'
+    line: 'ignored_repos=*debug-rpms *source-rpms'
+
 - name: "Installing satellite rpms"
   yum:
     name: "satellite"
