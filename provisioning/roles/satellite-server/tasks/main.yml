@@ -715,7 +715,7 @@
     --user {{ item.user }} \
     --password {{ item.pass }} \
     --tenant="{{ item.tenant }}" \
-    --domain="default"
+    --domain="default" \
     --url {{ item.url }}
   with_items: "{{ compute_resources }}"
   args:
