@@ -35,7 +35,7 @@
     - { role: openstack, osp_mode: controllers, cfme: true }
 
 - name: Customize Openshift Container Platform nodes
-  hosts: ose-cluster-node-*
+  hosts: ose-cluster-node*
   roles:
     - { role: openshift, ocp_mode: nodes, cfme: false }
 
