@@ -5,13 +5,18 @@
   connection: local
   become: true
   tasks:
-    - name: "update all the ansible tower osp10 repos"
-      shell: |
-        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
-        -H 'Content-Type: application/json' -XPOST \
-        --user admin:ansible \
-        https://{{ default_tower_server }}/api/v2/inventories/{{ item }}/update_inventory_sources/
-        sleep 5
+    - name: "Switching controllers"
+      uri:
+        url: "https://{{ default_tower_server }}/api/v2/inventories/{{ item.id }}/update_inventory_sources/"
+        validate_certs: no
+        method: POST
+        status_code: 201
+        user: admin
+        password: ansible
+        headers:
+          Content-Type: "application/json"
+      delay: 120
       with_items:
-        - 3
+        - name: 'Openstack Inventory'
+          id: '3'
       ignore_errors: yes
