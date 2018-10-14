@@ -29,7 +29,7 @@
     ## this calls the install satellite playbook
     host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
-    host_config_jobid: 11
+    host_config_jobid: 33
     
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
