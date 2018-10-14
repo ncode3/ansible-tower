@@ -22,6 +22,7 @@
     vmimage: "UCSPE_3.2.3e"
     vmflavor: "m1.small"
     vmrootpassword: "{{ ipmi_pass }}"
+    provider: "OSP13"
   tasks:
     - name: "Openstack Blocks"
       block:
