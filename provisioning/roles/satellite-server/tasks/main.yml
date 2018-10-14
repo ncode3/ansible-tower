@@ -107,7 +107,7 @@
 
     - name: "Configure puppet autosigning"
       template:
-          dest: /etc/puppet/autosign.conf
+          dest: /etc/puppetlabs/puppet/autosign.conf
           src: autosign.conf.j2
           owner: foreman-proxy
           group: puppet
