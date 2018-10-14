@@ -184,6 +184,16 @@
 #      args:
 #        executable: /bin/bash
 #        creates: /opt/.firstboot
+#
+#    - name: "Wait 5 to 11 mins for host to reboot"
+#      wait_for:
+#        port: 22
+#        host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+#        #search_regex: OpenSSH
+#        delay: 120
+#        timeout: 660
+#      delegate_to: localhost
+#      become: false
 
     - name: "Create firstboot file"
       shell: "touch /opt/.firstboot"
@@ -191,15 +201,6 @@
       args:
         creates: /opt/.firstboot
 
-    - name: "Wait 5 to 11 mins for host to reboot"
-      wait_for:
-        port: 22
-        host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
-        #search_regex: OpenSSH
-        delay: 120
-        timeout: 660
-      delegate_to: localhost
-      become: false
     
   when: firstbootcheck.stdout == "false"
 
