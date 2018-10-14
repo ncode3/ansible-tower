@@ -25,7 +25,7 @@ compute_resources:
     pass: redhat123
     tenant: "Redhat_Lab"
     controller: "{{ osp10_controller }}"
-    url: "http://{{ osp10_controller }}:5000/v3/auth/tokens"
+    url: "http://{{ osp10_controller }}:5000/v3"
 sat6:
   subs_for_activationkeys:
     - "Employee SKU"
