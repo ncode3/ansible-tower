@@ -122,7 +122,7 @@
           mode: 0644
 
     - name: "Restart puppetmaster"
-      shell: systemctl restart puppetmaster
+      shell: systemctl restart puppetserver
 
     - name: "Copy over manifest"
       #template:
