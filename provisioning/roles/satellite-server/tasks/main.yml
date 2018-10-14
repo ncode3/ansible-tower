@@ -47,12 +47,6 @@
     regexp: '^ignored_repos=*'
     line: 'ignored_repos=*debug-rpms *source-rpms'
 
-- name: "Installing satellite rpms"
-  yum:
-    name: "satellite"
-    state: latest
-  become: true
-
 - name: "Satellite Setup check"
   shell: |
     if [ -e "/opt/satellite/{{ sat6_manifest }}" ]
@@ -72,6 +66,12 @@
         state: directory
         mode: 0755
   
+    - name: "Installing satellite rpms"
+      yum:
+        name: "satellite"
+        state: latest
+      become: true
+
     - name: "installing private key to accesss OSP"
       template:
         src: openstack/blank.key.j2
