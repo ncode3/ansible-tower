@@ -23,6 +23,7 @@
     vmflavor: "m1.small"
     vmrootpassword: "{{ ipmi_pass }}"
     provider: "OSP13"
+    osp10_sg: "Redhat_Lab-sg"
   tasks:
     - name: "Openstack Blocks"
       block:
