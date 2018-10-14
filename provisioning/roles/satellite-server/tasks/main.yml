@@ -770,7 +770,6 @@
         --username root --user-data true \
         --compute-resource "{{ item.name }}" \
         --uuid "${uuid}"
-      fi
     done
     IFS=$OLDIFS
   with_items: "{{ compute_resources }}"
