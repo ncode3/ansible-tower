@@ -368,9 +368,10 @@
     - name: "Subnet section complete"
       debug:  msg="Looks like we are done with subnet and domain section"
 
-- name: "Provisioning Satellite 6 - upload manifest"
+- name: "Provisioning Satellite 6 - upload and refresh manifest"
   shell: |
       hammer subscription upload --file /tmp/manifest.zip --organization "{{ sat6_default_org }}" && \
+      hammer subscription refresh-manifest --organization "{{ sat6_default_org }}" && \
       touch /root/.setup/step10
   args:
     creates: /root/.setup/step10
