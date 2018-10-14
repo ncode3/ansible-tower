@@ -145,6 +145,7 @@
       uri:
         url: "https://{{ tower_server }}:443/api/v1/job_templates/660/launch/"
         method: PUT
+        validate_certs: false
         user: "admin"
         password: "ansible"
         status_code: 204
