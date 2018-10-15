@@ -80,6 +80,16 @@
   shell: "subscription-manager status || true"
   register: rhsm_reg
     
+- name: "Bootstrap check"
+  shell: |
+    if [ -e "/opt/.bootstrap" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: bootstrapcheck
+
 - name: "Try to register to Satellite 6"
   block:
     - name: "Get the bootstrap python script"
@@ -97,13 +107,17 @@
         -L {{ sat6['location'] }} \
         -g "{{ sat6['hostgroup'] }}" \
         -a {{ sat6['activation_key'] }} \
-        --force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root
+        --force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root && \
+        touch /opt/.bootstrap
         #--rex  --skip-foreman --skip-puppet \
         #--rex-user root \
         #/bin/false
       become: true
       register: satbootstrap
-      when: "'Current' not in rhsm_reg.stdout"
+      #when: "'Current' not in rhsm_reg.stdout"
+      when: bootstrapcheck.stdout == "false"
+      args:
+        creates: /opt/.bootstrap
 
   rescue:
     - name: "Clean up from Sat 6"
@@ -199,7 +213,5 @@
       become: true
       args:
         creates: /opt/.firstboot
-
-    
   when: firstbootcheck.stdout == "false"
 
