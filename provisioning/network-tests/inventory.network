@@ -1,0 +1,9 @@
+[network:vars]
+ansible_ssh_user=xxxxxx
+ansible_ssh_pass=xxxxxx
+ansible_connection=network_cli
+ansible_network_os=ios
+
+[network]
+router
+#switch
