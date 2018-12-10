@@ -57,19 +57,19 @@ ok: [grotto] => {
             "  ARP type: ARPA, ARP Timeout 04:00:00",
             "  Last input 00:00:00, output 00:00:00, output hang never",
             "  Last clearing of \"show interface\" counters never",
-            "  Input queue: 0/75/2/64321 (size/max/drops/flushes); Total output drops: 0",
+            "  Input queue: 2/75/2/64321 (size/max/drops/flushes); Total output drops: 0",
             "  Queueing strategy: fifo",
             "  Output queue: 0/40 (size/max)",
-            "  5 minute input rate 15000 bits/sec, 17 packets/sec",
-            "  5 minute output rate 68000 bits/sec, 21 packets/sec",
-            "     4458273 packets input, 517939949 bytes, 0 no buffer",
-            "     Received 229291 broadcasts (12516 IP multicasts)",
+            "  5 minute input rate 14000 bits/sec, 14 packets/sec",
+            "  5 minute output rate 124000 bits/sec, 19 packets/sec",
+            "     4567277 packets input, 534925622 bytes, 0 no buffer",
+            "     Received 240445 broadcasts (13102 IP multicasts)",
             "     0 runts, 0 giants, 2 throttles",
             "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored",
-            "     0 watchdog, 32830 multicast, 0 pause input",
-            "     15283767 packets output, 4273266298 bytes, 0 underruns",
+            "     0 watchdog, 34449 multicast, 0 pause input",
+            "     15434311 packets output, 58930552 bytes, 0 underruns",
             "     0 output errors, 0 collisions, 0 interface resets",
-            "     6806 unknown protocol drops",
+            "     7127 unknown protocol drops",
             "     0 babbles, 0 late collision, 0 deferred",
             "     1 lost carrier, 0 no carrier, 0 pause output",
             "     0 output buffer failures, 0 output buffers swapped out",
@@ -276,18 +276,18 @@ ok: [grotto] => {
             "  Input queue: 0/75/0/445 (size/max/drops/flushes); Total output drops: 0",
             "  Queueing strategy: fifo",
             "  Output queue: 0/40 (size/max)",
-            "  5 minute input rate 61000 bits/sec, 17 packets/sec",
-            "  5 minute output rate 11000 bits/sec, 16 packets/sec",
-            "     15639323 packets input, 4225724249 bytes, 80 no buffer",
-            "     Received 9586 broadcasts (0 IP multicasts)",
+            "  5 minute input rate 114000 bits/sec, 18 packets/sec",
+            "  5 minute output rate 9000 bits/sec, 16 packets/sec",
+            "     15806605 packets input, 11288131 bytes, 80 no buffer",
+            "     Received 9895 broadcasts (0 IP multicasts)",
             "     0 runts, 0 giants, 3 throttles",
             "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored",
             "     0 watchdog, 0 multicast, 0 pause input",
-            "     4931271 packets output, 487850376 bytes, 0 underruns",
+            "     5063032 packets output, 503765963 bytes, 0 underruns",
             "     0 output errors, 0 collisions, 0 interface resets",
             "     33 unknown protocol drops",
             "     0 babbles, 0 late collision, 0 deferred",
-            "     3 lost carrier, 0 no carrier, 1495582 pause output",
+            "     3 lost carrier, 0 no carrier, 1496903 pause output",
             "     0 output buffer failures, 0 output buffers swapped out",
             "Loopback0 is up, line protocol is up ",
             "  Hardware is Loopback",
@@ -353,7 +353,7 @@ ok: [grotto] => {
             "  Egress flow records enabled",
             "  Tunnel transmit bandwidth 8000 (kbps)",
             "  Tunnel receive bandwidth 8000 (kbps)",
-            "  Last input never, output 00:00:05, output hang never",
+            "  Last input never, output 00:00:03, output hang never",
             "  Last clearing of \"show interface\" counters never",
             "  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0",
             "  Queueing strategy: fifo",
@@ -364,7 +364,7 @@ ok: [grotto] => {
             "     Received 0 broadcasts (0 IP multicasts)",
             "     0 runts, 0 giants, 0 throttles",
             "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort",
-            "     14312 packets output, 1431200 bytes, 0 underruns",
+            "     14989 packets output, 1498900 bytes, 0 underruns",
             "     0 output errors, 0 collisions, 0 interface resets",
             "     0 unknown protocol drops",
             "     0 output buffer failures, 0 output buffers swapped out"
@@ -384,7 +384,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0",
                 "network": "None",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "1"
             }
         },
@@ -394,7 +394,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.2",
                 "network": "10.55.2.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "2"
             }
         },
@@ -404,7 +404,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.3",
                 "network": "10.55.3.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "3"
             }
         },
@@ -414,7 +414,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.4",
                 "network": "10.55.4.254/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "4"
             }
         },
@@ -424,7 +424,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.5",
                 "network": "10.55.5.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "5"
             }
         },
@@ -434,7 +434,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.6",
                 "network": "10.55.6.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "6"
             }
         },
@@ -444,7 +444,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.8",
                 "network": "10.55.8.254/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "8"
             }
         },
@@ -454,7 +454,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.101",
                 "network": "10.55.101.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "101"
             }
         },
@@ -464,7 +464,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.102",
                 "network": "10.55.102.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "102"
             }
         },
@@ -474,7 +474,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.103",
                 "network": "10.55.103.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "103"
             }
         },
@@ -484,7 +484,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.104",
                 "network": "10.55.104.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "104"
             }
         },
@@ -494,7 +494,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.105",
                 "network": "10.55.105.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "105"
             }
         },
@@ -504,7 +504,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.106",
                 "network": "10.55.106.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "106"
             }
         },
@@ -514,7 +514,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.107",
                 "network": "10.55.107.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "107"
             }
         },
@@ -524,7 +524,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.108",
                 "network": "10.55.108.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "108"
             }
         },
@@ -534,7 +534,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/0.109",
                 "network": "10.55.109.1/24",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "109"
             }
         },
@@ -544,7 +544,7 @@ ok: [grotto] => {
                 "mtu": "1500",
                 "name": "GigabitEthernet0/1",
                 "network": "173.15.218.100/29",
-                "type": null,
+                "type": "CN Gigabit Ethernet",
                 "vlan": "None"
             }
         },
@@ -554,7 +554,7 @@ ok: [grotto] => {
                 "mtu": "1514",
                 "name": "Loopback0",
                 "network": "10.55.255.1/32",
-                "type": null,
+                "type": "None",
                 "vlan": "None"
             }
         },
@@ -564,7 +564,7 @@ ok: [grotto] => {
                 "mtu": "1514",
                 "name": "NVI0",
                 "network": "None",
-                "type": null,
+                "type": "None",
                 "vlan": "None"
             }
         },
@@ -574,7 +574,7 @@ ok: [grotto] => {
                 "mtu": "17916",
                 "name": "Tunnel1",
                 "network": "192.168.250.6/30",
-                "type": null,
+                "type": "None",
                 "vlan": "None"
             }
         }
@@ -992,213 +992,213 @@ ok: [grotto] => {
 }
 
 TASK [Show all the entries with Vlans in description] **************************************************************************************
-skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0', 'type': None, 'mtu': '1500', 'description': '$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$', 'vlan': '1', 'network': 'None'}}) 
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.2', 'type': None, 'mtu': '1500', 'description': 'MGMT Vlan 2', 'vlan': '2', 'network': '10.55.2.1/24'}}) => {
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': '$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$', 'vlan': '1', 'network': 'None'}}) 
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.2', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'MGMT Vlan 2', 'vlan': '2', 'network': '10.55.2.1/24'}}) => {
     "item": {
         "interface": {
             "description": "MGMT Vlan 2",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.2",
             "network": "10.55.2.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "2"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.3', 'type': None, 'mtu': '1500', 'description': 'DMZ Vlan 3', 'vlan': '3', 'network': '10.55.3.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.3', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'DMZ Vlan 3', 'vlan': '3', 'network': '10.55.3.1/24'}}) => {
     "item": {
         "interface": {
             "description": "DMZ Vlan 3",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.3",
             "network": "10.55.3.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "3"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.4', 'type': None, 'mtu': '1500', 'description': 'Openstack VM Vlan 4', 'vlan': '4', 'network': '10.55.4.254/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.4', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Openstack VM Vlan 4', 'vlan': '4', 'network': '10.55.4.254/24'}}) => {
     "item": {
         "interface": {
             "description": "Openstack VM Vlan 4",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.4",
             "network": "10.55.4.254/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "4"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.5', 'type': None, 'mtu': '1500', 'description': 'Openstack OPS Vlan 5', 'vlan': '5', 'network': '10.55.5.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.5', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Openstack OPS Vlan 5', 'vlan': '5', 'network': '10.55.5.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Openstack OPS Vlan 5",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.5",
             "network": "10.55.5.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "5"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.6', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 6', 'vlan': '6', 'network': '10.55.6.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.6', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Storage Vlan 6', 'vlan': '6', 'network': '10.55.6.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Storage Vlan 6",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.6",
             "network": "10.55.6.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "6"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.8', 'type': None, 'mtu': '1500', 'description': 'Openstack Floating IP Vlan 8', 'vlan': '8', 'network': '10.55.8.254/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.8', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Openstack Floating IP Vlan 8', 'vlan': '8', 'network': '10.55.8.254/24'}}) => {
     "item": {
         "interface": {
             "description": "Openstack Floating IP Vlan 8",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.8",
             "network": "10.55.8.254/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "8"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.101', 'type': None, 'mtu': '1500', 'description': 'IPMI Vlan 101', 'vlan': '101', 'network': '10.55.101.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.101', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'IPMI Vlan 101', 'vlan': '101', 'network': '10.55.101.1/24'}}) => {
     "item": {
         "interface": {
             "description": "IPMI Vlan 101",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.101",
             "network": "10.55.101.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "101"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.102', 'type': None, 'mtu': '1500', 'description': 'Provisioning Vlan 102', 'vlan': '102', 'network': '10.55.102.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.102', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Provisioning Vlan 102', 'vlan': '102', 'network': '10.55.102.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Provisioning Vlan 102",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.102",
             "network": "10.55.102.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "102"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.103', 'type': None, 'mtu': '1500', 'description': 'API Vlan 103', 'vlan': '103', 'network': '10.55.103.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.103', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'API Vlan 103', 'vlan': '103', 'network': '10.55.103.1/24'}}) => {
     "item": {
         "interface": {
             "description": "API Vlan 103",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.103",
             "network": "10.55.103.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "103"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.104', 'type': None, 'mtu': '1500', 'description': 'Tenant Vlan 104', 'vlan': '104', 'network': '10.55.104.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.104', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Tenant Vlan 104', 'vlan': '104', 'network': '10.55.104.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Tenant Vlan 104",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.104",
             "network": "10.55.104.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "104"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.105', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 105', 'vlan': '105', 'network': '10.55.105.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.105', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Storage Vlan 105', 'vlan': '105', 'network': '10.55.105.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Storage Vlan 105",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.105",
             "network": "10.55.105.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "105"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.106', 'type': None, 'mtu': '1500', 'description': 'Storage Mgmt Vlan 106', 'vlan': '106', 'network': '10.55.106.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.106', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Storage Mgmt Vlan 106', 'vlan': '106', 'network': '10.55.106.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Storage Mgmt Vlan 106",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.106",
             "network": "10.55.106.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "106"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.107', 'type': None, 'mtu': '1500', 'description': 'External Vlan 107', 'vlan': '107', 'network': '10.55.107.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.107', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'External Vlan 107', 'vlan': '107', 'network': '10.55.107.1/24'}}) => {
     "item": {
         "interface": {
             "description": "External Vlan 107",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.107",
             "network": "10.55.107.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "107"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.108', 'type': None, 'mtu': '1500', 'description': 'Float IP Vlan 108', 'vlan': '108', 'network': '10.55.108.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.108', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Float IP Vlan 108', 'vlan': '108', 'network': '10.55.108.1/24'}}) => {
     "item": {
         "interface": {
             "description": "Float IP Vlan 108",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.108",
             "network": "10.55.108.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "108"
         }
     }
 }
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.109', 'type': None, 'mtu': '1500', 'description': 'OpenVPN Vlan 109', 'vlan': '109', 'network': '10.55.109.1/24'}}) => {
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.109', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'OpenVPN Vlan 109', 'vlan': '109', 'network': '10.55.109.1/24'}}) => {
     "item": {
         "interface": {
             "description": "OpenVPN Vlan 109",
             "mtu": "1500",
             "name": "GigabitEthernet0/0.109",
             "network": "10.55.109.1/24",
-            "type": null,
+            "type": "CN Gigabit Ethernet",
             "vlan": "109"
         }
     }
 }
-skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/1', 'type': None, 'mtu': '1500', 'description': '$ES_WAN$ WAN link to cable modem running at 3400 up', 'vlan': 'None', 'network': '173.15.218.100/29'}}) 
-skipping: [grotto] => (item={'interface': {'name': 'Loopback0', 'type': None, 'mtu': '1514', 'description': 'Dynamic Routing Router-ID (OSPF)', 'vlan': 'None', 'network': '10.55.255.1/32'}}) 
-skipping: [grotto] => (item={'interface': {'name': 'NVI0', 'type': None, 'mtu': '1514', 'description': 'None', 'vlan': 'None', 'network': 'None'}}) 
-skipping: [grotto] => (item={'interface': {'name': 'Tunnel1', 'type': None, 'mtu': '17916', 'description': 'P-t-P Protected GRE Tunnel', 'vlan': 'None', 'network': '192.168.250.6/30'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/1', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': '$ES_WAN$ WAN link to cable modem running at 3400 up', 'vlan': 'None', 'network': '173.15.218.100/29'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Loopback0', 'type': 'None', 'mtu': '1514', 'description': 'Dynamic Routing Router-ID (OSPF)', 'vlan': 'None', 'network': '10.55.255.1/32'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'NVI0', 'type': 'None', 'mtu': '1514', 'description': 'None', 'vlan': 'None', 'network': 'None'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Tunnel1', 'type': 'None', 'mtu': '17916', 'description': 'P-t-P Protected GRE Tunnel', 'vlan': 'None', 'network': '192.168.250.6/30'}}) 
 
 TASK [Set vlaninterfaces fact to create a list of interfaces with Vlans in description] ****************************************************
-skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0', 'type': None, 'mtu': '1500', 'description': '$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$', 'vlan': '1', 'network': 'None'}}) 
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.2', 'type': None, 'mtu': '1500', 'description': 'MGMT Vlan 2', 'vlan': '2', 'network': '10.55.2.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.3', 'type': None, 'mtu': '1500', 'description': 'DMZ Vlan 3', 'vlan': '3', 'network': '10.55.3.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.4', 'type': None, 'mtu': '1500', 'description': 'Openstack VM Vlan 4', 'vlan': '4', 'network': '10.55.4.254/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.5', 'type': None, 'mtu': '1500', 'description': 'Openstack OPS Vlan 5', 'vlan': '5', 'network': '10.55.5.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.6', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 6', 'vlan': '6', 'network': '10.55.6.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.8', 'type': None, 'mtu': '1500', 'description': 'Openstack Floating IP Vlan 8', 'vlan': '8', 'network': '10.55.8.254/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.101', 'type': None, 'mtu': '1500', 'description': 'IPMI Vlan 101', 'vlan': '101', 'network': '10.55.101.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.102', 'type': None, 'mtu': '1500', 'description': 'Provisioning Vlan 102', 'vlan': '102', 'network': '10.55.102.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.103', 'type': None, 'mtu': '1500', 'description': 'API Vlan 103', 'vlan': '103', 'network': '10.55.103.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.104', 'type': None, 'mtu': '1500', 'description': 'Tenant Vlan 104', 'vlan': '104', 'network': '10.55.104.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.105', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 105', 'vlan': '105', 'network': '10.55.105.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.106', 'type': None, 'mtu': '1500', 'description': 'Storage Mgmt Vlan 106', 'vlan': '106', 'network': '10.55.106.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.107', 'type': None, 'mtu': '1500', 'description': 'External Vlan 107', 'vlan': '107', 'network': '10.55.107.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.108', 'type': None, 'mtu': '1500', 'description': 'Float IP Vlan 108', 'vlan': '108', 'network': '10.55.108.1/24'}})
-ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.109', 'type': None, 'mtu': '1500', 'description': 'OpenVPN Vlan 109', 'vlan': '109', 'network': '10.55.109.1/24'}})
-skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/1', 'type': None, 'mtu': '1500', 'description': '$ES_WAN$ WAN link to cable modem running at 3400 up', 'vlan': 'None', 'network': '173.15.218.100/29'}}) 
-skipping: [grotto] => (item={'interface': {'name': 'Loopback0', 'type': None, 'mtu': '1514', 'description': 'Dynamic Routing Router-ID (OSPF)', 'vlan': 'None', 'network': '10.55.255.1/32'}}) 
-skipping: [grotto] => (item={'interface': {'name': 'NVI0', 'type': None, 'mtu': '1514', 'description': 'None', 'vlan': 'None', 'network': 'None'}}) 
-skipping: [grotto] => (item={'interface': {'name': 'Tunnel1', 'type': None, 'mtu': '17916', 'description': 'P-t-P Protected GRE Tunnel', 'vlan': 'None', 'network': '192.168.250.6/30'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': '$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$', 'vlan': '1', 'network': 'None'}}) 
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.2', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'MGMT Vlan 2', 'vlan': '2', 'network': '10.55.2.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.3', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'DMZ Vlan 3', 'vlan': '3', 'network': '10.55.3.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.4', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Openstack VM Vlan 4', 'vlan': '4', 'network': '10.55.4.254/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.5', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Openstack OPS Vlan 5', 'vlan': '5', 'network': '10.55.5.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.6', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Storage Vlan 6', 'vlan': '6', 'network': '10.55.6.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.8', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Openstack Floating IP Vlan 8', 'vlan': '8', 'network': '10.55.8.254/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.101', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'IPMI Vlan 101', 'vlan': '101', 'network': '10.55.101.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.102', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Provisioning Vlan 102', 'vlan': '102', 'network': '10.55.102.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.103', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'API Vlan 103', 'vlan': '103', 'network': '10.55.103.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.104', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Tenant Vlan 104', 'vlan': '104', 'network': '10.55.104.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.105', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Storage Vlan 105', 'vlan': '105', 'network': '10.55.105.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.106', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Storage Mgmt Vlan 106', 'vlan': '106', 'network': '10.55.106.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.107', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'External Vlan 107', 'vlan': '107', 'network': '10.55.107.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.108', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'Float IP Vlan 108', 'vlan': '108', 'network': '10.55.108.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.109', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': 'OpenVPN Vlan 109', 'vlan': '109', 'network': '10.55.109.1/24'}})
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/1', 'type': 'CN Gigabit Ethernet', 'mtu': '1500', 'description': '$ES_WAN$ WAN link to cable modem running at 3400 up', 'vlan': 'None', 'network': '173.15.218.100/29'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Loopback0', 'type': 'None', 'mtu': '1514', 'description': 'Dynamic Routing Router-ID (OSPF)', 'vlan': 'None', 'network': '10.55.255.1/32'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'NVI0', 'type': 'None', 'mtu': '1514', 'description': 'None', 'vlan': 'None', 'network': 'None'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Tunnel1', 'type': 'None', 'mtu': '17916', 'description': 'P-t-P Protected GRE Tunnel', 'vlan': 'None', 'network': '192.168.250.6/30'}}) 
 
 TASK [Show all the Vlan entries made from set_fact] ****************************************************************************************
 ok: [grotto] => {

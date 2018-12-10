@@ -22,7 +22,7 @@
 
     - name: match hardware
       pattern_match:
-        regex: "Hardware is (\\S+),"
+        regex: "Hardware is (.*),"
         content: "{{ item }}"
       register: type
 
@@ -60,9 +60,9 @@
           - key: name
             value: "{{ item.name.matches.0 }}"
           - key: type
-            value: "{{ item.type.matches.0 }}"
+            value: "{{ item.type.matches.0|default('None') }}"
           - key: mtu
-            value: "{{ item.mtu.matches.0 }}"
+            value: "{{ item.mtu.matches.0|default('None') }}"
           - key: description
             value: "{{ item.description.matches.0|default('None') }}"
           - key: vlan
