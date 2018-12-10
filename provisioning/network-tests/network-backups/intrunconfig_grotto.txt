@@ -1,0 +1,153 @@
+---
+-   interface GigabitEthernet0/0.2
+    ' description MGMT Vlan 2'
+    ' encapsulation dot1Q 2 native'
+    ' ip dhcp relay information trusted'
+    ' ip address 10.55.2.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.3
+    ' description DMZ Vlan 3'
+    ' encapsulation dot1Q 3'
+    ' ip address 10.55.3.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.4
+    ' description Openstack VM Vlan 4'
+    ' encapsulation dot1Q 4'
+    ' ip address 10.55.4.254 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.5
+    ' description Openstack OPS Vlan 5'
+    ' encapsulation dot1Q 5'
+    ' ip address 10.55.5.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.6
+    ' description Storage Vlan 6'
+    ' encapsulation dot1Q 6'
+    ' ip address 10.55.6.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.8
+    ' description Openstack Floating IP Vlan 8'
+    ' encapsulation dot1Q 8'
+    ' ip address 10.55.8.254 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.101
+    ' description IPMI Vlan 101'
+    ' encapsulation dot1Q 101'
+    ' ip address 10.55.101.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.102
+    ' description Provisioning Vlan 102'
+    ' encapsulation dot1Q 102'
+    ' ip address 10.55.102.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.103
+    ' description API Vlan 103'
+    ' encapsulation dot1Q 103'
+    ' ip address 10.55.103.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.104
+    ' description Tenant Vlan 104'
+    ' encapsulation dot1Q 104'
+    ' ip address 10.55.104.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.105
+    ' description Storage Vlan 105'
+    ' encapsulation dot1Q 105'
+    ' ip address 10.55.105.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.106
+    ' description Storage Mgmt Vlan 106'
+    ' encapsulation dot1Q 106'
+    ' ip address 10.55.106.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.107
+    ' description External Vlan 107'
+    ' encapsulation dot1Q 107'
+    ' ip address 10.55.107.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.108
+    ' description Float IP Vlan 108'
+    ' encapsulation dot1Q 108'
+    ' ip address 10.55.108.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+-   interface GigabitEthernet0/0.109
+    ' description OpenVPN Vlan 109'
+    ' encapsulation dot1Q 109'
+    ' ip address 10.55.109.1 255.255.255.0'
+    ' ip pim dense-mode'
+    ' ip flow ingress'
+    ' ip nat inside'
+    ' ip virtual-reassembly in'
+    ' no cdp enable'
+    end
+...

@@ -1,0 +1,317 @@
+---
+Embedded-Service-Engine0/0:
+    bandwidth: 10000
+    description: null
+    duplex: null
+    ipv4: []
+    lineprotocol: 'down '
+    macaddress: 0000.0000.0000
+    mediatype: null
+    mtu: 1500
+    operstatus: administratively down
+    type: Embedded Service Engine
+GigabitEthernet0/0:
+    bandwidth: 1000000
+    description: $ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE
+        0/0$                         $ES_LAN$
+    duplex: Full
+    ipv4: []
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: RJ45
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.10:
+    bandwidth: 1000000
+    description: Openstack Private Network VLAN10
+    duplex: null
+    ipv4: []
+    lineprotocol: 'down '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: administratively down
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.101:
+    bandwidth: 1000000
+    description: IPMI Vlan 101
+    duplex: null
+    ipv4:
+    -   address: 10.55.101.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.102:
+    bandwidth: 1000000
+    description: Provisioning Vlan 102
+    duplex: null
+    ipv4:
+    -   address: 10.55.102.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.103:
+    bandwidth: 1000000
+    description: API Vlan 103
+    duplex: null
+    ipv4:
+    -   address: 10.55.103.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.104:
+    bandwidth: 1000000
+    description: Tenant Vlan 104
+    duplex: null
+    ipv4:
+    -   address: 10.55.104.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.105:
+    bandwidth: 1000000
+    description: Storage Vlan 105
+    duplex: null
+    ipv4:
+    -   address: 10.55.105.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.106:
+    bandwidth: 1000000
+    description: Storage Mgmt Vlan 106
+    duplex: null
+    ipv4:
+    -   address: 10.55.106.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.107:
+    bandwidth: 1000000
+    description: External Vlan 107
+    duplex: null
+    ipv4:
+    -   address: 10.55.107.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.108:
+    bandwidth: 1000000
+    description: Float IP Vlan 108
+    duplex: null
+    ipv4:
+    -   address: 10.55.108.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.109:
+    bandwidth: 1000000
+    description: OpenVPN Vlan 109
+    duplex: null
+    ipv4:
+    -   address: 10.55.109.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.2:
+    bandwidth: 1000000
+    description: MGMT Vlan 2
+    duplex: null
+    ipv4:
+    -   address: 10.55.2.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.20:
+    bandwidth: 1000000
+    description: Openstack Floating IP Vlan 20
+    duplex: null
+    ipv4: []
+    lineprotocol: 'down '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: administratively down
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.21:
+    bandwidth: 1000000
+    description: Openstack Floating IP Vlan 21
+    duplex: null
+    ipv4:
+    -   address: 10.55.21.1
+        subnet: '24'
+    lineprotocol: 'down '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: administratively down
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.3:
+    bandwidth: 1000000
+    description: DMZ Vlan 3
+    duplex: null
+    ipv4:
+    -   address: 10.55.3.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.4:
+    bandwidth: 1000000
+    description: Openstack VM Vlan 4
+    duplex: null
+    ipv4:
+    -   address: 10.55.4.254
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.5:
+    bandwidth: 1000000
+    description: Openstack OPS Vlan 5
+    duplex: null
+    ipv4:
+    -   address: 10.55.5.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.6:
+    bandwidth: 1000000
+    description: Storage Vlan 6
+    duplex: null
+    ipv4:
+    -   address: 10.55.6.1
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.8:
+    bandwidth: 1000000
+    description: Openstack Floating IP Vlan 8
+    duplex: null
+    ipv4:
+    -   address: 10.55.8.254
+        subnet: '24'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+GigabitEthernet0/0.9:
+    bandwidth: 1000000
+    description: Openstack Vlan 9
+    duplex: null
+    ipv4: []
+    lineprotocol: 'down '
+    macaddress: 442b.039d.8130
+    mediatype: null
+    mtu: 1500
+    operstatus: administratively down
+    type: CN Gigabit Ethernet
+GigabitEthernet0/1:
+    bandwidth: 1000000
+    description: $ES_WAN$ WAN link to cable modem running
+        at 3400 up
+    duplex: Full
+    ipv4:
+    -   address: 173.15.218.100
+        subnet: '29'
+    lineprotocol: 'up '
+    macaddress: 442b.039d.8131
+    mediatype: RJ45
+    mtu: 1500
+    operstatus: up
+    type: CN Gigabit Ethernet
+Loopback0:
+    bandwidth: 8000000
+    description: Dynamic Routing Router-ID (OSPF)
+    duplex: null
+    ipv4:
+    -   address: 10.55.255.1
+        subnet: '32'
+    lineprotocol: 'up '
+    macaddress: null
+    mediatype: null
+    mtu: 1514
+    operstatus: up
+    type: null
+NVI0:
+    bandwidth: 56
+    description: null
+    duplex: null
+    ipv4: []
+    lineprotocol: 'up '
+    macaddress: null
+    mediatype: null
+    mtu: 1514
+    operstatus: up
+    type: null
+Tunnel1:
+    bandwidth: 100
+    description: P-t-P Protected GRE Tunnel
+    duplex: null
+    ipv4:
+    -   address: 192.168.250.6
+        subnet: '30'
+    lineprotocol: 'up '
+    macaddress: null
+    mediatype: null
+    mtu: 17916
+    operstatus: up
+    type: null
+...

@@ -1,0 +1,140 @@
+-   interface:
+        description: $ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$
+        mtu: '1500'
+        name: GigabitEthernet0/0
+        network: None
+        type: null
+        vlan: '1'
+-   interface:
+        description: MGMT Vlan 2
+        mtu: '1500'
+        name: GigabitEthernet0/0.2
+        network: 10.55.2.1/24
+        type: null
+        vlan: '2'
+-   interface:
+        description: DMZ Vlan 3
+        mtu: '1500'
+        name: GigabitEthernet0/0.3
+        network: 10.55.3.1/24
+        type: null
+        vlan: '3'
+-   interface:
+        description: Openstack VM Vlan 4
+        mtu: '1500'
+        name: GigabitEthernet0/0.4
+        network: 10.55.4.254/24
+        type: null
+        vlan: '4'
+-   interface:
+        description: Openstack OPS Vlan 5
+        mtu: '1500'
+        name: GigabitEthernet0/0.5
+        network: 10.55.5.1/24
+        type: null
+        vlan: '5'
+-   interface:
+        description: Storage Vlan 6
+        mtu: '1500'
+        name: GigabitEthernet0/0.6
+        network: 10.55.6.1/24
+        type: null
+        vlan: '6'
+-   interface:
+        description: Openstack Floating IP Vlan 8
+        mtu: '1500'
+        name: GigabitEthernet0/0.8
+        network: 10.55.8.254/24
+        type: null
+        vlan: '8'
+-   interface:
+        description: IPMI Vlan 101
+        mtu: '1500'
+        name: GigabitEthernet0/0.101
+        network: 10.55.101.1/24
+        type: null
+        vlan: '101'
+-   interface:
+        description: Provisioning Vlan 102
+        mtu: '1500'
+        name: GigabitEthernet0/0.102
+        network: 10.55.102.1/24
+        type: null
+        vlan: '102'
+-   interface:
+        description: API Vlan 103
+        mtu: '1500'
+        name: GigabitEthernet0/0.103
+        network: 10.55.103.1/24
+        type: null
+        vlan: '103'
+-   interface:
+        description: Tenant Vlan 104
+        mtu: '1500'
+        name: GigabitEthernet0/0.104
+        network: 10.55.104.1/24
+        type: null
+        vlan: '104'
+-   interface:
+        description: Storage Vlan 105
+        mtu: '1500'
+        name: GigabitEthernet0/0.105
+        network: 10.55.105.1/24
+        type: null
+        vlan: '105'
+-   interface:
+        description: Storage Mgmt Vlan 106
+        mtu: '1500'
+        name: GigabitEthernet0/0.106
+        network: 10.55.106.1/24
+        type: null
+        vlan: '106'
+-   interface:
+        description: External Vlan 107
+        mtu: '1500'
+        name: GigabitEthernet0/0.107
+        network: 10.55.107.1/24
+        type: null
+        vlan: '107'
+-   interface:
+        description: Float IP Vlan 108
+        mtu: '1500'
+        name: GigabitEthernet0/0.108
+        network: 10.55.108.1/24
+        type: null
+        vlan: '108'
+-   interface:
+        description: OpenVPN Vlan 109
+        mtu: '1500'
+        name: GigabitEthernet0/0.109
+        network: 10.55.109.1/24
+        type: null
+        vlan: '109'
+-   interface:
+        description: $ES_WAN$ WAN link to cable modem running at 3400 up
+        mtu: '1500'
+        name: GigabitEthernet0/1
+        network: 173.15.218.100/29
+        type: null
+        vlan: None
+-   interface:
+        description: Dynamic Routing Router-ID (OSPF)
+        mtu: '1514'
+        name: Loopback0
+        network: 10.55.255.1/32
+        type: null
+        vlan: None
+-   interface:
+        description: None
+        mtu: '1514'
+        name: NVI0
+        network: None
+        type: null
+        vlan: None
+-   interface:
+        description: P-t-P Protected GRE Tunnel
+        mtu: '17916'
+        name: Tunnel1
+        network: 192.168.250.6/30
+        type: null
+        vlan: None

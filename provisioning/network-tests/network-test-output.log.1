@@ -1,0 +1,1462 @@
+
+PLAY [Network Test] ************************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************
+ok: [grotto]
+
+TASK [ios_facts] ***************************************************************************************************************************
+ok: [grotto]
+
+TASK [Get the running-config] **************************************************************************************************************
+ok: [grotto]
+
+TASK [Save a backup of the running-config] *************************************************************************************************
+changed: [grotto]
+
+TASK [Run show interface, save it in a varible to parse] ***********************************************************************************
+ok: [grotto]
+
+TASK [Show the 'show interface' command. We will parse the output of this ourselves] *******************************************************
+ok: [grotto] => {
+    "showint.stdout_lines": [
+        [
+            "Embedded-Service-Engine0/0 is administratively down, line protocol is down ",
+            "  Hardware is Embedded Service Engine, address is 0000.0000.0000 (bia 0000.0000.0000)",
+            "  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation ARPA, loopback not set",
+            "  Keepalive set (10 sec)",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Last input never, output never, output hang never",
+            "  Last clearing of \"show interface\" counters never",
+            "  Input queue: 0/64/0/0 (size/max/drops/flushes); Total output drops: 0",
+            "  Queueing strategy: fifo",
+            "  Output queue: 0/40 (size/max)",
+            "  5 minute input rate 0 bits/sec, 0 packets/sec",
+            "  5 minute output rate 0 bits/sec, 0 packets/sec",
+            "     0 packets input, 0 bytes, 0 no buffer",
+            "     Received 0 broadcasts (0 IP multicasts)",
+            "     0 runts, 0 giants, 0 throttles",
+            "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored",
+            "     0 input packets with dribble condition detected",
+            "     0 packets output, 0 bytes, 0 underruns",
+            "     0 output errors, 0 collisions, 0 interface resets",
+            "     0 unknown protocol drops",
+            "     0 babbles, 0 late collision, 0 deferred",
+            "     0 lost carrier, 0 no carrier",
+            "     0 output buffer failures, 0 output buffers swapped out",
+            "GigabitEthernet0/0 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: $ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  1., loopback not set",
+            "  Keepalive set (10 sec)",
+            "  Full Duplex, 1Gbps, media type is RJ45",
+            "  output flow-control is unsupported, input flow-control is unsupported",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Last input 00:00:00, output 00:00:00, output hang never",
+            "  Last clearing of \"show interface\" counters never",
+            "  Input queue: 0/75/2/64321 (size/max/drops/flushes); Total output drops: 0",
+            "  Queueing strategy: fifo",
+            "  Output queue: 0/40 (size/max)",
+            "  5 minute input rate 15000 bits/sec, 17 packets/sec",
+            "  5 minute output rate 68000 bits/sec, 21 packets/sec",
+            "     4458273 packets input, 517939949 bytes, 0 no buffer",
+            "     Received 229291 broadcasts (12516 IP multicasts)",
+            "     0 runts, 0 giants, 2 throttles",
+            "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored",
+            "     0 watchdog, 32830 multicast, 0 pause input",
+            "     15283767 packets output, 4273266298 bytes, 0 underruns",
+            "     0 output errors, 0 collisions, 0 interface resets",
+            "     6806 unknown protocol drops",
+            "     0 babbles, 0 late collision, 0 deferred",
+            "     1 lost carrier, 0 no carrier, 0 pause output",
+            "     0 output buffer failures, 0 output buffers swapped out",
+            "GigabitEthernet0/0.2 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: MGMT Vlan 2",
+            "  Internet address is 10.55.2.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  2.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.3 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: DMZ Vlan 3",
+            "  Internet address is 10.55.3.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  3.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.4 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack VM Vlan 4",
+            "  Internet address is 10.55.4.254/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  4.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.5 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack OPS Vlan 5",
+            "  Internet address is 10.55.5.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  5.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.6 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Storage Vlan 6",
+            "  Internet address is 10.55.6.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  6.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.8 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack Floating IP Vlan 8",
+            "  Internet address is 10.55.8.254/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  8.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.9 is administratively down, line protocol is down ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack Vlan 9",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  9.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.10 is administratively down, line protocol is down ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack Private Network VLAN10",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  10.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.20 is administratively down, line protocol is down ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack Floating IP Vlan 20",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  20.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.21 is administratively down, line protocol is down ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Openstack Floating IP Vlan 21",
+            "  Internet address is 10.55.21.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  21.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.101 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: IPMI Vlan 101",
+            "  Internet address is 10.55.101.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  101.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.102 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Provisioning Vlan 102",
+            "  Internet address is 10.55.102.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  102.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.103 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: API Vlan 103",
+            "  Internet address is 10.55.103.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  103.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.104 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Tenant Vlan 104",
+            "  Internet address is 10.55.104.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  104.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.105 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Storage Vlan 105",
+            "  Internet address is 10.55.105.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  105.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.106 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Storage Mgmt Vlan 106",
+            "  Internet address is 10.55.106.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  106.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.107 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: External Vlan 107",
+            "  Internet address is 10.55.107.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  107.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.108 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: Float IP Vlan 108",
+            "  Internet address is 10.55.108.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  108.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/0.109 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8130 (bia 442b.039d.8130)",
+            "  Description: OpenVPN Vlan 109",
+            "  Internet address is 10.55.109.1/24",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation 802.1Q Virtual LAN, Vlan ID  109.",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Keepalive set (10 sec)",
+            "  Last clearing of \"show interface\" counters never",
+            "GigabitEthernet0/1 is up, line protocol is up ",
+            "  Hardware is CN Gigabit Ethernet, address is 442b.039d.8131 (bia 442b.039d.8131)",
+            "  Description: $ES_WAN$ WAN link to cable modem running at 3400 up",
+            "  Internet address is 173.15.218.100/29",
+            "  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation ARPA, loopback not set",
+            "  Keepalive set (10 sec)",
+            "  Full Duplex, 1Gbps, media type is RJ45",
+            "  output flow-control is XON, input flow-control is XON",
+            "  ARP type: ARPA, ARP Timeout 04:00:00",
+            "  Last input 00:00:00, output 00:00:00, output hang never",
+            "  Last clearing of \"show interface\" counters never",
+            "  Input queue: 0/75/0/445 (size/max/drops/flushes); Total output drops: 0",
+            "  Queueing strategy: fifo",
+            "  Output queue: 0/40 (size/max)",
+            "  5 minute input rate 61000 bits/sec, 17 packets/sec",
+            "  5 minute output rate 11000 bits/sec, 16 packets/sec",
+            "     15639323 packets input, 4225724249 bytes, 80 no buffer",
+            "     Received 9586 broadcasts (0 IP multicasts)",
+            "     0 runts, 0 giants, 3 throttles",
+            "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored",
+            "     0 watchdog, 0 multicast, 0 pause input",
+            "     4931271 packets output, 487850376 bytes, 0 underruns",
+            "     0 output errors, 0 collisions, 0 interface resets",
+            "     33 unknown protocol drops",
+            "     0 babbles, 0 late collision, 0 deferred",
+            "     3 lost carrier, 0 no carrier, 1495582 pause output",
+            "     0 output buffer failures, 0 output buffers swapped out",
+            "Loopback0 is up, line protocol is up ",
+            "  Hardware is Loopback",
+            "  Description: Dynamic Routing Router-ID (OSPF)",
+            "  Internet address is 10.55.255.1/32",
+            "  MTU 1514 bytes, BW 8000000 Kbit/sec, DLY 5000 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation LOOPBACK, loopback not set",
+            "  Keepalive set (10 sec)",
+            "  Last input never, output never, output hang never",
+            "  Last clearing of \"show interface\" counters never",
+            "  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0",
+            "  Queueing strategy: fifo",
+            "  Output queue: 0/0 (size/max)",
+            "  5 minute input rate 0 bits/sec, 0 packets/sec",
+            "  5 minute output rate 0 bits/sec, 0 packets/sec",
+            "     0 packets input, 0 bytes, 0 no buffer",
+            "     Received 0 broadcasts (0 IP multicasts)",
+            "     0 runts, 0 giants, 0 throttles",
+            "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort",
+            "     0 packets output, 0 bytes, 0 underruns",
+            "     0 output errors, 0 collisions, 0 interface resets",
+            "     0 unknown protocol drops",
+            "     0 output buffer failures, 0 output buffers swapped out",
+            "NVI0 is up, line protocol is up ",
+            "  Hardware is NVI",
+            "  Interface is unnumbered. Using address of Loopback0 (10.55.255.1)",
+            "  MTU 1514 bytes, BW 56 Kbit/sec, DLY 5000 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation UNKNOWN, loopback not set",
+            "  Keepalive set (10 sec)",
+            "  Last input never, output never, output hang never",
+            "  Last clearing of \"show interface\" counters never",
+            "  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0",
+            "  5 minute input rate 0 bits/sec, 0 packets/sec",
+            "  5 minute output rate 0 bits/sec, 0 packets/sec",
+            "     0 packets input, 0 bytes, 0 no buffer",
+            "     Received 0 broadcasts (0 IP multicasts)",
+            "     0 runts, 0 giants, 0 throttles",
+            "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort",
+            "     0 packets output, 0 bytes, 0 underruns",
+            "     0 output errors, 0 collisions, 0 interface resets",
+            "     0 unknown protocol drops",
+            "     0 output buffer failures, 0 output buffers swapped out",
+            "Tunnel1 is up, line protocol is up ",
+            "  Hardware is Tunnel",
+            "  Description: P-t-P Protected GRE Tunnel",
+            "  Internet address is 192.168.250.6/30",
+            "  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, ",
+            "     reliability 255/255, txload 1/255, rxload 1/255",
+            "  Encapsulation TUNNEL, loopback not set",
+            "  Keepalive not set",
+            "  Tunnel source 173.15.218.100 (GigabitEthernet0/1), destination 50.79.229.141",
+            "   Tunnel Subblocks:",
+            "      src-track:",
+            "         Tunnel1 source tracking subblock associated with GigabitEthernet0/1",
+            "          Set of tunnels with source GigabitEthernet0/1, 1 member (includes iterators), on interface <OK>",
+            "  Tunnel protocol/transport GRE/IP",
+            "    Key disabled, sequencing disabled",
+            "    Checksumming of packets disabled",
+            "  Tunnel TTL 255, Fast tunneling enabled",
+            "  Tunnel transport MTU 1476 bytes",
+            "  Egress flow records enabled",
+            "  Tunnel transmit bandwidth 8000 (kbps)",
+            "  Tunnel receive bandwidth 8000 (kbps)",
+            "  Last input never, output 00:00:05, output hang never",
+            "  Last clearing of \"show interface\" counters never",
+            "  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0",
+            "  Queueing strategy: fifo",
+            "  Output queue: 0/0 (size/max)",
+            "  5 minute input rate 0 bits/sec, 0 packets/sec",
+            "  5 minute output rate 0 bits/sec, 0 packets/sec",
+            "     0 packets input, 0 bytes, 0 no buffer",
+            "     Received 0 broadcasts (0 IP multicasts)",
+            "     0 runts, 0 giants, 0 throttles",
+            "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort",
+            "     14312 packets output, 1431200 bytes, 0 underruns",
+            "     0 output errors, 0 collisions, 0 interface resets",
+            "     0 unknown protocol drops",
+            "     0 output buffer failures, 0 output buffers swapped out"
+        ]
+    ]
+}
+
+TASK [parse the raw output method 2] *******************************************************************************************************
+ok: [grotto]
+
+TASK [Show the parsed output] **************************************************************************************************************
+ok: [grotto] => {
+    "interface_facts": [
+        {
+            "interface": {
+                "description": "$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0",
+                "network": "None",
+                "type": null,
+                "vlan": "1"
+            }
+        },
+        {
+            "interface": {
+                "description": "MGMT Vlan 2",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.2",
+                "network": "10.55.2.1/24",
+                "type": null,
+                "vlan": "2"
+            }
+        },
+        {
+            "interface": {
+                "description": "DMZ Vlan 3",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.3",
+                "network": "10.55.3.1/24",
+                "type": null,
+                "vlan": "3"
+            }
+        },
+        {
+            "interface": {
+                "description": "Openstack VM Vlan 4",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.4",
+                "network": "10.55.4.254/24",
+                "type": null,
+                "vlan": "4"
+            }
+        },
+        {
+            "interface": {
+                "description": "Openstack OPS Vlan 5",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.5",
+                "network": "10.55.5.1/24",
+                "type": null,
+                "vlan": "5"
+            }
+        },
+        {
+            "interface": {
+                "description": "Storage Vlan 6",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.6",
+                "network": "10.55.6.1/24",
+                "type": null,
+                "vlan": "6"
+            }
+        },
+        {
+            "interface": {
+                "description": "Openstack Floating IP Vlan 8",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.8",
+                "network": "10.55.8.254/24",
+                "type": null,
+                "vlan": "8"
+            }
+        },
+        {
+            "interface": {
+                "description": "IPMI Vlan 101",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.101",
+                "network": "10.55.101.1/24",
+                "type": null,
+                "vlan": "101"
+            }
+        },
+        {
+            "interface": {
+                "description": "Provisioning Vlan 102",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.102",
+                "network": "10.55.102.1/24",
+                "type": null,
+                "vlan": "102"
+            }
+        },
+        {
+            "interface": {
+                "description": "API Vlan 103",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.103",
+                "network": "10.55.103.1/24",
+                "type": null,
+                "vlan": "103"
+            }
+        },
+        {
+            "interface": {
+                "description": "Tenant Vlan 104",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.104",
+                "network": "10.55.104.1/24",
+                "type": null,
+                "vlan": "104"
+            }
+        },
+        {
+            "interface": {
+                "description": "Storage Vlan 105",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.105",
+                "network": "10.55.105.1/24",
+                "type": null,
+                "vlan": "105"
+            }
+        },
+        {
+            "interface": {
+                "description": "Storage Mgmt Vlan 106",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.106",
+                "network": "10.55.106.1/24",
+                "type": null,
+                "vlan": "106"
+            }
+        },
+        {
+            "interface": {
+                "description": "External Vlan 107",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.107",
+                "network": "10.55.107.1/24",
+                "type": null,
+                "vlan": "107"
+            }
+        },
+        {
+            "interface": {
+                "description": "Float IP Vlan 108",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.108",
+                "network": "10.55.108.1/24",
+                "type": null,
+                "vlan": "108"
+            }
+        },
+        {
+            "interface": {
+                "description": "OpenVPN Vlan 109",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/0.109",
+                "network": "10.55.109.1/24",
+                "type": null,
+                "vlan": "109"
+            }
+        },
+        {
+            "interface": {
+                "description": "$ES_WAN$ WAN link to cable modem running at 3400 up",
+                "mtu": "1500",
+                "name": "GigabitEthernet0/1",
+                "network": "173.15.218.100/29",
+                "type": null,
+                "vlan": "None"
+            }
+        },
+        {
+            "interface": {
+                "description": "Dynamic Routing Router-ID (OSPF)",
+                "mtu": "1514",
+                "name": "Loopback0",
+                "network": "10.55.255.1/32",
+                "type": null,
+                "vlan": "None"
+            }
+        },
+        {
+            "interface": {
+                "description": "None",
+                "mtu": "1514",
+                "name": "NVI0",
+                "network": "None",
+                "type": null,
+                "vlan": "None"
+            }
+        },
+        {
+            "interface": {
+                "description": "P-t-P Protected GRE Tunnel",
+                "mtu": "17916",
+                "name": "Tunnel1",
+                "network": "192.168.250.6/30",
+                "type": null,
+                "vlan": "None"
+            }
+        }
+    ]
+}
+
+TASK [Save the parsed output of interface_facts] *******************************************************************************************
+ok: [grotto]
+
+TASK [Save the parsed output of ansible_net_interfaces] ************************************************************************************
+ok: [grotto]
+
+TASK [Save the parsed output of ansible_net_config] ****************************************************************************************
+changed: [grotto]
+
+TASK [Show the regular old unparsed ansible_net_interfaces variable generated by ios_facts] ************************************************
+ok: [grotto] => {
+    "ansible_net_interfaces": {
+        "Embedded-Service-Engine0/0": {
+            "bandwidth": 10000,
+            "description": null,
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": "down ",
+            "macaddress": "0000.0000.0000",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "administratively down",
+            "type": "Embedded Service Engine"
+        },
+        "GigabitEthernet0/0": {
+            "bandwidth": 1000000,
+            "description": "$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$",
+            "duplex": "Full",
+            "ipv4": [],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": "RJ45",
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.10": {
+            "bandwidth": 1000000,
+            "description": "Openstack Private Network VLAN10",
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": "down ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "administratively down",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.101": {
+            "bandwidth": 1000000,
+            "description": "IPMI Vlan 101",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.101.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.102": {
+            "bandwidth": 1000000,
+            "description": "Provisioning Vlan 102",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.102.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.103": {
+            "bandwidth": 1000000,
+            "description": "API Vlan 103",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.103.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.104": {
+            "bandwidth": 1000000,
+            "description": "Tenant Vlan 104",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.104.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.105": {
+            "bandwidth": 1000000,
+            "description": "Storage Vlan 105",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.105.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.106": {
+            "bandwidth": 1000000,
+            "description": "Storage Mgmt Vlan 106",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.106.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.107": {
+            "bandwidth": 1000000,
+            "description": "External Vlan 107",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.107.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.108": {
+            "bandwidth": 1000000,
+            "description": "Float IP Vlan 108",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.108.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.109": {
+            "bandwidth": 1000000,
+            "description": "OpenVPN Vlan 109",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.109.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.2": {
+            "bandwidth": 1000000,
+            "description": "MGMT Vlan 2",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.2.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.20": {
+            "bandwidth": 1000000,
+            "description": "Openstack Floating IP Vlan 20",
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": "down ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "administratively down",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.21": {
+            "bandwidth": 1000000,
+            "description": "Openstack Floating IP Vlan 21",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.21.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "down ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "administratively down",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.3": {
+            "bandwidth": 1000000,
+            "description": "DMZ Vlan 3",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.3.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.4": {
+            "bandwidth": 1000000,
+            "description": "Openstack VM Vlan 4",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.4.254",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.5": {
+            "bandwidth": 1000000,
+            "description": "Openstack OPS Vlan 5",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.5.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.6": {
+            "bandwidth": 1000000,
+            "description": "Storage Vlan 6",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.6.1",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.8": {
+            "bandwidth": 1000000,
+            "description": "Openstack Floating IP Vlan 8",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.8.254",
+                    "subnet": "24"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/0.9": {
+            "bandwidth": 1000000,
+            "description": "Openstack Vlan 9",
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": "down ",
+            "macaddress": "442b.039d.8130",
+            "mediatype": null,
+            "mtu": 1500,
+            "operstatus": "administratively down",
+            "type": "CN Gigabit Ethernet"
+        },
+        "GigabitEthernet0/1": {
+            "bandwidth": 1000000,
+            "description": "$ES_WAN$ WAN link to cable modem running at 3400 up",
+            "duplex": "Full",
+            "ipv4": [
+                {
+                    "address": "173.15.218.100",
+                    "subnet": "29"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": "442b.039d.8131",
+            "mediatype": "RJ45",
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "CN Gigabit Ethernet"
+        },
+        "Loopback0": {
+            "bandwidth": 8000000,
+            "description": "Dynamic Routing Router-ID (OSPF)",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "10.55.255.1",
+                    "subnet": "32"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": null,
+            "mediatype": null,
+            "mtu": 1514,
+            "operstatus": "up",
+            "type": null
+        },
+        "NVI0": {
+            "bandwidth": 56,
+            "description": null,
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": "up ",
+            "macaddress": null,
+            "mediatype": null,
+            "mtu": 1514,
+            "operstatus": "up",
+            "type": null
+        },
+        "Tunnel1": {
+            "bandwidth": 100,
+            "description": "P-t-P Protected GRE Tunnel",
+            "duplex": null,
+            "ipv4": [
+                {
+                    "address": "192.168.250.6",
+                    "subnet": "30"
+                }
+            ],
+            "lineprotocol": "up ",
+            "macaddress": null,
+            "mediatype": null,
+            "mtu": 17916,
+            "operstatus": "up",
+            "type": null
+        }
+    }
+}
+
+TASK [Show all the entries with Vlans in description] **************************************************************************************
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0', 'type': None, 'mtu': '1500', 'description': '$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$', 'vlan': '1', 'network': 'None'}}) 
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.2', 'type': None, 'mtu': '1500', 'description': 'MGMT Vlan 2', 'vlan': '2', 'network': '10.55.2.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "MGMT Vlan 2",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.2",
+            "network": "10.55.2.1/24",
+            "type": null,
+            "vlan": "2"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.3', 'type': None, 'mtu': '1500', 'description': 'DMZ Vlan 3', 'vlan': '3', 'network': '10.55.3.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "DMZ Vlan 3",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.3",
+            "network": "10.55.3.1/24",
+            "type": null,
+            "vlan": "3"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.4', 'type': None, 'mtu': '1500', 'description': 'Openstack VM Vlan 4', 'vlan': '4', 'network': '10.55.4.254/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Openstack VM Vlan 4",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.4",
+            "network": "10.55.4.254/24",
+            "type": null,
+            "vlan": "4"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.5', 'type': None, 'mtu': '1500', 'description': 'Openstack OPS Vlan 5', 'vlan': '5', 'network': '10.55.5.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Openstack OPS Vlan 5",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.5",
+            "network": "10.55.5.1/24",
+            "type": null,
+            "vlan": "5"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.6', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 6', 'vlan': '6', 'network': '10.55.6.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Storage Vlan 6",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.6",
+            "network": "10.55.6.1/24",
+            "type": null,
+            "vlan": "6"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.8', 'type': None, 'mtu': '1500', 'description': 'Openstack Floating IP Vlan 8', 'vlan': '8', 'network': '10.55.8.254/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Openstack Floating IP Vlan 8",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.8",
+            "network": "10.55.8.254/24",
+            "type": null,
+            "vlan": "8"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.101', 'type': None, 'mtu': '1500', 'description': 'IPMI Vlan 101', 'vlan': '101', 'network': '10.55.101.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "IPMI Vlan 101",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.101",
+            "network": "10.55.101.1/24",
+            "type": null,
+            "vlan": "101"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.102', 'type': None, 'mtu': '1500', 'description': 'Provisioning Vlan 102', 'vlan': '102', 'network': '10.55.102.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Provisioning Vlan 102",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.102",
+            "network": "10.55.102.1/24",
+            "type": null,
+            "vlan": "102"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.103', 'type': None, 'mtu': '1500', 'description': 'API Vlan 103', 'vlan': '103', 'network': '10.55.103.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "API Vlan 103",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.103",
+            "network": "10.55.103.1/24",
+            "type": null,
+            "vlan": "103"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.104', 'type': None, 'mtu': '1500', 'description': 'Tenant Vlan 104', 'vlan': '104', 'network': '10.55.104.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Tenant Vlan 104",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.104",
+            "network": "10.55.104.1/24",
+            "type": null,
+            "vlan": "104"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.105', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 105', 'vlan': '105', 'network': '10.55.105.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Storage Vlan 105",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.105",
+            "network": "10.55.105.1/24",
+            "type": null,
+            "vlan": "105"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.106', 'type': None, 'mtu': '1500', 'description': 'Storage Mgmt Vlan 106', 'vlan': '106', 'network': '10.55.106.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Storage Mgmt Vlan 106",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.106",
+            "network": "10.55.106.1/24",
+            "type": null,
+            "vlan": "106"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.107', 'type': None, 'mtu': '1500', 'description': 'External Vlan 107', 'vlan': '107', 'network': '10.55.107.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "External Vlan 107",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.107",
+            "network": "10.55.107.1/24",
+            "type": null,
+            "vlan": "107"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.108', 'type': None, 'mtu': '1500', 'description': 'Float IP Vlan 108', 'vlan': '108', 'network': '10.55.108.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "Float IP Vlan 108",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.108",
+            "network": "10.55.108.1/24",
+            "type": null,
+            "vlan": "108"
+        }
+    }
+}
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.109', 'type': None, 'mtu': '1500', 'description': 'OpenVPN Vlan 109', 'vlan': '109', 'network': '10.55.109.1/24'}}) => {
+    "item": {
+        "interface": {
+            "description": "OpenVPN Vlan 109",
+            "mtu": "1500",
+            "name": "GigabitEthernet0/0.109",
+            "network": "10.55.109.1/24",
+            "type": null,
+            "vlan": "109"
+        }
+    }
+}
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/1', 'type': None, 'mtu': '1500', 'description': '$ES_WAN$ WAN link to cable modem running at 3400 up', 'vlan': 'None', 'network': '173.15.218.100/29'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Loopback0', 'type': None, 'mtu': '1514', 'description': 'Dynamic Routing Router-ID (OSPF)', 'vlan': 'None', 'network': '10.55.255.1/32'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'NVI0', 'type': None, 'mtu': '1514', 'description': 'None', 'vlan': 'None', 'network': 'None'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Tunnel1', 'type': None, 'mtu': '17916', 'description': 'P-t-P Protected GRE Tunnel', 'vlan': 'None', 'network': '192.168.250.6/30'}}) 
+
+TASK [Set vlaninterfaces fact to create a list of interfaces with Vlans in description] ****************************************************
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0', 'type': None, 'mtu': '1500', 'description': '$ETH-LAN$$ETH-SW-LAUNCH$$INTF-INFO-GE 0/0$                         $ES_LAN$', 'vlan': '1', 'network': 'None'}}) 
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.2', 'type': None, 'mtu': '1500', 'description': 'MGMT Vlan 2', 'vlan': '2', 'network': '10.55.2.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.3', 'type': None, 'mtu': '1500', 'description': 'DMZ Vlan 3', 'vlan': '3', 'network': '10.55.3.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.4', 'type': None, 'mtu': '1500', 'description': 'Openstack VM Vlan 4', 'vlan': '4', 'network': '10.55.4.254/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.5', 'type': None, 'mtu': '1500', 'description': 'Openstack OPS Vlan 5', 'vlan': '5', 'network': '10.55.5.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.6', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 6', 'vlan': '6', 'network': '10.55.6.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.8', 'type': None, 'mtu': '1500', 'description': 'Openstack Floating IP Vlan 8', 'vlan': '8', 'network': '10.55.8.254/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.101', 'type': None, 'mtu': '1500', 'description': 'IPMI Vlan 101', 'vlan': '101', 'network': '10.55.101.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.102', 'type': None, 'mtu': '1500', 'description': 'Provisioning Vlan 102', 'vlan': '102', 'network': '10.55.102.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.103', 'type': None, 'mtu': '1500', 'description': 'API Vlan 103', 'vlan': '103', 'network': '10.55.103.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.104', 'type': None, 'mtu': '1500', 'description': 'Tenant Vlan 104', 'vlan': '104', 'network': '10.55.104.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.105', 'type': None, 'mtu': '1500', 'description': 'Storage Vlan 105', 'vlan': '105', 'network': '10.55.105.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.106', 'type': None, 'mtu': '1500', 'description': 'Storage Mgmt Vlan 106', 'vlan': '106', 'network': '10.55.106.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.107', 'type': None, 'mtu': '1500', 'description': 'External Vlan 107', 'vlan': '107', 'network': '10.55.107.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.108', 'type': None, 'mtu': '1500', 'description': 'Float IP Vlan 108', 'vlan': '108', 'network': '10.55.108.1/24'}})
+ok: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/0.109', 'type': None, 'mtu': '1500', 'description': 'OpenVPN Vlan 109', 'vlan': '109', 'network': '10.55.109.1/24'}})
+skipping: [grotto] => (item={'interface': {'name': 'GigabitEthernet0/1', 'type': None, 'mtu': '1500', 'description': '$ES_WAN$ WAN link to cable modem running at 3400 up', 'vlan': 'None', 'network': '173.15.218.100/29'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Loopback0', 'type': None, 'mtu': '1514', 'description': 'Dynamic Routing Router-ID (OSPF)', 'vlan': 'None', 'network': '10.55.255.1/32'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'NVI0', 'type': None, 'mtu': '1514', 'description': 'None', 'vlan': 'None', 'network': 'None'}}) 
+skipping: [grotto] => (item={'interface': {'name': 'Tunnel1', 'type': None, 'mtu': '17916', 'description': 'P-t-P Protected GRE Tunnel', 'vlan': 'None', 'network': '192.168.250.6/30'}}) 
+
+TASK [Show all the Vlan entries made from set_fact] ****************************************************************************************
+ok: [grotto] => {
+    "vlaninterfaces": [
+        "GigabitEthernet0/0.2",
+        "GigabitEthernet0/0.3",
+        "GigabitEthernet0/0.4",
+        "GigabitEthernet0/0.5",
+        "GigabitEthernet0/0.6",
+        "GigabitEthernet0/0.8",
+        "GigabitEthernet0/0.101",
+        "GigabitEthernet0/0.102",
+        "GigabitEthernet0/0.103",
+        "GigabitEthernet0/0.104",
+        "GigabitEthernet0/0.105",
+        "GigabitEthernet0/0.106",
+        "GigabitEthernet0/0.107",
+        "GigabitEthernet0/0.108",
+        "GigabitEthernet0/0.109"
+    ]
+}
+
+TASK [Gather the running config from each interface] ***************************************************************************************
+ok: [grotto] => (item=GigabitEthernet0/0.2)
+ok: [grotto] => (item=GigabitEthernet0/0.3)
+ok: [grotto] => (item=GigabitEthernet0/0.4)
+ok: [grotto] => (item=GigabitEthernet0/0.5)
+ok: [grotto] => (item=GigabitEthernet0/0.6)
+ok: [grotto] => (item=GigabitEthernet0/0.8)
+ok: [grotto] => (item=GigabitEthernet0/0.101)
+ok: [grotto] => (item=GigabitEthernet0/0.102)
+ok: [grotto] => (item=GigabitEthernet0/0.103)
+ok: [grotto] => (item=GigabitEthernet0/0.104)
+ok: [grotto] => (item=GigabitEthernet0/0.105)
+ok: [grotto] => (item=GigabitEthernet0/0.106)
+ok: [grotto] => (item=GigabitEthernet0/0.107)
+ok: [grotto] => (item=GigabitEthernet0/0.108)
+ok: [grotto] => (item=GigabitEthernet0/0.109)
+
+TASK [Show all the run config for interfaces] **********************************************************************************************
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.2'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 256 bytes', '!', 'interface GigabitEthernet0/0.2', ' description MGMT Vlan 2', ' encapsulation dot1Q 2 native', ' ip dhcp relay information trusted', ' ip address 10.55.2.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 256 bytes\n!\ninterface GigabitEthernet0/0.2\n description MGMT Vlan 2\n encapsulation dot1Q 2 native\n ip dhcp relay information trusted\n ip address 10.55.2.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.2', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.2'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.3'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 213 bytes', '!', 'interface GigabitEthernet0/0.3', ' description DMZ Vlan 3', ' encapsulation dot1Q 3', ' ip address 10.55.3.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 213 bytes\n!\ninterface GigabitEthernet0/0.3\n description DMZ Vlan 3\n encapsulation dot1Q 3\n ip address 10.55.3.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.3', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.3'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.4'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 224 bytes', '!', 'interface GigabitEthernet0/0.4', ' description Openstack VM Vlan 4', ' encapsulation dot1Q 4', ' ip address 10.55.4.254 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 224 bytes\n!\ninterface GigabitEthernet0/0.4\n description Openstack VM Vlan 4\n encapsulation dot1Q 4\n ip address 10.55.4.254 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.4', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.4'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.5'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 223 bytes', '!', 'interface GigabitEthernet0/0.5', ' description Openstack OPS Vlan 5', ' encapsulation dot1Q 5', ' ip address 10.55.5.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 223 bytes\n!\ninterface GigabitEthernet0/0.5\n description Openstack OPS Vlan 5\n encapsulation dot1Q 5\n ip address 10.55.5.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.5', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.5'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.6'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 217 bytes', '!', 'interface GigabitEthernet0/0.6', ' description Storage Vlan 6', ' encapsulation dot1Q 6', ' ip address 10.55.6.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 217 bytes\n!\ninterface GigabitEthernet0/0.6\n description Storage Vlan 6\n encapsulation dot1Q 6\n ip address 10.55.6.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.6', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.6'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.8'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 233 bytes', '!', 'interface GigabitEthernet0/0.8', ' description Openstack Floating IP Vlan 8', ' encapsulation dot1Q 8', ' ip address 10.55.8.254 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 233 bytes\n!\ninterface GigabitEthernet0/0.8\n description Openstack Floating IP Vlan 8\n encapsulation dot1Q 8\n ip address 10.55.8.254 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.8', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.8'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.101'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 222 bytes', '!', 'interface GigabitEthernet0/0.101', ' description IPMI Vlan 101', ' encapsulation dot1Q 101', ' ip address 10.55.101.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 222 bytes\n!\ninterface GigabitEthernet0/0.101\n description IPMI Vlan 101\n encapsulation dot1Q 101\n ip address 10.55.101.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.101', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.101'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.102'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 230 bytes', '!', 'interface GigabitEthernet0/0.102', ' description Provisioning Vlan 102', ' encapsulation dot1Q 102', ' ip address 10.55.102.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 230 bytes\n!\ninterface GigabitEthernet0/0.102\n description Provisioning Vlan 102\n encapsulation dot1Q 102\n ip address 10.55.102.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.102', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.102'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.103'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 221 bytes', '!', 'interface GigabitEthernet0/0.103', ' description API Vlan 103', ' encapsulation dot1Q 103', ' ip address 10.55.103.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 221 bytes\n!\ninterface GigabitEthernet0/0.103\n description API Vlan 103\n encapsulation dot1Q 103\n ip address 10.55.103.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.103', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.103'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.104'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 224 bytes', '!', 'interface GigabitEthernet0/0.104', ' description Tenant Vlan 104', ' encapsulation dot1Q 104', ' ip address 10.55.104.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 224 bytes\n!\ninterface GigabitEthernet0/0.104\n description Tenant Vlan 104\n encapsulation dot1Q 104\n ip address 10.55.104.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.104', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.104'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.105'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 225 bytes', '!', 'interface GigabitEthernet0/0.105', ' description Storage Vlan 105', ' encapsulation dot1Q 105', ' ip address 10.55.105.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 225 bytes\n!\ninterface GigabitEthernet0/0.105\n description Storage Vlan 105\n encapsulation dot1Q 105\n ip address 10.55.105.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.105', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.105'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.106'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 230 bytes', '!', 'interface GigabitEthernet0/0.106', ' description Storage Mgmt Vlan 106', ' encapsulation dot1Q 106', ' ip address 10.55.106.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 230 bytes\n!\ninterface GigabitEthernet0/0.106\n description Storage Mgmt Vlan 106\n encapsulation dot1Q 106\n ip address 10.55.106.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.106', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.106'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.107'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 226 bytes', '!', 'interface GigabitEthernet0/0.107', ' description External Vlan 107', ' encapsulation dot1Q 107', ' ip address 10.55.107.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 226 bytes\n!\ninterface GigabitEthernet0/0.107\n description External Vlan 107\n encapsulation dot1Q 107\n ip address 10.55.107.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.107', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.107'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.108'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 226 bytes', '!', 'interface GigabitEthernet0/0.108', ' description Float IP Vlan 108', ' encapsulation dot1Q 108', ' ip address 10.55.108.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 226 bytes\n!\ninterface GigabitEthernet0/0.108\n description Float IP Vlan 108\n encapsulation dot1Q 108\n ip address 10.55.108.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.108', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.108'})
+ok: [grotto] => (item={'invocation': {'module_args': {'username': None, 'authorize': None, 'commands': ['show run interface GigabitEthernet0/0.109'], 'ssh_keyfile': None, 'retries': 10, 'auth_pass': None, 'interval': 1, 'host': None, 'timeout': None, 'provider': None, 'password': None, 'wait_for': None, 'port': None, 'match': 'all'}}, 'stdout_lines': [['Building configuration...', '', 'Current configuration : 225 bytes', '!', 'interface GigabitEthernet0/0.109', ' description OpenVPN Vlan 109', ' encapsulation dot1Q 109', ' ip address 10.55.109.1 255.255.255.0', ' ip pim dense-mode', ' ip flow ingress', ' ip nat inside', ' ip virtual-reassembly in', ' no cdp enable', 'end']], 'changed': False, 'stdout': ['Building configuration...\n\nCurrent configuration : 225 bytes\n!\ninterface GigabitEthernet0/0.109\n description OpenVPN Vlan 109\n encapsulation dot1Q 109\n ip address 10.55.109.1 255.255.255.0\n ip pim dense-mode\n ip flow ingress\n ip nat inside\n ip virtual-reassembly in\n no cdp enable\nend'], '_ansible_parsed': True, '_ansible_no_log': False, 'failed': False, 'item': 'GigabitEthernet0/0.109', '_ansible_item_result': True, '_ansible_ignore_errors': None, '_ansible_item_label': 'GigabitEthernet0/0.109'})
+
+TASK [Show all the show run entries made from set_fact] ************************************************************************************
+ok: [grotto] => {
+    "intrunconfig_list": [
+        [
+            "interface GigabitEthernet0/0.2",
+            " description MGMT Vlan 2",
+            " encapsulation dot1Q 2 native",
+            " ip dhcp relay information trusted",
+            " ip address 10.55.2.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.3",
+            " description DMZ Vlan 3",
+            " encapsulation dot1Q 3",
+            " ip address 10.55.3.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.4",
+            " description Openstack VM Vlan 4",
+            " encapsulation dot1Q 4",
+            " ip address 10.55.4.254 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.5",
+            " description Openstack OPS Vlan 5",
+            " encapsulation dot1Q 5",
+            " ip address 10.55.5.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.6",
+            " description Storage Vlan 6",
+            " encapsulation dot1Q 6",
+            " ip address 10.55.6.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.8",
+            " description Openstack Floating IP Vlan 8",
+            " encapsulation dot1Q 8",
+            " ip address 10.55.8.254 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.101",
+            " description IPMI Vlan 101",
+            " encapsulation dot1Q 101",
+            " ip address 10.55.101.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.102",
+            " description Provisioning Vlan 102",
+            " encapsulation dot1Q 102",
+            " ip address 10.55.102.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.103",
+            " description API Vlan 103",
+            " encapsulation dot1Q 103",
+            " ip address 10.55.103.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.104",
+            " description Tenant Vlan 104",
+            " encapsulation dot1Q 104",
+            " ip address 10.55.104.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.105",
+            " description Storage Vlan 105",
+            " encapsulation dot1Q 105",
+            " ip address 10.55.105.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.106",
+            " description Storage Mgmt Vlan 106",
+            " encapsulation dot1Q 106",
+            " ip address 10.55.106.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.107",
+            " description External Vlan 107",
+            " encapsulation dot1Q 107",
+            " ip address 10.55.107.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.108",
+            " description Float IP Vlan 108",
+            " encapsulation dot1Q 108",
+            " ip address 10.55.108.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ],
+        [
+            "interface GigabitEthernet0/0.109",
+            " description OpenVPN Vlan 109",
+            " encapsulation dot1Q 109",
+            " ip address 10.55.109.1 255.255.255.0",
+            " ip pim dense-mode",
+            " ip flow ingress",
+            " ip nat inside",
+            " ip virtual-reassembly in",
+            " no cdp enable",
+            "end"
+        ]
+    ]
+}
+
+TASK [Save the show run for each interface output in yaml, please run cleanup-intrunconfig-file.sh to make it valid] ***********************
+changed: [grotto]
+
+TASK [Test fact for removing static nat entry] *********************************************************************************************
+ok: [grotto]
+
+TASK [Remove a static nat entry from config] ***********************************************************************************************
+changed: [grotto]
+
+TASK [Test fact for adding static nat entry] ***********************************************************************************************
+ok: [grotto]
+
+TASK [Add a static nat entry to config] ****************************************************************************************************
+skipping: [grotto]
+
+PLAY RECAP *********************************************************************************************************************************
+grotto                     : ok=22   changed=4    unreachable=0    failed=0   
+
