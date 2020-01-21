@@ -1,5 +1,6 @@
 ---
 - name: "Check if we are entitled for Satellite"
+  become: yes
   shell: "subscription-manager list --consumed"
   args:
     executable: /bin/bash
