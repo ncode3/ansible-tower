@@ -1,5 +1,5 @@
 ---
-satellite_version: 6-beta
+satellite_version: 6.6
 openstack_version: 13
 openshift_version: 3.11
 redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
@@ -7,7 +7,7 @@ dns_domain: "dev.maskedadmins.com"
 compute_resources:
 #  - name: 'OSP8 Redhat Lab'
 #    description: 'Openstack 8 Redhat Lab'
-#    user: 'dtaylor'
+#    user: 'dtaylor'`
 #    pass: "{{ ipmi_pass }}"
 #    tenant: "Redhat Lab"
 #    controller: "{{ osp8_controller }}"
@@ -110,7 +110,7 @@ sat6:
         - "Prod_106"
 tower_key: firstboot
 tower_server: "{{ default_tower_server }}"
-tower_jobid: 11
+tower_jobid: 14
 sat6_default_org: Redhat_Lab
 sat6_default_location: Private_Cloud
 sat6_default_hostcollection: RHEL_7_x86_64
