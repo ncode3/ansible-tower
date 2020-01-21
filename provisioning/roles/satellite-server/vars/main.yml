@@ -151,8 +151,8 @@ sat6_enabled_repos_tools:
 sat6_enabled_repos_openstack:
   - name: "Red Hat OpenStack Platform {{ openstack_version }} for RHEL 7 (RPMs)"
     product: "Red Hat OpenStack"
-  - name: "Red Hat OpenStack Platform {{ openstack_version }} Developer Tools for RHEL 7 (RPMs)"
-    product: "Red Hat OpenStack"
+#  - name: "Red Hat OpenStack Platform {{ openstack_version }} Developer Tools for RHEL 7 (RPMs)"
+#    product: "Red Hat OpenStack"
 sat6_enabled_repos_openshift:
   - name: "Red Hat OpenShift Container Platform {{ openshift_version }} (RPMs)"
     product: "Red Hat OpenShift Container Platform"
