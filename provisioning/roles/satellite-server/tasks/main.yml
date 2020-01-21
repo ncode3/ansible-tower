@@ -1,6 +1,7 @@
 ---
 - name: "Check if we are entitled for Satellite"
-  shell: "subscription-manager list --consumed || true"
+  shell: "subscription-manager list --consumed"
+  ignore_errors: yes
   register: rhsm_reg
     
 - name: "Try to Entitle to use Satellite 6"
