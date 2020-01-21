@@ -1,6 +1,7 @@
 ---
 - name: "Check if we are entitled for Satellite"
   shell: "subscription-manager list --consumed"
+    executable: /bin/bash
   ignore_errors: yes
   register: rhsm_reg
     
