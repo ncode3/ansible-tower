@@ -184,8 +184,8 @@
         status_code: [201,202]
         body_format: json
       with_items:
-        - 9
-        - 16
+        - 13
+        - 12
 
 #    - name: "update all the ansible tower osp10 repos"
 #      shell: |
