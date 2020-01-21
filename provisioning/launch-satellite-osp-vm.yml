@@ -5,6 +5,8 @@
   vars_files:
     - group_vars/satellite.yml
   vars:
+    provider: "OSP13"
+    jobname: "normal"
     dns_domain: "dev.maskedadmins.com"
     sat6_org: "{{ sat6_default_org }}"
     sat6_location: "{{ sat6_default_location }}"
@@ -16,10 +18,11 @@
     osp8_resource: "OSP8 Redhat Lab"
     osp10_resource: "OSP13 Redhat Lab"
     osp10_subnet: "NET103"
+    osp10_sg: "Redhat_Lab-sg"
     operatingsystem: "RedHat 7.5"
     operatingsystem2: "RHEL Server 7.5"
     vmname: "test vm"
-    vmimage: "test image"
+    vmimage: "RHEL 7.5 Cloud"
     vmflavor: "m1.medium"
     vmrootpassword: "{{ ipmi_pass }}"
     tower_server: tower.dev.maskedadmins.com
@@ -176,7 +179,7 @@
         validate_certs: no
         method: POST
         user: admin
-        password: ansible
+        password: redhat
         force_basic_auth: yes
         status_code: [201,202]
         body_format: json
