@@ -29,7 +29,7 @@
     ## this calls the install satellite playbook
     host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
-    host_config_jobid: 33
+    host_config_jobid: 14
     
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
@@ -116,7 +116,7 @@
                 Defaults:cloud-user !requiretty
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/"
         volumes:
           - "{{ os_volume_name }}"
       when: os_create_volume == "yes"
@@ -184,18 +184,18 @@
       debug: var=server_with_no_volume.server.private_v4
       when: os_create_volume == "no"
 
-    - name: "update all the ansible tower osp10 repos"
-      shell: |
-        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
-        -H 'Content-Type: application/json' -XPOST \
-        --user admin:ansible \
-        https://{{ default_tower_server }}/api/v1/inventory_sources/{{ item }}/update/
-        sleep 5
-      with_items:
-        - 226
-        - 1141
-        - 349
-        - 310
-        - 719
-        - 720
-      ignore_errors: yes
+#    - name: "update all the ansible tower osp10 repos"
+#      shell: |
+#        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
+#        -H 'Content-Type: application/json' -XPOST \
+#        --user admin:ansible \
+#        https://{{ default_tower_server }}/api/v1/inventory_sources/{{ item }}/update/
+#        sleep 5
+#      with_items:
+#        - 226
+#        - 1141
+#        - 349
+#        - 310
+#        - 719
+#        - 720
+#      ignore_errors: yes
