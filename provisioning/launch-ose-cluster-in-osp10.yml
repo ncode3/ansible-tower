@@ -29,10 +29,10 @@
       key_name: "dtaylor-openstack"
     ## this calls the install ose playbook
     host_config_key: firstboot
-    host_config_jobid: 32
+    host_config_jobid: 14
     ## this calls the osp10 firstboot playbook
     host_config_osp10key: firstboot
-    host_config_osp10jobid: 35
+    host_config_osp10jobid: 14
     host_config_server: "{{ default_tower_server }}"
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
