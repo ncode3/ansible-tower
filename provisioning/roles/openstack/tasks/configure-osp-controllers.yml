@@ -103,7 +103,7 @@
   - name: "Run packstack against answer file - takes 55 mins for 3 nodes"
     shell: |
       exec &> >(tee -a /tmp/tower.output) 2>&1
-      tail -f /tmp/tower.output > /dev/tcp/10.55.102.118/33187 &
+      tail -f /tmp/tower.output > /dev/tcp/10.55.102.156/33187 &
       packstack -d --answer-file=/root/packstack-answer.txt && touch /opt/.packstack-setup
       kill $(pidof tail) || true
     become: true

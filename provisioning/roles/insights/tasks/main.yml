@@ -6,12 +6,7 @@
 - name: Install Redhat Insights for System Patching and Register
   block:
     - name: Install Red Hat Access Insights Client
-      yum: name={{ item }} state=present
-      with_items:
-          - redhat-access-insights
-
-#    - name: "Configure Red Hat Access Insights Client"
-#      template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
+      yum: name=redhat-access-insights state=present
 
     - name: "Register to the Red Hat Access Insights Service"
       command: /usr/bin/redhat-access-insights --register creates=/etc/insights-client/.registered
