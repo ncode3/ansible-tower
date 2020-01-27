@@ -14,7 +14,7 @@
 #      template: src=insights-client.conf.j2 dest=/etc/redhat-access-insights/redhat-access-insights.conf
 
     - name: "Register to the Red Hat Access Insights Service"
-      command: insights-client --register creates=/etc/insights-client/.registered
+      command: /usr/bin/redhat-access-insights --register creates=/etc/insights-client/.registered
       register: reg_insights
       ignore_errors: yes
       retries: 10
