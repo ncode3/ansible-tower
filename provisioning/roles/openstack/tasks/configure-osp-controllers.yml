@@ -7,11 +7,18 @@
   until: subscriberepos.stdout.find("is enabled") != -1
   become: true
 
+- name: "List RHSM repositories to save time enabling"
+  shell: |
+    rpm -qa
+  become: yes
+  register: rpmlist
+
 - name: "Install OSP Yum packages"
   yum:
     name: "{{ item }}"
     state: latest
   with_items: "{{ openstack.controller_packages }}"
+  when: item not in rpmlist.stdout
   become: true
 
 - name: "installing private key"
