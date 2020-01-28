@@ -25,10 +25,10 @@ ml2_vlan_ranges: "2:120"
 #ovs_bridged_interface: "enp10s0f1"
 ovs_bridged_interface: "em2"
 openstack:
-  version: 13
-  enabled_repos: ['rhel-7-server-openstack-13-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-13-tools-rpms']
-  #controller_packages: ['yum-utils','openstack-packstack']
-  controller_packages: ['yum-utils']
+  version: 14
+  enabled_repos: ['rhel-7-server-openstack-14-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-extras-rpms','rhel-7-server-openstack-14-devtools-rpms']
+  controller_packages: ['yum-utils','openstack-packstack']
+  #controller_packages: ['yum-utils']
   compute_packages: ['openstack-nova']
   project_name: Redhat_Lab
   project_user: dtaylor
