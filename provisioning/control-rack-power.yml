@@ -77,13 +77,13 @@
   
     - name: "turn power off for {{ ipmi_targets }}"
       shell: ipmiutil reset -d -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate == "off"
+      when: powerstate == "off" or powerstate == "poweroff"
       with_items:
         - "{{ ipmi_targets }}"
     
     - name: "turn power on for {{ ipmi_targets }}"
       shell: ipmiutil reset -u -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate == "on"
+      when: powerstate == "on" or powerstate == "poweron"
       with_items:
         - "{{ ipmi_targets }}"
     
@@ -95,25 +95,25 @@
     
     - name: "hard reset for {{ ipmi_targets }}"
       shell: ipmiutil reset -r -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate == "hard"
+      when: powerstate == "hard" or powerstate == "hardreset"
       with_items:
         - "{{ ipmi_targets }}"
   
     - name: "power cycle for {{ ipmi_targets }}"
       shell: ipmiutil reset -c -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate == "cycle"
+      when: powerstate == "cycle" or powerstate == "powercycle"
       with_items:
         - "{{ ipmi_targets }}"
 
     - name: "reboot to pxe boot for {{ ipmi_targets }} temporarily"
       shell: ipmiutil reset -p -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate == "pxe"
+      when: powerstate == "pxe" or powerstate == "pxeboot"
       with_items:
         - "{{ ipmi_targets }}"
 
     - name: "reboot to harddrive for {{ ipmi_targets }} and persist"
       shell: ipmiutil reset -y -h -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      when: powerstate == "hdalways"
+      when: powerstate == "hdalways" or powerstate == "hdboot"
       with_items:
         - "{{ ipmi_targets }}"
 
