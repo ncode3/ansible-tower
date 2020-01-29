@@ -8,7 +8,7 @@
     vault_os_projectid: ""
     vault_os_user: dtaylor
     vault_os_pass: redhat123
-    vault_os_url: "http://{{ osp10_controller }}:5000/v2.0"
+    vault_os_url: "http://{{ osp10_controller }}:5000/v3"
     os_create_volume: "no"
     os_server:
       name: "Satellite 6 Demo"
@@ -16,7 +16,7 @@
       image: "QCI Template"
       flavor: "m1.large"
       #network: "Management_101"
-      network: "Provisioning_102"
+      network: "Dev_103"
       availability_zone: "nova"
       security_groups: Redhat_Lab-sg
       region_name: "RegionOne"
@@ -34,7 +34,7 @@
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
   tasks:
-    - name: "destroy old {{ os_volume_size }}g volume for {{ os_server['name'] }}"
+    - name: "destroy old {{ os_volume_size }}g volume for {{ os_volume_name }}"
       os_volume:
         state: absent
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -52,10 +52,11 @@
 
     - name: delete the old server, if it exists
       os_server:
-        name: "{{ os_server['name'] }}"
+        #name: "{{ os_server['name'] }}"
+        name: "{{ name | default(os_server['name'], True) }}"
         state: absent
         image: "{{ os_server['image'] }}"
-        flavor: "{{ os_server['flavor'] }}"
+        flavor: "{{ flavor | default(os_server['flavor'], True) }}"
         network: "{{ os_server['network'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
         security_groups: "{{ os_server['security_groups'] }}"
@@ -65,10 +66,11 @@
 
     - name: launch an instance with volume
       os_server:
-        name: "{{ os_server['name'] }}"
+        name: "{{ name | default(os_server['name'], True) }}"
         state: present
         image: "{{ os_server['image'] }}"
-        flavor: "{{ os_server['flavor'] }}"
+        #flavor: "{{ os_server['flavor'] }}"
+        flavor: "{{ flavor | default(os_server['flavor'], True) }}"
         network: "{{ os_server['network'] }}"
         security_groups: "{{ os_server['security_groups'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
@@ -130,10 +132,11 @@
 
     - name: launch an instance with no volume
       os_server:
-        name: "{{ os_server['name'] }}"
+        name: "{{ name | default(os_server['name'], True) }}"
         state: present
         image: "{{ os_server['image'] }}"
-        flavor: "{{ os_server['flavor'] }}"
+        #flavor: "{{ os_server['flavor'] }}"
+        flavor: "{{ flavor | default(os_server['flavor'], True) }}"
         network: "{{ os_server['network'] }}"
         security_groups: "{{ os_server['security_groups'] }}"
         availability_zone: "{{ os_server['availability_zone'] }}"
