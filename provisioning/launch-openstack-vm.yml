@@ -11,10 +11,10 @@
     vault_os_url: "http://{{ osp10_controller }}:5000/v3"
     os_create_volume: "no"
     os_server:
-      name: "Satellite 6 Demo"
+      name: "myvm"
       state: present
-      image: "QCI Template"
-      flavor: "m1.large"
+      image: "RHEL 7.5 Cloud"
+      flavor: "m1.medium"
       #network: "Management_101"
       network: "Dev_103"
       availability_zone: "nova"
