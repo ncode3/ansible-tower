@@ -1,6 +1,6 @@
 ---
 satellite_version: 6.6
-openstack_version: 13
+openstack_version: 14
 openshift_version: 3.11
 redhat_packages: ['nspr','redhat-access-insights','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 dns_domain: "dev.maskedadmins.com"
