@@ -190,3 +190,17 @@
     - name: Show Server's IP
       debug: var=server_with_no_volume.server.private_v4
       when: os_create_volume == "no"
+
+    - name: Update the Openstack Inventory
+      uri:
+        url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
+        validate_certs: no
+        method: POST
+        user: admin
+        password: redhat
+        force_basic_auth: yes
+        status_code: [201,202]
+        body_format: json
+      with_items:
+        - 12
+
