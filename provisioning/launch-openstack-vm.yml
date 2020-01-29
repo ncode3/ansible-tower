@@ -184,7 +184,7 @@
           #    cloud-user:redhat123
           runcmd:
            # this is post configuration job template
-           - "while [[ ! -e /tmp/.success ]] ; do sleep 60; curl -s -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/| grep msg || touch /tmp/.success ; done "
+           - "while [[ ! -e /tmp/.success ]] ; do sleep 60; echo 'contacting tower again ...' ; curl -s -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/| grep msg || touch /tmp/.success ; done "
       when: os_create_volume == "no"
       register: server_with_no_volume
 
