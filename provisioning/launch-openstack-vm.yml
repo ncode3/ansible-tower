@@ -24,15 +24,17 @@
       key_name: "dtaylor-openstack"
       
     ## this calls the install satellite playbook
-    host_config_jobid: 287
+    host_config_jobid: 14
     host_config_server: "{{ default_tower_server }}"
-    host_config_key: dc7c0b52cd29cacceb8d3571257801ea
+    host_config_key: firstboot
   environment:
     OS_TENANT_NAME: "{{ vault_os_project }}"
     OS_TENANT_ID: "{{ vault_os_projectid }}"
     OS_USERNAME: "{{ vault_os_user }}"
     OS_PASSWORD: "{{ vault_os_pass }}"
     OS_AUTH_URL: "{{ vault_os_url }}"
+    OS_PROJECT_DOMAIN_ID: "default"
+    OS_USER_DOMAIN_ID: "default"
   tasks:
     - name: "destroy old {{ os_volume_size }}g volume for {{ os_volume_name }}"
       os_volume:
