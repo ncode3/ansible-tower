@@ -20,10 +20,10 @@
 
   - name: "Promoting Environments"
     shell: |
-      hammer content-view version promote --content-view "{{ content_view }}" --version {{ content_view_version_id }} \
+      hammer content-view version promote --content-view "{{ content_view }}" --version "{{ content_view_version_id }}" \
       --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
     with_items: "{{ environments }}"
 
   - name: "Content View after the promotion(s)"
     shell: |
-      hammer content-view version info --id { content_view_version_id }}
+      hammer content-view version info --id "{{ content_view_version_id }}"
