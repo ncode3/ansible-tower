@@ -20,7 +20,7 @@
 
   - name: "Promoting Environments"
     shell: |
-      hammer content-view version promote --content-view-id "{{ content_view_version_id }}" \
+      hammer content-view version promote --id "{{ content_view_version_id }}" \
       --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
     with_items: "{{ environments }}"
 
