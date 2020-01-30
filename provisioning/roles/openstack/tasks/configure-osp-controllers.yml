@@ -148,6 +148,7 @@
     tenant=$(openstack project list | awk '/{{ openstack['project_name'] }}/ {print $2}')
     nova quota-update --cores 40 $tenant
     nova quota-update --instances 25 $tenant
+    nova quota update --ram 102400 $tenant
   args:
     chdir: /root
   become: true
