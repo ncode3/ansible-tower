@@ -2,20 +2,28 @@
 - name: Promote Content Views through several environments
   hosts: satellite*:sat6*
   gather_facts: no
+  become: yes
   vars_files:
     - group_vars/satellite.yml
   vars:
     content_view: "Base"
-    content_view_version: "3"
+    content_view_version_id: "3"
     environments:
     - 'development'
     - 'testing'
     - 'production'
     sat6_org: "{{ sat6_default_org }}"
   tasks:
+  - name: "Content View before the promotion(s)"
+    shell: |
+      hammer content-view version info --id { content_view_version_id }}
+
   - name: "Promoting Environments"
     shell: |
-      hammer content-view version promote --content-view "{{ content_view }}" --version {{ content_view_version }} \
+      hammer content-view version promote --content-view "{{ content_view }}" --version {{ content_view_version_id }} \
       --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
     with_items: "{{ environments }}"
-    become: yes
+
+  - name: "Content View after the promotion(s)"
+    shell: |
+      hammer content-view version info --id { content_view_version }}
