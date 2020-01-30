@@ -313,6 +313,19 @@
   with_dict: "{{ openstack['networks'] }}"
   #ignore_errors: yes
 
+- name: "Create the Openshift networks and subnets ..."
+  shell: |
+    . /root/keystonerc_admin
+    projectid=$(openstack project list | grep {{ openstack['project_name'] }} | awk '{print $2}')
+    neutron net-list | grep "Openshift" || \
+    ( neutron net-create Openshift_External --provider:network_type vlan --provider:physical_network inter-vlan --provider:segmentation_id 109 --tenant-id=$projectid --router:external=True && \
+    neutron subnet-create --allocation-pool start=10.55.109.10,end=10.55.109.200 --gateway 10.55.109.1 --disable-dhcp Openshift_External 10.55.109.0/24 --tenant-id=$projectid --dns-nameserver {{ openstack['dns_server'] }} )
+
+  args:
+    chdir: /root
+  become: true
+  with_dict: "{{ openstack['networks'] }}"
+
 - name: "Create the security groups ..."
   shell: |
     . /root/keystonerc_{{ openstack['project_user'] }}
