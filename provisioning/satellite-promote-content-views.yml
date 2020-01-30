@@ -8,14 +8,14 @@
     content_view: "Base"
     content_view_version: "3"
     environments:
-    - name: 'development'
-    - name: 'testing'
-    - name: 'production'
+    - 'development'
+    - 'testing'
+    - 'production'
     sat6_org: "{{ sat6_default_org }}"
   tasks:
   - name: "Promoting Environments"
     shell: |
       hammer content-view version promote --content-view "{{ content_view }}" --version {{ content_view_version }} \
-      --to-lifecycle-environment "{{ item.name }}" --organization "{{ sat6_org }}"
+      --to-lifecycle-environment "{{ item }}" --organization "{{ sat6_org }}"
     with_items: "{{ environments }}"
     become: yes
