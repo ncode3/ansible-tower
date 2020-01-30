@@ -410,10 +410,11 @@
   when: openstack['cpupinning']['use']  == "yes"
   #ignore_errors: yes
 
-- name: "Create the performance flavor to use later..."
+- name: "Create the performances flavor to use later..."
   shell: |
     source /root/keystonerc_admin
     nova flavor-create m1.medium.performance 6 6144 60 4
+    nova flavor-create m1.xlarge.performance 7 32768 80 8
     echo "fixing nova-manage.log"
     chmod 666 /var/log/nova/nova-manage.log
   args:
