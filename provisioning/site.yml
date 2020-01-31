@@ -17,6 +17,16 @@
   roles:
     - satellite-server
 
+- name: Configure Satellite Capsules
+  hosts: capsule*
+  roles:
+    - satellite-capsule
+
+- name: Configure Satellite Capsule Load Balancer
+  hosts: lb-capsule*
+  roles:
+    - haproxy
+
 - name: Configure Cloudforms Management Engine
   hosts: cloudforms*:cfme*
   roles:

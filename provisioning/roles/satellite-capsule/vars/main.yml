@@ -1,0 +1,41 @@
+---
+capsule_loadbalancer_fqdn: capsule-lb.dev.maskedadmins.com
+sat6_server: sat6.dev.maskedadmins.com
+iface: "{{ ansible_default_ipv4.interface }}"
+haproxy_services:
+  - name: http
+    port: 80
+    balance: roundrobin
+    mode: tcp
+  - name: https
+    port: 443
+    balance: source
+    mode: tcp
+  - name: amqp
+    port: 5647
+    balance: roundrobin
+    mode: tcp
+  - name: anaconda
+    port: 8000
+    balance: roundrobin
+    mode: tcp
+  - name: puppet
+    port: 8140
+    balance: roundrobin
+    mode: tcp
+  - name: puppet-ca
+    port: 8141
+    balance: roundrobin
+    mode: tcp
+  - name: rhsm
+    port: 8443
+    balance: roundrobin
+    mode: tcp
+  - name: scap
+    port: 9090
+    balance: roundrobin
+    mode: tcp
+  - name: docker
+    port: 5000
+    balance: roundrobin
+    mode: tcp

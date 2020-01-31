@@ -19,7 +19,7 @@
       hammer content-view list | grep {{ content_view }} | awk '{print $1}'
     register: output
 
-  - name: "Set Content Version ID"
+  - name: "Set Content View ID"
     set_fact:
       base_content_view_id: "{{ output.stdout }}"
 

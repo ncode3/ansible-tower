@@ -1,0 +1,119 @@
+---
+- name: "Check if we are entitled for Satellite Capsule"
+  become: yes
+  shell: "subscription-manager list --consumed"
+  args:
+    executable: /bin/bash
+  ignore_errors: yes
+  register: rhsm_reg
+    
+- name: "Try to Entitle to use Satellite 6"
+  block:
+    - name: "Add Satellite Entitlement to Server"
+      redhat_subscription:
+        state: present
+        username: "{{ rh_satellite_user }}"
+        password: "{{ rh_satellite_pass }}"
+        pool_ids: "{{ rh_satellite_pool_id }}"
+      become: true
+      register: rhsm_status
+      retries: 10
+      delay: 1
+  when: "'Red Hat Satellite' not in rhsm_reg.stdout"
+
+- name: "Satellite Capsule Setup check"
+  shell: |
+    if [ -e "/root/.setup/capsule-configed" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: initialsetup
+  become: true
+
+- name: "Block to perform initial setup"
+  block:
+    - name: "make setup tracking dir"
+      file:
+        path: /root/.setup
+        state: directory
+        mode: 0755
+  
+    - name: "Disabling all repos"
+      shell: "subscription-manager repos --disable='*'"
+      become: true
+    
+    - name: "Enable satellite-capsule repos"
+      shell: |
+        subscription-manager repos --enable rhel-7-server-rpms \
+                           --enable rhel-server-rhscl-7-rpms \
+                           --enable rhel-7-server-satellite-capsule-{{ satellite_version }}-rpms \
+                           --enable rhel-7-server-satellite-tools-{{ satellite_version }}-rpms \
+                           --enable=rhel-7-server-satellite-maintenance-6-rpms \
+                           --enable=rhel-7-server-ansible-2.8-rpms 
+      become: true
+    
+    - name: "Clean out old yum metadata"
+      shell: |
+        yum clean all
+      become: true
+    
+    - name: "Installing satellite-capsule rpms"
+      yum:
+        name: ['satellite-capsule','policycoreutils-python']
+        state: latest
+      become: true
+
+    - name: "Clean out old yum metadata"
+      shell: |
+        capsule-certs-generate \
+        --foreman-proxy-fqdn {{ ansible_fqdn }} \
+        --certs-tar "/var/www/html/pub/{{ ansible_fqdn }}-certs.tar" \
+        --foreman-proxy-cname {{ capsule_loadbalancer_fqdn }}
+      become: true
+      register: certoutput
+      delegate_to: sat6
+      args:
+        creates: "/var/www/html/pub/{{ ansible_fqdn }}-certs.tar"
+    
+    - name: "Set selinux context on cert tar file"
+      shell: |
+        restorecon /var/www/html/pub/{{ ansible_fqdn }}-certs.tar
+      become: true
+      delegate_to: sat6
+    
+    - name:
+      get_url:
+        url: "http://{{ sat6_server }}/pub/{{ ansible_fqdn }}-certs.tar"
+        dest: "/root/{{ansible_fqdn}}-certs.tar"
+      become: yes
+
+    - name:
+      set_fact:
+        oauth-consumer-key: "{{ regex('oauth-consumer-key') | item.split('"')[1] }}"
+        oauth-consumer-secret: "{{ regex('oauth-consumer-secret') | item.split('"')[1] }}"
+      when: "'oauth-consumer' in item"
+      with_items: "{{ certoutput.content.split('\n') }}"
+
+    - name: "Set selinux context on cert tar file"
+      shell: |
+        satellite-installer \
+                    --scenario capsule \
+                    --certs-tar-file                              "/root/{{ ansible_fqdn }}-certs.tar"\
+                    --foreman-proxy-content-parent-fqdn           "{{ sat6_server }}"\
+                    --foreman-proxy-register-in-foreman           "true"\
+                    --foreman-proxy-foreman-base-url              "https://{{ sat6_server }}"\
+                    --foreman-proxy-trusted-hosts                 "{{ sat6_server }}"\
+                    --foreman-proxy-trusted-hosts                 "{{ ansible_fqdn }}"\
+                    --foreman-proxy-oauth-consumer-key            "{{ oauth_consumer_key }}"\
+                    --foreman-proxy-oauth-consumer-secret         "{{ oauth_consumer_secret }}"\
+                    --puppet-server-foreman-url                   "https://{{ sat6_server }}"\
+                    --certs-cname                              "{{ capsule_loadbalancer_fqdn }}" \
+                    --puppet-dns-alt-names                     "{{ capsule_loadbalancer_fqdn }}" \
+                    --puppet-ca-server                         "{{ ansible_fqdn }}" \
+                    --foreman-proxy-puppetca                   "true" \
+                    --puppet-server-ca                         "true" \
+                    --enable-foreman-proxy-plugin-remote-execution-ssh && touch /root/.setup/capsule-configed
+      args:
+        creates: /root/.setup/capsule-configed

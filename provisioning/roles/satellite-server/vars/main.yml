@@ -132,6 +132,8 @@ sat6_enabled_products:
   - "Red Hat Enterprise Linux Fast Datapath"
   - "Red Hat OpenStack"
   - "Red Hat OpenShift Container Platform"
+  - "Red Hat Ansible Engine"
+  - "Red Hat Satellite Capsule"
 sat6_enabled_repos:
   - name: "Red Hat Enterprise Linux 7 Server (RPMs)"
     product: "Red Hat Enterprise Linux Server"
@@ -143,6 +145,12 @@ sat6_enabled_repos:
     product: "Red Hat Enterprise Linux Server"
   - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Fast Datapath"
+  - name: "Red Hat Ansible Engine 2.8 RPMs for Red Hat Enterprise Linux 7 Server"
+    product: "Red Hat Ansible Engine"
+  - name: "Red Hat Satellite Maintenance 6 for RHEL 7 Server (RPMs)"
+    product: "Red Hat Enterprise Linux Server"
+  - name: "Red Hat Satellite Capsule 6.6 for RHEL 7 Server (RPMs)"
+    product: "Red Hat Satellite Capsule"
 sat6_enabled_repos_tools:
   - name: "Red Hat Satellite Tools 6.6 (for RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Server"

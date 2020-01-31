@@ -1,0 +1,24 @@
+---
+- name: "Installing haproxy rpms"
+  yum:
+    name: ["haproxy"]
+    state: latest
+
+- name: "Fixing haproxy config"
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy.cfg
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart haproxy
+
+- name: "Set selinux flag to allow haproxy connections"
+  shell: |
+    semanage boolean --modify --on haproxy_connect_any
+
+- name: "Enable and start haproxy"
+  service:
+    name: haproxy
+    enabled: yes
+    state: started
