@@ -61,7 +61,7 @@ frontend {{ service.name }}
 backend proxy-{{ service.name }}
    option tcp-check
    balance {{ service.balance }}
-   {% for host in groups.capsules %}
+   {% for host in groups['capsules'] %}
    server {{ host }} {{ hostvars[host]['ansible_' + iface].ipv4.address }}:{{ service.port }} check
    {% endfor %}
 
