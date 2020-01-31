@@ -91,9 +91,14 @@
 
     - name: "Set the oauth facts"
       set_fact:
-        oauth-consumer-key: "{{ item | regex_search('oauth-consumer-key') | item.split('\"')[1] }}"
-        oauth-consumer-secret: "{{ item | regex_search('oauth-consumer-secret') | item.split('\"')[1] }}"
-      when: "'oauth-consumer' in item"
+        oauth_consumer_key: "{{ item.split('\"')[1] }}"
+      when: "'oauth-consumer-key' in item"
+      with_items: "{{ certoutput.stdout_lines }}"
+
+    - name: "Set the oauth facts"
+      set_fact:
+        oauth_consumer_secret: "{{ item.split('\"')[1] }}"
+      when: "'oauth-consumer-secret' in item"
       with_items: "{{ certoutput.stdout_lines }}"
 
     - name: "Set selinux context on cert tar file"
