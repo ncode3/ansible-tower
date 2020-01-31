@@ -1,6 +1,6 @@
 ---
 - name: Only register if this system hasn't been registered before
-  stat: path=/etc/redhat-access-insights/.registered
+  stat: path=/etc/insights-client/.registered
   register: unreg
 
 - name: Install Redhat Insights for System Patching and Register
@@ -9,7 +9,7 @@
       yum: name=redhat-access-insights state=present
 
     - name: "Register to the Red Hat Access Insights Service"
-      command: /usr/bin/redhat-access-insights --register creates=/etc/redhat-access-insights/.registered
+      command: /usr/bin/redhat-access-insights --register creates=/etc/insights-client/.registered
       register: reg_insights
       ignore_errors: yes
       retries: 10
