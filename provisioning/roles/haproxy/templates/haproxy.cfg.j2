@@ -50,7 +50,6 @@ defaults
     timeout http-keep-alive 10s
     timeout check           10s
     maxconn                 3000
-{{ hostvars['capsule2.dev.maskedadmins.com']['ansible_facts'] }}
 
 {% for service in haproxy_services %}
 frontend {{ service.name }}
@@ -63,7 +62,7 @@ backend proxy-{{ service.name }}
    option tcp-check
    balance {{ service.balance }}
    {% for host in groups['capsules'] %}
-   server {{ host }} gggg:{{ service.port }} check
+   server {{ host }} {{ hostvars[host]['ansible_facts']['eth0']['ipv4']['address'] }}:{{ service.port }} check
    {% endfor %}
 
 {% endfor %}
