@@ -91,8 +91,8 @@
 
     - name:
       set_fact:
-        oauth-consumer-key: "{{ regex('oauth-consumer-key') | item.split('"')[1] }}"
-        oauth-consumer-secret: "{{ regex('oauth-consumer-secret') | item.split('"')[1] }}"
+        oauth-consumer-key: "{{ regex('oauth-consumer-key') | item.split('\"')[1] }}"
+        oauth-consumer-secret: "{{ regex('oauth-consumer-secret') | item.split('\"')[1] }}"
       when: "'oauth-consumer' in item"
       with_items: "{{ certoutput.content.split('\n') }}"
 
