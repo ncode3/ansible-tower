@@ -65,7 +65,7 @@
         state: latest
       become: true
 
-    - name: "Clean out old yum metadata"
+    - name: "Generate the capsule certs"
       shell: |
         capsule-certs-generate \
         --foreman-proxy-fqdn {{ ansible_fqdn }} \
@@ -83,13 +83,13 @@
       become: true
       delegate_to: sat6
     
-    - name:
+    - name: "Grab certs from the sat server"
       get_url:
         url: "http://{{ sat6_server }}/pub/{{ ansible_fqdn }}-certs.tar"
         dest: "/root/{{ansible_fqdn}}-certs.tar"
       become: yes
 
-    - name:
+    - name: "Set the oauth facts"
       set_fact:
         oauth-consumer-key: "{{ regex('oauth-consumer-key') | item.split('\"')[1] }}"
         oauth-consumer-secret: "{{ regex('oauth-consumer-secret') | item.split('\"')[1] }}"
