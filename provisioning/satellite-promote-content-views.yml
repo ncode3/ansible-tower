@@ -1,26 +1,42 @@
 ---
-- name: Promote Content Views through several environments
+- name: Publish and Promote Content Views
   hosts: satellite*:sat6*
   gather_facts: no
   become: yes
   vars_files:
     - group_vars/satellite.yml
   vars:
+    publish: no
     content_view: "Base"
-    content_view_version_id: "3"
+    base_content_view_id: "2"
     environments:
     - 'development'
     - 'testing'
     - 'production'
     sat6_org: "{{ sat6_default_org }}"
   tasks:
+  - name: "Publish a new Content View Version, takes about 30 mins to regenerate repodata"
+    shell: |
+      hammer content-view publish --id "{{ base_content_view_id }}" \
+       --organization-label "{{ sat6_default_org }}"
+    when: publish == 'yes'
+
+  - name: "Grab the new Content View ID"
+    shell: |
+      hammer content-view version list |grep {{ content_view }} | grep Library | awk '{print $1}'
+    register: output
+
+  - name: "Capture New Content Version ID"
+    set_fact:
+      content_view_version_id: "{{ output.stdout }}"
+
   - name: "Content View before the promotion(s)"
     shell: |
       hammer content-view version info --id "{{ content_view_version_id }}"
     register: output
 
   - name: "Show output"
-    debug: var=output.content
+    debug: var=output.stdout
 
   - name: "Promoting Environments"
     shell: |
@@ -34,5 +50,5 @@
     register: output
 
   - name: "Show output"
-    debug: var=output.content
+    debug: var=output.stdout
 
