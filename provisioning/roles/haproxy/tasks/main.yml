@@ -28,7 +28,7 @@
         path: /root/.setup/haproxy-rpms
         state: touch
         mode: 0440
-  when: initialsetup == "false"
+  when: initialsetup.stdout == "false"
 
 - name: "Fixing haproxy config"
   template:
