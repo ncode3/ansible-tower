@@ -54,7 +54,6 @@
 
     - name: delete the old server, if it exists
       os_server:
-        #name: "{{ os_server['name'] }}"
         name: "{{ name | default(os_server['name'], True) }}"
         state: absent
         image: "{{ os_server['image'] }}"
