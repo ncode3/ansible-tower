@@ -7,6 +7,7 @@
     host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
     host_config_jobid: "14"
+    aws_security_group_id: "sg-639a7212"
   environment:
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
     AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
@@ -19,8 +20,8 @@
         instance_type: "{{ aws_instance_type }}"
         image: "{{ aws_image_ami }}"
         wait: yes
-        group: "{{ aws_security_group }}"
-        #group: "{{ aws_security_group_id }}"
+        #group: "{{ aws_security_group }}"
+        group: "{{ aws_security_group_id }}"
         count: "{{ aws_number_of_vms }}"
         vpc_subnet_id:  "{{ aws_vpc_subnet_id }}"
         assign_public_ip: "{{ aws_assign_public_ip }}"
