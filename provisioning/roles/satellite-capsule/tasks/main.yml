@@ -148,4 +148,25 @@
         path: /root/.setup/capsule-configed
         state: touch
         mode: 0444
+
+    - name: "Add host to the 'capsules' Group Inventory"
+      uri:
+        url: "https://{{ default_tower_server }}/api/v2/groups/{{ capsules_inventory_group }}/hosts/"
+        validate_certs: no
+        method: POST
+        body: >
+          {
+             "name": "{{ ansible_fqdn }}",
+             "description": "",
+             "enabled": true,
+             "instance_id": "",
+             "variables": ""
+          }
+        user: admin
+        password: redhat
+        force_basic_auth: yes
+        status_code: [201,202,204]
+        body_format: json
+      with_items:
+        - 12
   when: capsulesetup.stdout == "false"
