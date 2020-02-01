@@ -3,6 +3,10 @@
 - name: launch a demo instance in ec2
   hosts: localhost
   gather_facts: no
+  vars:
+    host_config_key: firstboot
+    host_config_server: "{{ default_tower_server }}"
+    host_config_jobid: "14"
   environment:
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
     AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
