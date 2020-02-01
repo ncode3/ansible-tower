@@ -61,7 +61,8 @@
     
     - name: "Installing satellite-capsule rpms"
       yum:
-        name: ['satellite-capsule','policycoreutils-python']
+        name: ['satellite-capsule']
+        #name: ['satellite-capsule','policycoreutils-python']
         state: latest
       become: true
 
