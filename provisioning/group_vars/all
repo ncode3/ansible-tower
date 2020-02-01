@@ -268,7 +268,7 @@ AWS_SECRET_KEY: !vault |
           66363236643936323932643561353238663533643933616162393232663735373762336365376132
           3031383765633538653337626636343063393433646130306437
 aws_region: us-east-1
-aws_number_of_vms: 2
+aws_number_of_vms: 1
 centos7_ami: ami-6d1c2007
 aws_instance_tags:
   Name: RHEL Ansible Demo VM
@@ -279,10 +279,11 @@ aws_instance_public_tags:
 aws_image_ami: "{{ centos7_ami }}"
 aws_key_name: tfound-ec2
 aws_instance_type: t2.micro
-aws_security_group: Redhat_Lab
+aws_security_group: Redhat_LabSG_public
 #aws_security_group_id: sg-edf7129c
 aws_vpc_id: vpc-b4f505d3
 #aws_vpc_subnet_id: subnet-c72274b1
+# new aws subnet id: subnet-0446799c07a81b936
 aws_security_private_group: Redhat_LabSG_private
 aws_security_public_group: Redhat_LabSG_public
 aws_volume_size: 10
