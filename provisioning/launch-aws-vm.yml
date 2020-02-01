@@ -70,7 +70,7 @@
                 Defaults:cloud-user !requiretty
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/"
 
     - name: launch an ec2 instance in a public vpc
       when: aws_vpc_subnet_publicid is defined
@@ -143,7 +143,7 @@
                  exit 0
               fi
               sleep 60
-              curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/
+              curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/
           runcmd:
            # this is post configuration job template
            - /tmp/firstboot.sh
@@ -206,5 +206,5 @@
           #    cloud-user:redhat123
           runcmd:
            # this is post configuration job template
-           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v1/job_templates/{{ host_config_jobid }}/callback/"
+           - "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/"
 
