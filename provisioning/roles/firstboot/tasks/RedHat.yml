@@ -189,10 +189,18 @@
       args:
         creates: /opt/.firstboot
 
-    - name: "Run yum update and reboot. Please wait. SSH to {{ ansible_ssh_host }} and tail /tmp/tower.output for status"
+    - name: "Run yum update. Please wait. SSH to {{ ansible_ssh_host }} and tail /tmp/tower.output for status"
       shell: |
         exec &> >(tee -a /tmp/tower.output)
-        yum -y update && shutdown -r +1 || true
+        yum -y update
+      become: true
+      args:
+        executable: /bin/bash
+        creates: /opt/.firstboot
+
+    - name: "Reboot."
+      shell: |
+        shutdown -r +1 || true
       become: true
       args:
         executable: /bin/bash
