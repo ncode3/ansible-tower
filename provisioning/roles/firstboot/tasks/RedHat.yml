@@ -100,18 +100,16 @@
 
     - name: "Run the satellite bootstrap script"
       shell: |
-        chmod +x /opt/bootstrap.py
-        /opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
-        -s {{ sat6['url'] }} \
-        -o "{{ sat6['org'] }}" \
-        -L {{ sat6['location'] }} \
-        -g "{{ sat6['hostgroup'] }}" \
-        -a {{ sat6['activation_key'] }} \
-        --force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root --skip-puppet && \
-        touch /opt/.bootstrap
-        #--rex  --skip-foreman --skip-puppet \
-        #--rex-user root \
-        #/bin/false
+        /bin/false
+        #chmod +x /opt/bootstrap.py
+        #/opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
+        #-s {{ sat6['url'] }} \
+        #-o "{{ sat6['org'] }}" \
+        #-L {{ sat6['location'] }} \
+        #-g "{{ sat6['hostgroup'] }}" \
+        #-a {{ sat6['activation_key'] }} \
+        #--force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root --skip-puppet && \
+        #touch /opt/.bootstrap
       become: true
       register: satbootstrap
       #when: "'Current' not in rhsm_reg.stdout"
