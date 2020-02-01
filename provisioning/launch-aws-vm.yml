@@ -8,6 +8,15 @@
     host_config_server: "{{ default_tower_server }}"
     host_config_jobid: "14"
     aws_security_group_id: "sg-639a7212"
+    aws_region: us-east-1e
+    aws_number_of_vms: 1
+    centos7_ami: ami-6d1c2007
+    aws_instance_tags:
+      Name: RHEL Ansible Demo VM
+    aws_instance_private_tags:
+      Name: Private RHEL Ansible Demo VM
+    aws_instance_public_tags:
+      Name: Public RHEL Ansible Demo VM
   environment:
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
     AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
