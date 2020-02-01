@@ -101,7 +101,7 @@
       when: "'oauth-consumer-secret' in item"
       with_items: "{{ certoutput.stdout_lines }}"
 
-    - name: "Set selinux context on cert tar file"
+    - name: "Run the atellitee-installer ..."
       shell: |
         satellite-installer \
                     --scenario capsule \
