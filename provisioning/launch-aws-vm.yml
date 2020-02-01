@@ -23,7 +23,7 @@
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
     AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
   tasks:
-    - name: create a security group in us-east-2
+    - name: create a security group
       ec2_group:
         name: "Redhat_Lab-sg-ansible"
         description: "created by ansilble"
