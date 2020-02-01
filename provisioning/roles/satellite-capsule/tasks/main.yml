@@ -74,8 +74,10 @@
       become: true
       register: certoutput
       delegate_to: sat6
-      args:
-        creates: "/var/www/html/pub/{{ ansible_fqdn }}-certs.tar"
+      # logically I want this, but if it already exists
+      # this task will not run, breaking the playbook
+      #args:
+      #  creates: "/var/www/html/pub/{{ ansible_fqdn }}-certs.tar"
     
     - name: "Set selinux context on cert tar file"
       shell: |
@@ -101,7 +103,7 @@
       when: "'oauth-consumer-secret' in item"
       with_items: "{{ certoutput.stdout_lines }}"
 
-    - name: "Run the atellitee-installer ..."
+    - name: "Run the satellite-installer ..."
       shell: |
         satellite-installer \
                     --scenario capsule \
