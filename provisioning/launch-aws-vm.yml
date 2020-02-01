@@ -26,7 +26,7 @@
     - name: create a security group in us-east-2
       ec2_group:
         name: "Redhat_Lab-sg-ansible"
-        description: an example ec2 group
+        description: "created by ansilble"
         region: "{{ aws_region }}"
         vpc_id: "{{ aws_vpc_id }}"
         rules:
