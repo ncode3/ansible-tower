@@ -135,24 +135,25 @@
     #    pools: "{{ rh_subscription_pools }}"
       become: true
       register: rhsm_status
-      when: "'Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
+      when: "'Current' not in rhsm_reg.stdout"
+      #when: "'Current' not in rhsm_reg.stdout and ansible_virtualization_role == 'guest' "
       retries: 10
       until: rhsm_status.msg.find("System successfully registered") != -1
       delay: 1
 
-    - name: Register and subscribe to multiple pools for physical hosts
-      redhat_subscription:
-        state: present
-        username: "{{ rh_satellite_user }}"
-        password: "{{ rh_satellite_pass }}"
-        pool_ids: "{{ rh_subscription_pool_physical_ids }}"
-    #    pools: "{{ rh_subscription_pools }}"
-      become: true
-      register: rhsm_status
-      when: "'Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
-      retries: 10
-      until: rhsm_status.msg.find("System successfully registered") != -1
-      delay: 1
+#    - name: Register and subscribe to multiple pools for physical hosts
+#      redhat_subscription:
+#        state: present
+#        username: "{{ rh_satellite_user }}"
+#        password: "{{ rh_satellite_pass }}"
+#        pool_ids: "{{ rh_subscription_pool_physical_ids }}"
+#    #    pools: "{{ rh_subscription_pools }}"
+#      become: true
+#      register: rhsm_status
+#      when: "'Current' not in rhsm_reg.stdout  and ansible_virtualization_role != 'guest' "
+#      retries: 10
+#      until: rhsm_status.msg.find("System successfully registered") != -1
+#      delay: 1
   always:
     - name: "Disabling all repos"
       shell: "subscription-manager repos --disable={{ item }}"
