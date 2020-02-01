@@ -205,3 +205,4 @@
       with_items:
         - 12
 
+    - debug: var=ansible_facts
