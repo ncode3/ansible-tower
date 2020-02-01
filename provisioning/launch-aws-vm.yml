@@ -4,6 +4,7 @@
   hosts: localhost
   gather_facts: no
   vars:
+    aws_assign_public_ip: yes
     host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
     host_config_jobid: "14"
