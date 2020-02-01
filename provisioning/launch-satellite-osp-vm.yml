@@ -187,6 +187,7 @@
         - 12
         #- 13
 
+    - debug: var=ansible_facts
 #    - name: "update all the ansible tower osp10 repos"
 #      shell: |
 #        curl --ciphers ecdhe_rsa_aes_128_gcm_sha_256 -f -k \
