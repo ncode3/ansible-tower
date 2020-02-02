@@ -28,8 +28,8 @@
   tasks:
     - name: "AWS_ACCESS_KEY_ID"
       debug: var=AWS_ACCESS_KEY_ID
-    - name: "AWS_ACCESS_SECRET"
-      debug: var=AWS_ACCESS_SECRET
+    - name: "AWS_SECRET_KEY"
+      debug: var=AWS_SECRET_KEY
 
     - name: create a security group
       ec2_group:
