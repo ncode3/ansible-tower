@@ -23,6 +23,8 @@ EOF
 nsupdate -v ${temp}
 echo "$*" >> /tmp/dnsmasq.updater.txt
 rm -f ${temp}
-{% endif %}
-extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
+{% else %}
+ipaddress=$(curl -s http://169.254.169.254/2019-10-01/meta-data/public-ipv4)
+extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"${zone}\\\",\\\"public_ip\\\":\\\"${ipaddress}\\\"}"
 curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user {{ ansible_uri_creds }} https://{{ default_tower_server }}:443/api/v2/job_templates/30/launch/
+{% endif %}
