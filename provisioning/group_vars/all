@@ -284,6 +284,7 @@ aws_security_group: Redhat_LabSG_public
 aws_vpc_id: vpc-b4f505d3
 #aws_vpc_subnet_id: subnet-c72274b1
 # new aws subnet id: subnet-0446799c07a81b936
+aws_vpc_subnet_id: subnet-00dcd796d8781819a
 aws_security_private_group: Redhat_LabSG_private
 aws_security_public_group: Redhat_LabSG_public
 aws_volume_size: 10
