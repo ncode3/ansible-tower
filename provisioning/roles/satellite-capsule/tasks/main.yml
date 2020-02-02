@@ -83,9 +83,14 @@
         subscription-manager clean
       when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
 
-    - name: "Re-run the bootstrap script"
+    - name: "Install the katello certificate"
       shell:
-        /opt/reg-to-satellite.sh
+        rpm -Uvh http://sat6.dev.maskedadmins.com/pub/katello-ca-consumer-latest.noarch.rpm
+      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+
+    - name: "Re-run subscription-manager"
+      shell:
+        subscription-manager register --org="{{ sat6['org'] }}" --activationkey="{{ sat6['activation_key'] }}"
       when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
   when: initialsetup.stdout == "false"
 
