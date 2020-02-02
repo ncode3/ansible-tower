@@ -3,6 +3,6 @@
   include: "{{ ansible_distribution }}.yml"
 
 - name: "Include roles for AWS servers"
-  import_role:
+  include_role:
     name: "{{ ansible_local['awsroles']['default']['roles'] }}"
   when: ansible_local['awsroles'] is defined
