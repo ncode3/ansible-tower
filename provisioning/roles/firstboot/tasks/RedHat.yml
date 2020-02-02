@@ -30,12 +30,12 @@
       
     - name: "Check for hosts not in aws"
       set_fact:
-        in_aws: "{{ dc.stdout | regex_search('html') | default(False,True) }}"
+        in_aws: "{{ dc.stdout | regex_search('html') | default('False',True) }}"
 
     - name: "Set ntp server"
       set_fact:
         ntp_server: "0.rhel.pool.ntp.org"
-      when: "in_aws is not False"
+      when: "in_aws is not 'False'"
 
     - name: "Set ntp to true"
       shell: |
