@@ -67,4 +67,4 @@
       --int-ip {{ int_ip }} --int-port {{ item.inside }} \
       --ext-ip {{ ext_ip }} --ext-port {{ item.outside }}   
     #become: true
-    loop: "{{ ext_ports }}"
+    loop: "{{ ports }}"
