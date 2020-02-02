@@ -108,6 +108,7 @@
             - path: /etc/ansible/facts.d/awsroles.fact
               permissions: '0444'
               content: |
+                [default]
                 role={{ awsrole }}
           runcmd:
            # this is post configuration job template
