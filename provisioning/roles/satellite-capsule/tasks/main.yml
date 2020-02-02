@@ -149,6 +149,22 @@
         state: touch
         mode: 0444
 
+    - name: "Get host id to add to the 'capsules' Group Inventory"
+      uri:
+        url: "https://{{ default_tower_server }}/api/v2/hosts/?name={{ inventory_hostname }}"
+        validate_certs: no
+        method: GET
+        user: admin
+        password: redhat
+        force_basic_auth: yes
+        status_code: [200,202,204]
+        body_format: json
+      register: hostidcheck
+
+    - name: "Set the host_id fact"
+      set_fact:
+        sat_host_id: "{{ hostidcheck.json.results[0].id }}"
+
     - name: "Add host to the 'capsules' Group Inventory"
       uri:
         url: "https://{{ default_tower_server }}/api/v2/groups/{{ capsules_inventory_group }}/hosts/"
@@ -156,17 +172,11 @@
         method: POST
         body: >
           {
-             "name": "{{ ansible_fqdn }}",
-             "description": "",
-             "enabled": true,
-             "instance_id": "",
-             "variables": ""
+             "id": "{{ sat_host_id }}"
           }
         user: admin
         password: redhat
         force_basic_auth: yes
         status_code: [201,202,204]
         body_format: json
-      with_items:
-        - 12
   when: capsulesetup.stdout == "false"

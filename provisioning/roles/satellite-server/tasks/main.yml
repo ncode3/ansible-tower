@@ -157,21 +157,6 @@
 #        echo "calling update firewall port for sat6"
 #        curl -f -k -H 'Content-Type: application/json' -XPOST -d '{"extra_vars":"{\"int_ip\":\"{{ ansible_default_ipv4['address'] }}\",\"int_port\":\"443\",\"ext_port\":\"8448\"}"}' --user admin:ansible https://{{ tower_server }}:443/api/v1/job_templates/660/launch/
 
-    - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
-      ignore_errors: yes
-      uri:
-        url: "https://{{ tower_server }}:443/api/v1/job_templates/660/launch/"
-        method: PUT
-        validate_certs: false
-        user: "admin"
-        password: "ansible"
-        status_code: 204
-        body: 
-          extra_vars:
-            int_ip: "{{ ansible_default_ipv4['address'] }}"
-            int_port: 443
-            ext_port: 8448
-        body_format: json
   when: initialsetup.stdout == "false"
 
 
@@ -802,3 +787,34 @@
     touch /root/.setup/step29
   args:
     creates: /root/.setup/step29
+    
+- name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
+  ignore_errors: yes
+  uri:
+    url: "https://{{ tower_server }}:443/api/v2/job_templates/28/launch/"
+    method: POST
+    validate_certs: false
+    user: "admin"
+    password: "redhat"
+    status_code: 204
+    body: 
+      extra_vars:
+        int_ip: "{{ ansible_default_ipv4['address'] }}"
+        ports:
+          - inside: 443
+            outside: 443
+          - inside: 5647
+            outside: 5647
+          - inside: 5000
+            outside: 5000
+          - inside: 80
+            outside: 80
+          - inside: 8000
+            outside: 8000
+          - inside: 8140
+            outside: 8140
+          - inside: 8443
+            outside: 8443
+          - inside: 9090
+            outside: 9090
+    body_format: json

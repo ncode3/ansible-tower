@@ -2,9 +2,10 @@
 - name: "Create static nat entry in cisco router for public access to internal ip"
   vars:
     int_ip: "1.1.1.1"
-    int_port: "80"
     ext_ip: "2.2.2.2"
-    ext_port: "80"
+    ports:
+      - inside: "80"
+        outside: "80"
     auth:
       #host: "{{ inventory_hostname }}"
       host: "10.55.2.1"
@@ -63,6 +64,7 @@
   - name: "Use script to update router"
     shell: |
       /opt/addnat.py -u {{ auth['username'] }} -p {{ auth['password'] }} -x {{ auth['host'] }} \
-      --int-ip {{ int_ip }} --int-port {{ int_port }} \
-      --ext-ip {{ ext_ip }} --ext-port {{ ext_port }}   
+      --int-ip {{ int_ip }} --int-port {{ item.inside }} \
+      --ext-ip {{ ext_ip }} --ext-port {{ item.outside }}   
     #become: true
+    loop: "{{ ext_ports }}"
