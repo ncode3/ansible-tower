@@ -197,6 +197,12 @@
         executable: /bin/bash
         creates: /opt/.firstboot
 
+    - name: "Create firstboot file"
+      shell: "touch /opt/.firstboot"
+      become: true
+      args:
+        creates: /opt/.firstboot
+
     - name: "Reboot."
       shell: |
         shutdown -r +1 || true
@@ -215,10 +221,5 @@
       delegate_to: localhost
       become: false
 
-    - name: "Create firstboot file"
-      shell: "touch /opt/.firstboot"
-      become: true
-      args:
-        creates: /opt/.firstboot
   when: firstbootcheck.stdout == "false"
 
