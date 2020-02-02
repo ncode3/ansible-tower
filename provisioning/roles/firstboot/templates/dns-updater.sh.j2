@@ -1,7 +1,7 @@
 #!/bin/bash
 zone="{{ dns_domain }}"
 hostname="$(hostname --short)"
-{% if in_aws is 'False'  %}
+{% if in_aws == 'False'  %}
 key="{{ dhcp_server_key }}"
 server="{{ dhcp_server }}"
 reverse=$(echo {{ ansible_default_ipv4['address'] }} | awk -F. '{print $4"."$3"." $2"."$1}')

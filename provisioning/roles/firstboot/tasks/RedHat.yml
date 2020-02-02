@@ -35,7 +35,7 @@
     - name: "Set ntp server"
       set_fact:
         ntp_server: "0.rhel.pool.ntp.org"
-      when: "in_aws is not 'False'"
+      when: "in_aws != 'False'"
 
     - name: "Set ntp to true"
       shell: |
