@@ -1,0 +1,9 @@
+#!/bin/bash -x
+/opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
+-s {{ sat6['url'] }} \
+-o "{{ sat6['org'] }}" \
+-L {{ sat6['location'] }} \
+-g "{{ sat6['hostgroup'] }}" \
+-a {{ sat6['activation_key'] }} \
+--force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root --skip-puppet
+

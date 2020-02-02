@@ -110,26 +110,30 @@
       get_url:
         url: "http://{{ sat6['url'] }}/pub/bootstrap.py"
         dest: /opt/bootstrap.py
-      when: bootstrapcheck.stdout == "false"
+        mode: 0755
+
+    - name: "Save the command to register to satellite server"
+      template:
+        src: reg-to-satellite.sh.j2
+        dest: /opt/reg-to-satellite.sh
+        owner: root
+        group: root
+        mode: 0755
 
     - name: "Run the satellite bootstrap script"
       shell: |
-        /bin/false
-        #chmod +x /opt/bootstrap.py
-        #/opt/bootstrap.py -l {{ sat6['user'] }} -p {{ sat6['pass'] }} \
-        #-s {{ sat6['url'] }} \
-        #-o "{{ sat6['org'] }}" \
-        #-L {{ sat6['location'] }} \
-        #-g "{{ sat6['hostgroup'] }}" \
-        #-a {{ sat6['activation_key'] }} \
-        #--force --add-domain --subscription-manager-args="--insecure" --rex --rex-user root --skip-puppet && \
-        #touch /opt/.bootstrap
+        /opt/reg-to-satellite.sh
       become: true
       register: satbootstrap
       #when: "'Current' not in rhsm_reg.stdout"
       when: bootstrapcheck.stdout == "false"
-      args:
-        creates: /opt/.bootstrap
+
+    - name: "bootstrap complete"
+      file:
+        path: /opt/.bootstrap
+        state: touch
+        mode: 0444
+  when: bootstrapcheck.stdout == "false"
 
   rescue:
     - name: "Clean up from Sat 6"
@@ -155,6 +159,11 @@
       until: rhsm_status.msg.find("System successfully registered") != -1
       delay: 1
 
+    - name: "bootstrap complete"
+      file:
+        path: /opt/.bootstrap
+        state: touch
+        mode: 0444
 #    - name: Register and subscribe to multiple pools for physical hosts
 #      redhat_subscription:
 #        state: present
@@ -211,11 +220,11 @@
         executable: /bin/bash
         creates: /opt/.firstboot
 
-    - name: "Create firstboot file"
-      shell: "touch /opt/.firstboot"
-      become: true
-      args:
-        creates: /opt/.firstboot
+    - name: "first boot complete"
+      file:
+        path: /opt/.firstboot
+        state: touch
+        mode: 0444
 
     - name: "Reboot."
       shell: |

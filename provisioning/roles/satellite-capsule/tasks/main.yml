@@ -143,12 +143,39 @@
                     --foreman-proxy-puppetca                   "true" \
                     --puppet-server-ca                         "true" \
                     --enable-foreman-proxy-plugin-remote-execution-ssh
+
+    - name: "Installing katello-agent rpms"
+      yum:
+        name: ['katello-agent']
+        state: latest
+      become: true
+
+    - name: "Enable and start haproxy"
+      service:
+        name: goferd
+        enabled: yes
+        state: started
+
     - name: "capsule config complete"
       file:
         path: /root/.setup/capsule-configed
         state: touch
         mode: 0444
+  when: capsulesetup.stdout == "false"
 
+- name: "Tower Inventory Setup check"
+  shell: |
+    if [ -e "/root/.setup/tower-configed" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: towersetup
+  become: true
+
+- name: "Block add to Ansible Tower inventory"
+  block:
     - name: "Get host id to add to the 'capsules' Group Inventory"
       uri:
         url: "https://{{ default_tower_server }}/api/v2/hosts/?name={{ inventory_hostname }}"
@@ -179,4 +206,10 @@
         force_basic_auth: yes
         status_code: [201,202,204]
         body_format: json
-  when: capsulesetup.stdout == "false"
+
+    - name: "tower config complete"
+      file:
+        path: /root/.setup/tower-configed
+        state: touch
+        mode: 0444
+  when: towersetup.stdout == "false"
