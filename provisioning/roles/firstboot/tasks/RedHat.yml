@@ -30,7 +30,7 @@
       
     - name: "Check for hosts not in aws"
       set_fact:
-        is_aws: "{{ dc.stdout | regex_search('html') | default('false',True) }}"
+        is_aws: "{{ dc.stdout | regex_search('html') | default(False,True) }}"
 
     - name: "Set ntp server"
       set_fact:

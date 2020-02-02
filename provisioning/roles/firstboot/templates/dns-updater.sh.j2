@@ -19,7 +19,7 @@ update delete ${hostname}.${zone}. A
 update add ${hostname}.${zone}. 300 IN A {{ ansible_default_ipv4['address'] }}
 send
 EOF
-{% if is_aws == 'false' %}
+{% if not is_aws  %}
 nsupdate -v ${temp}
 {% endif %}
 echo "$*" >> /tmp/dnsmasq.updater.txt
