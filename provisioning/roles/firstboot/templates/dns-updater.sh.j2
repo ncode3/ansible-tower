@@ -1,8 +1,9 @@
 #!/bin/bash
-key="{{ dhcp_server_key }}"
-server="{{ dhcp_server }}"
 zone="{{ dns_domain }}"
 hostname="$(hostname --short)"
+{% if is not in_aws  %}
+key="{{ dhcp_server_key }}"
+server="{{ dhcp_server }}"
 reverse=$(echo {{ ansible_default_ipv4['address'] }} | awk -F. '{print $4"."$3"." $2"."$1}')
 reversezone=$(echo {{ ansible_default_ipv4['address'] }} | awk -F. '{print $3"." $2"."$1}')
 temp=/tmp.$$
@@ -19,10 +20,9 @@ update delete ${hostname}.${zone}. A
 update add ${hostname}.${zone}. 300 IN A {{ ansible_default_ipv4['address'] }}
 send
 EOF
-{% if not is_aws  %}
 nsupdate -v ${temp}
-{% endif %}
 echo "$*" >> /tmp/dnsmasq.updater.txt
 rm -f ${temp}
+{% endif %}
 extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
 curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" --user {{ ansible_uri_creds }} https://{{ default_tower_server }}:443/api/v2/job_templates/30/launch/

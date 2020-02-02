@@ -30,12 +30,12 @@
       
     - name: "Check for hosts not in aws"
       set_fact:
-        is_aws: "{{ dc.stdout | regex_search('html') | default(False,True) }}"
+        in_aws: "{{ dc.stdout | regex_search('html') | default(False,True) }}"
 
     - name: "Set ntp server"
       set_fact:
         ntp_server: "0.rhel.pool.ntp.org"
-      when: "is_aws =! 'false'"
+      when: "in_aws is not False"
 
     - name: "Set ntp to true"
       shell: |
@@ -48,7 +48,6 @@
       ignore_errors: yes
       args:
         creates: /opt/.firstboot
-      when: "is_aws is not 'false'"
     
     - name: Set authorized key for root
       authorized_key:
