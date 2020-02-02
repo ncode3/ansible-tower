@@ -122,7 +122,8 @@
 
     - name: "Run the satellite bootstrap script"
       shell: |
-        /opt/reg-to-satellite.sh
+        #/opt/reg-to-satellite.sh
+        /bin/false
       become: true
       register: satbootstrap
       #when: "'Current' not in rhsm_reg.stdout"

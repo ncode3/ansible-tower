@@ -71,6 +71,22 @@
         path: /root/.setup/capsule-rpms
         state: touch
         mode: 0444
+
+    - name: "make sure we are registered to the satellite server"
+      shell:
+        subscription-manager config | grep 'hostname = \[subscription.rhsm.redhat.com\]' || true
+      register: bootstrap
+      
+    - name: "Unregister from the redhat cdn"
+      shell:
+        subscription-manager unregister && \
+        subscription-manager clean
+      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+
+    - name: "Re-run the bootstrap script"
+      shell:
+        /opt/reg-to-satellite.sh
+      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
   when: initialsetup.stdout == "false"
 
 - name: "Satellite Capsule Setup check"
