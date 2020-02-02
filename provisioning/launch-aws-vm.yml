@@ -253,3 +253,15 @@
            #- "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/"
            - "while [[ ! -e /tmp/.success ]] ; do sleep 60; curl -s -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/| grep msg || touch /tmp/.success ; done "
 
+    - name: Update the AWS Inventory
+      uri:
+        url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
+        validate_certs: no
+        method: POST
+        user: admin
+        password: redhat
+        force_basic_auth: yes
+        status_code: [201,202]
+        body_format: json
+      with_items:
+        - 29
