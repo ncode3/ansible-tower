@@ -58,3 +58,9 @@
   hosts: tower*:10.55.102.156
   roles:
     - ansible-tower
+
+- name: Configure AWS servers
+  hosts: ip-10.0.*
+  roles:
+    - "{{ ansible_local['awsroles']['role'] }}"
+  when: ansible_local['awsroles'] is defined

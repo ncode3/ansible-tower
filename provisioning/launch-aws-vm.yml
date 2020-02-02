@@ -4,6 +4,7 @@
   hosts: localhost
   gather_facts: no
   vars:
+    awsrole: satellite-capsule
     aws_assign_public_ip: yes
     host_config_key: firstboot
     host_config_server: "{{ default_tower_server }}"
@@ -104,6 +105,10 @@
               permissions: '0440'
               content: |
                 Defaults:cloud-user !requiretty
+            - path: /etc/ansible/facts.d/awsroles.fact
+              permissions: '0444'
+              content: |
+                role={{ awsrole }}
           runcmd:
            # this is post configuration job template
            #- "curl -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/"
