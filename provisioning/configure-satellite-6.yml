@@ -118,7 +118,7 @@
             - "Storage_105"
             - "Prod_106"
     tower_key: dc7c0b52cd29cacceb8d3571257801ea
-    tower_server: 10.55.102.248
+    tower_server: tower.maskedadmins.com
     tower_jobid: 287
     sat6_default_org: Redhat_Lab
     sat6_default_location: Private_Cloud

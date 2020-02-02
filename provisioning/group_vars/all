@@ -4,18 +4,21 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
-default_tower_server: 10.55.102.156
+default_tower_server: tower.maskedadmins.com
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
 osp10_controller: 10.55.102.159
 osp10_computes: "10.55.102.159"
+ntp_server: "10.55.102.5"
+dhcp_server: "{{ ntp_server }}"
+ansible_uri_creds: "admin:redhat"
 redhat_packages: ['nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
 enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 ## ansible api server
-host_config_server: tower.dev.maskedadmins.com
+host_config_server: tower.maskedadmins.com
 ## redhat insights job id
 redhat_insights_key: 990c2493aefba904a89081496fc0319b
 redhat_insights_jobid: 117

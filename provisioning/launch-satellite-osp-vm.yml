@@ -25,7 +25,6 @@
     vmimage: "RHEL 7.5 Cloud"
     vmflavor: "m1.medium"
     vmrootpassword: "{{ ipmi_pass }}"
-    tower_server: tower.dev.maskedadmins.com
     tower_key: firstboot
     vmmetadata:
       - name: host_type

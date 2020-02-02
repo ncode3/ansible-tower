@@ -12,7 +12,7 @@ cfme_type: "ManageIQ::Providers::AnsibleTower::Provider"
 cfme_server: "cloudforms.dev.maskedadmins.com"
 cfme_project: redhat-lab
 tower_name: "Ansible Tower"
-tower_server: "tower.dev.maskedadmins.com"
+tower_server: "tower.maskedadmins.com"
 tower_security: ssl
 tower_user: "admin"
 tower_pass: "ansible"

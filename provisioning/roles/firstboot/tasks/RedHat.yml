@@ -23,9 +23,23 @@
       args:
         creates: /opt/.firstboot
     
+    - name: "Check if in aws"
+      shell: |
+        curl -s http://169.254.169.254/2019-10-01/meta-data/public-ipv4 || echo "html"
+      register: dc
+      
+    - name: "Check for hosts not in aws"
+      set_fact:
+        is_aws: "{{ dc.stdout | regex_search('html') | default('false',True) }}"
+
+    - name: "Set ntp server"
+      set_fact:
+        ntp_server: "0.rhel.pool.ntp.org"
+      when: "is_aws is not 'false'"
+
     - name: "Set ntp to true"
       shell: |
-        ntpdate server 10.55.102.5 iburst
+        ntpdate server {{ ntp_server }} iburst
         timedatectl set-ntp true
         systemctl restart chronyd
       poll: 0
@@ -34,6 +48,7 @@
       ignore_errors: yes
       args:
         creates: /opt/.firstboot
+      when: "is_aws is not 'false'"
     
     - name: Set authorized key for root
       authorized_key:
