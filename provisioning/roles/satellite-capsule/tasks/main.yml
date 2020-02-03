@@ -72,27 +72,6 @@
         enabled: yes
         state: started
 
-    - name: "make sure we are registered to the satellite server"
-      shell:
-        subscription-manager config | grep 'hostname = \[subscription.rhsm.redhat.com\]' || true
-      register: bootstrap
-      
-    - name: "Unregister from the redhat cdn"
-      shell:
-        subscription-manager unregister && \
-        subscription-manager clean
-      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
-
-    - name: "Install the katello certificate"
-      shell:
-        rpm -Uvh http://sat6.dev.maskedadmins.com/pub/katello-ca-consumer-latest.noarch.rpm
-      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
-
-    - name: "Re-run subscription-manager"
-      shell:
-        subscription-manager register --org="{{ sat6['org'] }}" --activationkey="{{ sat6['activation_key'] }}"
-      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
-
     - name: "rpms complete"
       file:
         path: /root/.setup/capsule-rpms
@@ -180,6 +159,27 @@
                     --foreman-proxy-puppetca                   "true" \
                     --puppet-server-ca                         "true" \
                     --enable-foreman-proxy-plugin-remote-execution-ssh
+
+    - name: "make sure we are registered to the satellite server"
+      shell:
+        subscription-manager config | grep 'hostname = \[subscription.rhsm.redhat.com\]' || true
+      register: bootstrap
+      
+    - name: "Unregister from the redhat cdn"
+      shell:
+        subscription-manager unregister && \
+        subscription-manager clean
+      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+
+    - name: "Install the katello certificate"
+      shell:
+        rpm -Uvh http://sat6.dev.maskedadmins.com/pub/katello-ca-consumer-latest.noarch.rpm
+      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+
+    - name: "Re-run subscription-manager"
+      shell:
+        subscription-manager register --org="{{ sat6['org'] }}" --activationkey="{{ sat6['activation_key'] }}"
+      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
 
     - name: "Reboot."
       shell: |
