@@ -87,7 +87,14 @@
         owner: root
         group: root
         mode: 0755
-      delegate_to: localhost
+      delegate_to: 10.55.102.159
+      when: "in_aws != 'False'"
+
+    - name: "Run the satellite bootstrap script"
+      shell: |
+        shortname=$(hostname --short)
+        /opt/dns-helper.sh ${shortname} {{ dc.stdout }}
+      delegate_to: 10.55.102.159
       when: "in_aws != 'False'"
 
     - name: "Updating MOTD"
