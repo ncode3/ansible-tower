@@ -241,7 +241,7 @@
         method: POST
         body: >
           {
-             "id": "{{ sat_host_id }}"
+             "id": {{ sat_host_id }}
           }
         user: admin
         password: redhat
