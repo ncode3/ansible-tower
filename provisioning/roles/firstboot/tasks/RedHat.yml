@@ -30,7 +30,7 @@
       
     - name: "Check for hosts not in aws"
       set_fact:
-        in_aws: "{{ dc.stdout | regex_search('html') | default('False',True) }}"
+        in_aws: "{{ ansible_system_vendor | regex_search('EC2') | default('False',True) }}"
 
     - name: "Set ntp server"
       set_fact:
