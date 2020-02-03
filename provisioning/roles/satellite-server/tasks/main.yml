@@ -397,30 +397,30 @@
   args:
     creates: /root/.setup/step11b
 
-- name: "Provisioning Satellite 6 - configure Openstack repositories"
-  shell: |
-      hammer repository-set enable \
-      --name "{{ item.name }}" \
-      --releasever "7Server" --basearch "x86_64" \
-      --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
-  with_items: "{{ sat6_enabled_repos_openstack }}"
-  args:
-    creates: /root/.setup/step11c
+#- name: "Provisioning Satellite 6 - configure Openstack repositories"
+#  shell: |
+#      hammer repository-set enable \
+#      --name "{{ item.name }}" \
+#      --releasever "7Server" --basearch "x86_64" \
+#      --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
+#  with_items: "{{ sat6_enabled_repos_openstack }}"
+#  args:
+#    creates: /root/.setup/step11c
 
 - name: "Repo config Complete"
   shell: touch /root/.setup/step11c
   args:
     creates: /root/.setup/step11c
 
-- name: "Provisioning Satellite 6 - configure Openshift repositories without releaseversion"
-  shell: |
-      hammer repository-set enable \
-      --name "{{ item.name }}" \
-      --basearch "x86_64" \
-      --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
-  with_items: "{{ sat6_enabled_repos_openshift }}"
-  args:
-    creates: /root/.setup/step11d
+#- name: "Provisioning Satellite 6 - configure Openshift repositories without releaseversion"
+#  shell: |
+#      hammer repository-set enable \
+#      --name "{{ item.name }}" \
+#      --basearch "x86_64" \
+#      --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
+#  with_items: "{{ sat6_enabled_repos_openshift }}"
+#  args:
+#    creates: /root/.setup/step11d
 
 - name: "Repo config Complete"
   shell: |

@@ -129,9 +129,9 @@ sat6_pool_ids: !vault |
           6131346335643636633630616232326631663465636565613432
 sat6_enabled_products:
   - "Red Hat Enterprise Linux Server"
-  - "Red Hat Enterprise Linux Fast Datapath"
-  - "Red Hat OpenStack"
-  - "Red Hat OpenShift Container Platform"
+#  - "Red Hat Enterprise Linux Fast Datapath"
+#  - "Red Hat OpenStack"
+#  - "Red Hat OpenShift Container Platform"
   - "Red Hat Ansible Engine"
   - "Red Hat Satellite Capsule"
 sat6_enabled_repos:
@@ -143,8 +143,8 @@ sat6_enabled_repos:
     product: "Red Hat Enterprise Linux Server"
   - name: "Red Hat Enterprise Linux 7 Server - Optional (RPMs)"
     product: "Red Hat Enterprise Linux Server"
-  - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
-    product: "Red Hat Enterprise Linux Fast Datapath"
+#  - name: "Red Hat Enterprise Linux Fast Datapath (RHEL 7 Server) (RPMs)"
+#    product: "Red Hat Enterprise Linux Fast Datapath"
   - name: "Red Hat Ansible Engine 2.8 RPMs for Red Hat Enterprise Linux 7 Server"
     product: "Red Hat Ansible Engine"
   - name: "Red Hat Satellite Maintenance 6 for RHEL 7 Server (RPMs)"
@@ -156,14 +156,14 @@ sat6_enabled_repos_tools:
     product: "Red Hat Enterprise Linux Server"
   - name: "Red Hat Enterprise Linux 7 Server - Extras (RPMs)"
     product: "Red Hat Enterprise Linux Server"
-sat6_enabled_repos_openstack:
-  - name: "Red Hat OpenStack Platform {{ openstack_version }} for RHEL 7 (RPMs)"
-    product: "Red Hat OpenStack"
+#sat6_enabled_repos_openstack:
+#  - name: "Red Hat OpenStack Platform {{ openstack_version }} for RHEL 7 (RPMs)"
+#    product: "Red Hat OpenStack"
 #  - name: "Red Hat OpenStack Platform {{ openstack_version }} Developer Tools for RHEL 7 (RPMs)"
 #    product: "Red Hat OpenStack"
 sat6_enabled_repos_openshift:
-  - name: "Red Hat OpenShift Container Platform {{ openshift_version }} (RPMs)"
-    product: "Red Hat OpenShift Container Platform"
+#  - name: "Red Hat OpenShift Container Platform {{ openshift_version }} (RPMs)"
+#    product: "Red Hat OpenShift Container Platform"
 sat6_url: "https://{{ ansible_fqdn }}/"
 sat6_user: "admin"
 sat6_pass: "redhat123"
