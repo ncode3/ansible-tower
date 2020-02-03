@@ -80,6 +80,16 @@
         group: root
         mode: 0755
     
+    - name: "put dns helper on tower server for aws hosts"
+      template:
+        src: dns-helper.sh.j2
+        dest: /opt/dns-helper.sh
+        owner: root
+        group: root
+        mode: 0755
+      delegate_to: localhost
+      when: "in_aws != 'False'"
+
     - name: "Updating MOTD"
       template: 
         src: tiger.ascii.j2

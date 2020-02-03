@@ -1,0 +1,30 @@
+#!/bin/bash
+if [[ -z $1 ]];
+then
+	echo "Usage $* hostname ipddress"
+	exit 1
+fi
+zone="{{ dns_domain }}"
+hostname=$1
+ipaddress=$2
+key="{{ dhcp_server_key }}"
+server="{{ dhcp_server }}"
+reverse=$(echo ${ipaddress} | awk -F. '{print $4"."$3"." $2"."$1}')
+reversezone=$(echo ${ipaddress} | awk -F. '{print $3"." $2"."$1}')
+temp=/tmp.$$
+touch $temp
+cat > ${temp} <<EOF
+server ${server}
+key dhcpupdate ${key}
+zone ${reversezone}.in-addr.arp
+update delete ${reverse}.in-addr.arpa. PTR
+update add ${reverse}.in-addr.arpa. 300 IN PTR ${hostname}.${zone}.
+send
+zone ${zone}
+update delete ${hostname}.${zone}. A
+update add ${hostname}.${zone}. 300 IN A ${ipaddress}
+send
+EOF
+nsupdate -v ${temp}
+echo "$*" >> /tmp/dnsmasq.updater.txt
+rm -f ${temp}
