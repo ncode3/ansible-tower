@@ -3,11 +3,11 @@
   name: test
   tasks:
 
-    - name: dump loop item
-      debug: var=itm
+    - name: see what is available to filter
+      debug: var=hostvars[item]
       with_inventory_hostnames: all
 
-    - name: grab ec2 instances from inventory
-      debug: var=hostvars[item]['host_config_server']
-      #when: "hostvars[item]['ansible_facts']['ansible_system_vendor'] is defined and 'Amazon EC2' in hostvars[item]['ansible_facts']['ansible_system_vendor']"
+    - name: filter ec2 instances from inventory
+      debug: var=hostvars[item]['ec2_ip_address']
+      when: "hostvars[item]['ec2_tag_Name'] is defined"
       with_inventory_hostnames: all
