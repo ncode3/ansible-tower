@@ -28,6 +28,6 @@
     - name: make sure the instances are stopped
       ec2_instance:
         state: stopped
-        ec2_ids: "{{ list_of_instanceids }}"
+        instance_ids: "{{ list_of_instanceids }}"
         region: "{{ aws_region }}"
       when: action == 'goodnight' and list_of_instanceids | length >= 1
