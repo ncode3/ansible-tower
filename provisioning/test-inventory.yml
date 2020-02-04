@@ -4,7 +4,7 @@
   tasks:
 
     - name: dump loop item
-      debug: var=item
+      debug: var=hostvars[item]
       with_inventory_hostnames: all
 
     - name: grab ec2 instances from inventory
