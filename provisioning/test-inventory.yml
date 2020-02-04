@@ -3,7 +3,7 @@
   name: test
   vars:
     action: "goodmorning"
-    list_of_instanceids = []
+    list_of_instanceids: []
   tasks:
 
 #    - name: see what is available to filter
