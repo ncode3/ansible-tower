@@ -31,5 +31,5 @@
       ec2_instance:
         state: stopped
         instance_ids: "{{ list_of_instanceids }}"
-      when: action == 'goodnight' and hostvars[item]['hostvars[item]['ec2-id'] is defined
+      when: action == 'goodnight' and hostvars[item]['ec2-id'] is defined
       with_inventory_hostnames: all
