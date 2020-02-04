@@ -16,8 +16,9 @@
       with_inventory_hostnames: all
 
     - name: filter ec2 instances from inventory
-      set_fact: "[ '{{ hostvars[item]['ec2_id'] }}' ]"
-      #set_fact: "{{ list_of_instanceids }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
+      #set_fact: "[ '{{ hostvars[item]['ec2_id'] }}' ]"
+      set_fact:
+        list_of_instanceids: "{{ list_of_instanceids | default([],True) }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
       when: "hostvars[item]['ec2_id'] is defined"
       with_inventory_hostnames: all
 
@@ -27,10 +28,10 @@
     - name: make sure the instances are running
       ec2_instance:
         state: running
-        ec2_ids:
-          - "{{ hostvars[item]['ec2_id'] }}"
-      when: action == 'goodmorning' and hostvars[item]['ec2_id'] is defined
-      with_inventory_hostnames: all
+        instance_ids: "{{ list_of_instanceids }}"
+      #when: action == 'goodmorning' and hostvars[item]['ec2_id'] is defined
+      when: action == 'goodmorning' and list_of_instanceids | length >= 1
+      #with_inventory_hostnames: all
 
     - name: make sure the instances are stopped
       ec2_instance:
