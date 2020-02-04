@@ -3,20 +3,13 @@
   name: test
   vars:
     action: "goodmorning"
-    list_of_instanceids: []
   tasks:
-
-#    - name: see what is available to filter
-#      debug: var=hostvars[item]
-#      with_inventory_hostnames: all
-
     - name: filter ec2 instances from inventory
       debug: var=hostvars[item]['ec2_ip_address']
       when: "hostvars[item]['ec2_id'] is defined"
       with_inventory_hostnames: all
 
     - name: filter ec2 instances from inventory
-      #set_fact: "[ '{{ hostvars[item]['ec2_id'] }}' ]"
       set_fact:
         list_of_instanceids: "{{ list_of_instanceids | default([],True) }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
       when: "hostvars[item]['ec2_id'] is defined"
@@ -30,12 +23,11 @@
         state: running
         instance_ids: "{{ list_of_instanceids }}"
         region: "{{ aws_region }}"
-      #when: action == 'goodmorning' and hostvars[item]['ec2_id'] is defined
       when: action == 'goodmorning' and list_of_instanceids | length >= 1
-      #with_inventory_hostnames: all
 
     - name: make sure the instances are stopped
       ec2_instance:
         state: stopped
         ec2_ids: "{{ list_of_instanceids }}"
-      when: action == 'goodnight'
+        region: "{{ aws_region }}"
+      when: action == 'goodnight' and list_of_instanceids | length >= 1
