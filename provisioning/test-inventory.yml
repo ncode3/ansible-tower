@@ -16,7 +16,8 @@
       with_inventory_hostnames: all
 
     - name: filter ec2 instances from inventory
-      set_fact: "{{ list_of_instanceids }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
+      set_fact: "[ '{{ hostvars[item]['ec2_id'] }}' ]"
+      #set_fact: "{{ list_of_instanceids }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
       when: "hostvars[item]['ec2_id'] is defined"
       with_inventory_hostnames: all
 
