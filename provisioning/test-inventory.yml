@@ -12,12 +12,12 @@
 
     - name: filter ec2 instances from inventory
       debug: var=hostvars[item]['ec2_ip_address']
-      when: "hostvars[item]['instance-id'] is defined"
+      when: "hostvars[item]['instance_id'] is defined"
       with_inventory_hostnames: all
 
     - name: filter ec2 instances from inventory
-      set_fact: "{{ list_of_instanceids }} + [ '{{ hostvars[item]['instance-id'] }}' ]"
-      when: "hostvars[item]['instance-id'] is defined"
+      set_fact: "{{ list_of_instanceids }} + [ '{{ hostvars[item]['instance_id'] }}' ]"
+      when: "hostvars[item]['instance_id'] is defined"
       with_inventory_hostnames: all
 
     - name: make sure the instances are running
