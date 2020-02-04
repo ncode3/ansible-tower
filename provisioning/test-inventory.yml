@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  name: test
+  tasks:
+    - name: grab ec2 instances from inventory
+      debug: var=hostvars[item]]['ansible_facts']['eth0']['ipv4']['address']
+      with_inventory_hostnames: all
+      when: "hostvars[host]['ansible_facts']['ansible_system_vendor] == 'Amazon EC2'"
