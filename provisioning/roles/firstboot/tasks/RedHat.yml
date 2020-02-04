@@ -36,12 +36,12 @@
       shell: |
         hostname --short  
       register: awsshortname
-      when: "in_aws != 'False'"
+      when: "'EC2' in in_aws"
 
     - name: "Set ntp server"
       set_fact:
         ntp_server: "0.rhel.pool.ntp.org"
-      when: "in_aws != 'False'"
+      when: "'EC2' in in_aws"
 
     - name: "Set ntp to true"
       shell: |
@@ -94,13 +94,13 @@
 #        group: root
 #        mode: 0755
 #      delegate_to: sat6
-#      when: "in_aws != 'False'"
+#      when: "'EC2' in in_aws"
 
     - name: "Run the AWS dns helper"
       shell: |
         /opt/dns-helper.sh {{ awsshortname.stdout }} {{ dc.stdout }}
       delegate_to: sat6
-      when: "in_aws != 'False'"
+      when: "'EC2' in in_aws"
 
     - name: "Updating MOTD"
       template: 
