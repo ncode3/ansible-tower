@@ -2,7 +2,6 @@
 - hosts: localhost
   name: test
   vars:
-    list_of_instanceids: []
     action: "goodmorning"
   tasks:
 
@@ -16,9 +15,12 @@
       with_inventory_hostnames: all
 
     - name: filter ec2 instances from inventory
-      set_fact: "{{ list_of_instanceids }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
+      set_fact: "{{ list_of_instanceids | default([],True) }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
       when: "hostvars[item]['ec2_id'] is defined"
       with_inventory_hostnames: all
+
+    - name: dump list of instancids
+      debug: var=list_of_instanceids
 
     - name: make sure the instances are running
       ec2_instance:
