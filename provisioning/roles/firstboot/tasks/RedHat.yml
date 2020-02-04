@@ -32,6 +32,12 @@
       set_fact:
         in_aws: "{{ ansible_system_vendor | regex_search('EC2') | default('False',True) }}"
 
+    - name: "Get the aws short hostname"
+      shell: |
+        hostname --short  
+      register: awsshortname
+      when: "in_aws != 'False'"
+
     - name: "Set ntp server"
       set_fact:
         ntp_server: "0.rhel.pool.ntp.org"
@@ -92,8 +98,7 @@
 
     - name: "Run the AWS dns helper"
       shell: |
-        shortname=$(hostname --short)
-        /opt/dns-helper.sh ${shortname} {{ dc.stdout }}
+        /opt/dns-helper.sh {{ awsshortname.stdout }} {{ dc.stdout }}
       delegate_to: sat6
       when: "in_aws != 'False'"
 
