@@ -6,9 +6,9 @@
     action: "goodmorning"
   tasks:
 
-    - name: see what is available to filter
-      debug: var=hostvars[item]
-      with_inventory_hostnames: all
+#    - name: see what is available to filter
+#      debug: var=hostvars[item]
+#      with_inventory_hostnames: all
 
     - name: filter ec2 instances from inventory
       debug: var=hostvars[item]['ec2_ip_address']
