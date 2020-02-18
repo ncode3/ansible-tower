@@ -39,7 +39,8 @@
     host_config_server: "{{ default_tower_server }}"
     host_config_jobid: "14"
     # update the tower/awx inventory after launching
-    tower_inventory_id: 29
+    tower_inventory_ids:
+      - 29
   environment:
     # these can be ansible tower/awx credentials
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
@@ -165,7 +166,7 @@
         status_code: [201,202]
         body_format: json
       with_items:
-        - "{{ tower_inventory_id }}"
+        - "{{ tower_inventory_ids }}"
 
 #    - name: launch an ec2 instance in a public vpc
 #      when: aws_vpc_subnet_publicid is defined
