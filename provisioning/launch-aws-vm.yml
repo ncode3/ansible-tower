@@ -15,7 +15,7 @@
     #   when: ansible_local['awsroles'] is defined
     awsrole: satellite-capsule
     # the public key for cloud-user user
-    cloud_user_pub_key: "rsa ..."
+    #cloud_user_pub_key: "rsa ..."
     # the root user password
     root_password: "redhat123"
     # aws specific configuration
