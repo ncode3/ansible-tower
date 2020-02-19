@@ -383,6 +383,7 @@
     creates: /root/.setup/step11a
 
 - name: "Provisioning Satellite 6 - Tools repos without a releaseversion"
+  ignore_errors: yes
   shell: |
       hammer repository-set enable \
       --name "{{ item.name }}" \
@@ -430,6 +431,7 @@
     creates: /root/.setup/step11d
 
 - name: "Provisioning Satellite 6 - Syncing RHEL Product Content. This takes 100+ mins with all the repos to sync..."
+  ignore_errors: yes
   shell: |
       hammer product synchronize --name "{{ item }}" \
       --organization "{{ sat6_default_org }}" --async
@@ -480,13 +482,14 @@
       commonid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Common" | awk '{print $1}')
       extraid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Extras" | awk '{print $1}')
       optionalid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Optional" | awk '{print $1}')
-      fastdataid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Fast Datapath" | awk '{print $1}')
-      openstackid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform {{ openstack_version }} for RHEL 7" | awk '{print $1}')
-      openstackdevid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform {{ openstack_version }} Developer Tools" | awk '{print $1}')
-      openshiftid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
+      #fastdataid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Fast Datapath" | awk '{print $1}')
+      #openstackid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform {{ openstack_version }} for RHEL 7" | awk '{print $1}')
+      #openstackdevid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform {{ openstack_version }} Developer Tools" | awk '{print $1}')
+      #openshiftid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
+      #--repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
       hammer content-view create --name "Base" \
       --description "Base operating system" \
-      --repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
+      --repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid}" \
       --organization "{{ sat6_default_org }}"
       hammer content-view publish --name "Base" \
       --description "Initial content view for our operating system" \
@@ -543,7 +546,7 @@
 - name: "Enabling sat tools repo in the keys"
   shell: |
     hammer activation-key content-override --name "{{ sat6_default_org }}-{{ item.name }}-key" \
-    --content-label rhel-7-server-satellite-tools-6.3-rpms \
+    --content-label rhel-7-server-satellite-tools-{{ satellite_version }}-rpms \
     --value 1 --organization "{{ sat6_default_org }}"
   with_items: "{{ sat6.environments }}"
   args:
@@ -720,6 +723,7 @@
 
 
 - name: "Add Openstack Compute Resources for RHEL 7.5"
+  ignore_errors: yes
   shell: |
     set -x
     images=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@{{ item.controller }} "source keystonerc_admin ; glance image-list | cut -d\| -f3| grep -v \+ | grep -v '^ Name'| sed -e 's/^ //g'|  sed -e 's/[[:space:]]*$//'| tr \"\n\" ','")
