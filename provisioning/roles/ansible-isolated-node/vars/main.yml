@@ -1,0 +1,4 @@
+---
+tower_version: 3.6.1
+tower_server: 10.55.102.156
+isolated_group_name: aws

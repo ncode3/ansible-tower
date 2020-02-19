@@ -1,0 +1,19 @@
+---
+- name: "Ensure new cluster node is in tower inventory"
+  ini_file:
+    path: "/opt/ansible-tower-setup-{{ tower_version }}/inventory"
+    section: tower
+    option: "{{ ansible_default_ipv4['address'] }}"
+    backup: yes
+  delegate_to: "{{ tower_server }}"
+
+- name: "Rerun the setup installation on tower. Check the /tmp/tower-cluster-setup-output.log on the tower server"
+  shell: |
+   exec &> >(tee -a /tmp/tower-cluster-setup-output.log)
+   cd /opt/ansible-tower-setup-{{ tower_version }}/
+   ./setup.sh && touch /opt/ansible-tower-setup-{{ tower_version }}/.clusternode-{{ ansible_default_ipv4['address'] }}
+  args:
+    creates: "/opt/ansible-tower-setup-{{ tower_version }}/.clusternode-{{ ansible_default_ipv4['address'] }}"
+  become: true
+  delegate_to: "{{ tower_server }}"
+
