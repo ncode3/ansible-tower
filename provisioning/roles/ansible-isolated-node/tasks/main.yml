@@ -1,15 +1,28 @@
 ---
+- name: "Get AWS Public IP"
+  shell: |
+    curl -s http://169.254.169.254/2019-10-01/meta-data/public-ipv4
+  register: publicip
+
 - name: "Ensure new isolated node group is in tower inventory"
   ini_file:
     path: "/opt/ansible-tower-setup-{{ tower_version }}/inventory"
+    no_extra_spaces: yes
     section: "isolated_group_{{ isolated_group_name }}"
-    option: "{{ ansible_default_ipv4['address'] }}"
+    option: "{{ publicip.stdout }}"
     backup: yes
   delegate_to:  "{{ tower_server }}"
+
+- name: "Clean up inventory"
+  shell: |
+    sed -i -e 's/{{ publicip.stdout }}=None/{{ publicip.stdout }}/g' /opt/ansible-tower-setup-{{ tower_version }}/inventory 
+  become: true
+  delegate_to: "{{ tower_server }}"
 
 - name: "Ensure new isolated node group vars is set in tower inventory"
   ini_file:
     path: "/opt/ansible-tower-setup-{{ tower_version }}/inventory"
+    no_extra_spaces: yes
     section: "isolated_group_{{ isolated_group_name }}:vars"
     option: "controller"
     value: "{{ tower_server }}"
@@ -22,6 +35,7 @@
    cd /opt/ansible-tower-setup-{{ tower_version }}/
    ./setup.sh && touch /opt/ansible-tower-setup-{{ tower_version }}/.isolatednode-{{ ansible_default_ipv4['address'] }}
   args:
+    executable: /bin/bash
     creates: "/opt/ansible-tower-setup-{{ tower_version }}/.isolatednode-{{ ansible_default_ipv4['address'] }}"
   become: true
   delegate_to: "{{ tower_server }}"
