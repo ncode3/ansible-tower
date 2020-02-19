@@ -20,7 +20,7 @@
     root_password: "redhat123"
     # aws specific configuration
     aws_assign_public_ip: yes
-    aws_volume_size: 10
+    aws_volume_size: 150
     aws_security_group_name: "Redhat_Lab-sg-ansible"
     aws_security_group_allow_cidr: "173.15.218.96/29"
     aws_region: us-east-1
@@ -55,7 +55,7 @@
     - name: create a security group
       ec2_group:
         name: "{{ aws_security_group_name }}"
-        description: "created by ansilble"
+        description: "created by ansible"
         region: "{{ aws_region }}"
         vpc_id: "{{ aws_vpc_id }}"
         rules:
