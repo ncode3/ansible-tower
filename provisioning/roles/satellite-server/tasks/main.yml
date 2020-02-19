@@ -487,7 +487,7 @@
       #openstackid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform {{ openstack_version }} for RHEL 7" | awk '{print $1}')
       #openstackdevid=$(hammer repository list --organization {{ sat6_default_org }} | grep "OpenStack Platform {{ openstack_version }} Developer Tools" | awk '{print $1}')
       #openshiftid=$(hammer repository list --organization {{ sat6_default_org }} | grep "Red Hat OpenShift Container Platform" | awk '{print $1}')
-      #--repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}" \
+      #--repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid},${fastdataid},${openstackid},${openstackdevid},${openshiftid}"
       hammer content-view create --name "Base" \
       --description "Base operating system" \
       --repository-ids "${extraid},${ksid},${rhelrepoid},${sattoolsid},${commonid},${optionalid}" \
