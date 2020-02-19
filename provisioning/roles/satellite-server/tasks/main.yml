@@ -373,6 +373,7 @@
       --releasever "7Server" --basearch "x86_64" \
       --product "{{ item.product }}" --organization "{{ sat6_default_org }}"
   with_items: "{{ sat6_enabled_repos }}"
+  ignore_errors: yes
   args:
     creates: /root/.setup/step11a
 
