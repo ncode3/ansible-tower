@@ -104,8 +104,31 @@ write_files:
     rm -f ${temp}
     extravars="{\\\"fqdn\\\":\\\"${hostname}.${zone}\\\",\\\"zone\\\":\\\"$zone\\\"}"
     curl -s -f -k -H 'Content-Type: application/json' -XPOST -d "{\"extra_vars\":\"${extravars}\"}" \
-    --user admin:ansible https://10.55.102.156:443/api/v2/job_templates/14/launch/ \
+    --user admin:redhat https://{ host_config_server }}:443/api/v2/job_templates/14/launch/ \
     || true
+- path: /tmp/firstboot.sh
+  permissions: '0755'
+  owner: root:root
+  content: |
+    #!/bin/bash
+    # managed by cloud-config
+    # this exists to give aws networking time to come up before phoning home
+    if [ -d /var/log/firstboot ]
+    then
+       echo "*** firstboot.sh already run"
+       echo "*** firstboot.sh delete /var/log/firstboot to run again"
+       exit 0
+    fi
+    mkdir /var/log/firstboot
+    sleep 60
+    # wait until tower/aws returns a success message
+    while [[ ! -e /tmp/.success ]]
+    do
+      curl -s -k --data 'host_config_key={{ host_config_key }}' https://{{ host_config_server }}:443/api/v2/job_templates/{{ host_config_jobid }}/callback/ | \
+      grep msg || \
+      touch /tmp/.success
+      sleep 60
+    done
 - path: /tmp/foreman-userdata.sh
   permissions: '0755'
   content: |
@@ -119,9 +142,10 @@ write_files:
 <%= indent 4 do
       snippet 'ansible_provisioning_callback'
     end %>
-    #sed -i -e 's/api\/v2/api\/v1/g' /etc/systemd/system/ansible-callback.service
     systemctl daemon-reload
-    systemctl start ansible-callback
+    #systemctl start ansible-callback
+    systemctl disable ansible-callback
+		/tmp/firstboot.sh
 
 <% if host_param_true?('package_upgrade') -%>
 package_upgrade: true
