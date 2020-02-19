@@ -5,6 +5,7 @@
   roles:
     - firstboot
     - insights
+    - awsroles
 
 - name: Install Jboss Standalone
   hosts: jboss*
