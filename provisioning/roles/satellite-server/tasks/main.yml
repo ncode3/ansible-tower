@@ -701,6 +701,7 @@
     creates: /root/.setup/step24
 
 - name: "Add Openstack Compute Resources"
+  ignore_errors: yes
   shell: |
     hammer compute-resource create \
     --name "{{ item.name }}" \
