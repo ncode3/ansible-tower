@@ -1,0 +1,7 @@
+#!/bin/bash
+cfg=$'{"t":${num_of_tang_servers},"pins":{tang:[\n
+{% for host in groups['tang-servers'] %}
+ {"url":"http://{{ hostvars[host]['ansible_facts']['ansible_fqdn'] }}"},\n
+{% endfor %}'
+export cfg=$(echo $cfg | sed -e "s/,\n'$/]}}'/g")
+echo $cfg

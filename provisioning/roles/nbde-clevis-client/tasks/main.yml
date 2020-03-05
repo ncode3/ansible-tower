@@ -1,0 +1,45 @@
+---
+- name: "Check if clevis is installed"
+  shell: "rpm -qa | grep clevis-luks"
+  register: isclevisinstalled
+
+- name: "Install tang server to decrypt encrypted block devices"
+  yum:
+    name: "{{ item }}"
+    state: "present"
+  when: "clevis" not in isclevisinstalled.stdout
+  loop:
+    - clevis-luks
+    - clevis-dracut
+    - clevis
+
+- name: "Set the clevis config template file"
+  template:
+    src: clevis-config.sh.j2
+    dest: /tmp/clevis-config.sh
+    mode: 0755
+
+- name: "Configure clevis to talk to tang servers"
+  shell: |
+    /tmp/clevis-config.sh
+    clevis luks bind -f -k- -d {{ encrypted_device }} sss "$cfg" <<< "{{ encrypted['passphrase'] }}" && \
+    touch /opt/.encryptedsetup
+  args:
+    executable: /bin/bash
+    creates: /opt/.encryptedsetup
+
+- name: "Enable and start clevis-luks-askpath"
+  service:
+    name: clevis-luks-askpass.path
+    enabled: yes
+    state: started
+
+- name: "Configure /etc/crypttab"
+  lineinfile:
+    path: /etc/crypttab
+    line: "{{ encrypted['device_name'] }}  {{ encrypted['device'] }}  none   _netdev"
+
+- name: "Configure /etc/fstab"
+  lineinfile:
+    path: /etc/fstab
+    line: "/dev/mapper/{{ encrypted['device_name'] }}  {{ encrypted['device_mountpoint'] }}  {{ encrypted['device_fs'] }}   _netdev   1 2"

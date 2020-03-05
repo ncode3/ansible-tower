@@ -1,0 +1,23 @@
+---
+- name: "Check if tang is installed"
+  shell: "rpm -qa | grep tang"
+  register: istanginstalled
+
+- name: "Install tang server to decrypt encrypted block devices"
+  yum:
+    name: "tang"
+    state: "present"
+  when: "tang" not in istanginstalled.stdout
+
+- name: "Enable tang.socket"
+  service:
+    name: "tang.socket"
+    state: "enabled"
+
+- name: "Add firewall rules for tang"
+  firewalld:
+    service: "http"
+    zone: "public"
+    permanent: "yes"
+    state: "enabled"
+

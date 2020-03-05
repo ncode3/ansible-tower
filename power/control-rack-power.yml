@@ -37,7 +37,7 @@
   gather_facts: no
   ## use localhost inventory
   hosts: localhost
-  #ignore_errors: yes
+  ignore_errors: yes
   connection: local
   #become: true
   vars:
@@ -68,11 +68,6 @@
 #      #become_user: root
 #      when:  (is_installed.results|length == 1) or (is_installed.results[1].yumstate != 'installed')
 #      become: true
-
-    - name: "Check the power state for {{ ipmi_targets }}"
-      shell: ipmiutil health -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      with_items:
-        - "{{ ipmi_targets }}"
 
     - name: "soft shutdown and power off for {{ ipmi_targets }}"
       shell: ipmiutil reset -D -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
@@ -136,11 +131,6 @@
             ( powerstate == "pxe" ) or
             ( powerstate == "cycle" ) or
             ( powerstate == "reset" )
-
-    - name: "Check the power state for {{ ipmi_targets }} and persist"
-      shell: ipmiutil health -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
-      with_items:
-        - "{{ ipmi_targets }}"
 
     - name: "Server(s) will reinstall. It will be back in 20 mins"
       debug: var=powerstate
