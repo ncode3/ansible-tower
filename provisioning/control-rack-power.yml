@@ -139,9 +139,9 @@
 
     - name: "Check the power state for {{ ipmi_targets }} and persist"
       shell: ipmiutil health -N {{ item }} -U {{ ipmi_user }} -P {{ ipmi_pass }}
+      register: output
       with_items:
         - "{{ ipmi_targets }}"
 
-    - name: "Server(s) will reinstall. It will be back in 20 mins"
-      debug: var=powerstate
-      when: powerstate == "pxe"
+    - name: "Server(s) status"
+      debug: var=output

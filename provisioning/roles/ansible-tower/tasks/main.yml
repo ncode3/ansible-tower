@@ -48,6 +48,14 @@
     chdir: /opt
   become: true
 
+- name: "Add cleanup utility"
+  template:
+    src: fix-pending-and-cleanup-jobs-queue.sh.j2
+    dest: /opt/fix-pending-and-cleanup-jobs-queue.sh
+    owner: root
+    group: root
+    mode: 0755
+
 #- name: "Disable PRoot to allow local_actions"
 #  lineinfile: 
 #    line: "AWX_PROOT_ENABLED=False"
