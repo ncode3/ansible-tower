@@ -4,6 +4,12 @@
   vars:
     action: "goodmorning"
   tasks:
+    #use this if you forget your encrypted aws creds
+    - name: "AWS_ACCESS_KEY_ID"
+      debug: var=AWS_ACCESS_KEY_ID
+    - name: "AWS_SECRET_KEY"
+      debug: var=AWS_SECRET_KEY
+
     - name: filter ec2 instances from inventory
       debug: var=hostvars[item]['ec2_ip_address']
       when: "hostvars[item]['ec2_id'] is defined"
