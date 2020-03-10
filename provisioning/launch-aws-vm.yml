@@ -46,11 +46,11 @@
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
     AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
   tasks:
-    # use this if you forget your encrypted aws creds
-    #- name: "AWS_ACCESS_KEY_ID"
-    #  debug: var=AWS_ACCESS_KEY_ID
-    #- name: "AWS_SECRET_KEY"
-    #  debug: var=AWS_SECRET_KEY
+     use this if you forget your encrypted aws creds
+    - name: "AWS_ACCESS_KEY_ID"
+      debug: var=AWS_ACCESS_KEY_ID
+    - name: "AWS_SECRET_KEY"
+      debug: var=AWS_SECRET_KEY
 
     - name: create a security group
       ec2_group:
