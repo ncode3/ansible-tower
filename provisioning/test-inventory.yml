@@ -16,7 +16,7 @@
       with_inventory_hostnames: all
 
     - name: grab all ocp clusters
-      ec2_instance_info:
+      ec2_instance_facts:
         filters:
           "tag:Name": redhatlab
 
