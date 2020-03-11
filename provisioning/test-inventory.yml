@@ -15,6 +15,11 @@
       when: "hostvars[item]['ec2_id'] is defined"
       with_inventory_hostnames: all
 
+    - name: grab all ocp clusters
+      ec2_instance_info:
+        filters:
+          "tag:Name": "redhatlab"
+
     - name: filter ec2 instances from inventory
       set_fact:
         list_of_instanceids: "{{ list_of_instanceids | default([],True) }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
