@@ -19,8 +19,14 @@
       ec2_instance_facts:
         region: "{{ aws_region }}"
         filters:
-          "tag:Name": redhatlab
+          instance-state-name: [ "running","shutting-down", "stopping", "stopped" ]
+          #"tag:Name": redhatlab
+      register: awsinstances
 
+    - name: dump ec2 results
+      debug: var=awsinstances
+      #when: "hostvars[item]['ec2_id'] is defined"
+      
     - name: filter ec2 instances from inventory
       set_fact:
         list_of_instanceids: "{{ list_of_instanceids | default([],True) }} + [ '{{ hostvars[item]['ec2_id'] }}' ]"
