@@ -27,7 +27,7 @@
     - name: dump ec2 results
       debug: var=item.tags.Name
       when: "ocp_clustername is in item.tags.Name"
-      loop: findocp.instances
+      loop: findocp.instances[0]
       
     - name: filter ec2 instances from inventory
       set_fact:
