@@ -17,6 +17,7 @@
 
     - name: grab all ocp clusters
       ec2_instance_facts:
+        region: "{{ aws_region }}"
         filters:
           "tag:Name": redhatlab
 
