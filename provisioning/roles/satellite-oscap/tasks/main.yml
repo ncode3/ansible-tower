@@ -1,0 +1,206 @@
+---
+- name: "Satellite Oscap setup check"
+  shell: |
+    if [ -e "/root/.setup/oscap-rpms" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: oscapsetup
+  become: true
+
+- name: "Block to perform initial setup"
+  block:
+    - name: "make setup tracking dir"
+      file:
+        path: /root/.setup
+        state: directory
+        mode: 0755
+  
+    - name: "Enable satellite tools repos"
+      shell: |
+        subscription-manager repos --enable rhel-7-server-satellite-tools-{{ satellite_version }}-rpms
+      become: true
+
+    - name: "Installing oscap rpms"
+      yum:
+        name: ['oscap-scanner','scap-workbench','scap-security-guide']
+        state: latest
+      become: true
+
+    - name: "rpms complete"
+      file:
+        path: /root/.setup/oscap-rpms
+        state: touch
+        mode: 0444
+
+  when: oscapsetup.stdout == "false"
+
+- name: "Oscap profile setup check"
+  shell: |
+    if [ -e "/root/.setup/oscap-configed" ]
+    then
+      echo "true"
+    else
+      echo "false"
+    fi
+  register: oscapsetup
+  become: true
+
+- name: "Block to perform satellie-capsule setup"
+  block:
+    - name: "Save info on the RHEL 7 Standard Security Profile"
+      shell: |
+        oscap info /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
+      register: profileinfo
+    
+    - name: "Output the RHEL 7 Standard Security Profile info"
+      debug:
+        var: profileinfo.stdout
+
+    - name: "Generate html with the RHEL 7 Standard Security Profile info"
+      shell: |
+        oscap xccdf generate guide \
+        --profile xccdf_org.ssgproject.content_profile_standard \
+        /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml > /var/www/html/pub/rhel7-security-profile.html
+      become: true
+    
+    - name: "Configure Satellite to use the security profiles"
+      shell: |
+        foreman-rake foreman_openscap:bulk_upload:default
+      become: true
+    
+#    - name: "Grab certs from the sat server"
+#      get_url:
+#        url: "http://{{ sat6_server }}/pub/{{ shorthostname}}.{{ dns_domain }}-certs.tar"
+#        dest: "/root/{{ shorthostname}}.{{ dns_domain }}-certs.tar"
+#      become: yes
+#
+#    - name: "Set the oauth facts"
+#      set_fact:
+#        oauth_consumer_key: "{{ item.split('\"')[1] }}"
+#      when: "'oauth-consumer-key' in item"
+#      with_items: "{{ certoutput.stdout_lines }}"
+#
+#    - name: "Set the oauth facts"
+#      set_fact:
+#        oauth_consumer_secret: "{{ item.split('\"')[1] }}"
+#      when: "'oauth-consumer-secret' in item"
+#      with_items: "{{ certoutput.stdout_lines }}"
+#
+#    - name: "Run the satellite-installer ..."
+#      shell: |
+#        satellite-installer \
+#                    --scenario capsule \
+#                    --certs-tar-file                              "/root/{{ shorthostname}}.{{ dns_domain }}-certs.tar"\
+#                    --foreman-proxy-content-parent-fqdn           "{{ sat6_server }}"\
+#                    --foreman-proxy-register-in-foreman           "true"\
+#                    --foreman-proxy-foreman-base-url              "https://{{ sat6_server }}"\
+#                    --foreman-proxy-trusted-hosts                 "{{ sat6_server }}"\
+#                    --foreman-proxy-trusted-hosts                 "{{ shorthostname}}.{{ dns_domain }}"\
+#                    --foreman-proxy-oauth-consumer-key            "{{ oauth_consumer_key }}"\
+#                    --foreman-proxy-oauth-consumer-secret         "{{ oauth_consumer_secret }}"\
+#                    --puppet-server-foreman-url                   "https://{{ sat6_server }}"\
+#                    --certs-cname                              "{{ capsule_loadbalancer_fqdn }}" \
+#                    --puppet-dns-alt-names                     "{{ capsule_loadbalancer_fqdn }}" \
+#                    --puppet-ca-server                         "{{ shorthostname}}.{{ dns_domain }}" \
+#                    --foreman-proxy-puppetca                   "true" \
+#                    --puppet-server-ca                         "true" \
+#                    --enable-foreman-proxy-plugin-remote-execution-ssh
+#
+#    - name: "make sure we are registered to the satellite server"
+#      shell:
+#        subscription-manager config | grep 'hostname = \[subscription.rhsm.redhat.com\]' || true
+#      register: bootstrap
+#      
+#    - name: "Unregister from the redhat cdn"
+#      shell:
+#        subscription-manager unregister && \
+#        subscription-manager clean
+#      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+#
+#    - name: "Install the katello certificate"
+#      shell:
+#        rpm -Uvh http://sat6.dev.maskedadmins.com/pub/katello-ca-consumer-latest.noarch.rpm
+#      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+#
+#    - name: "Re-run subscription-manager"
+#      shell:
+#        subscription-manager register --org="{{ sat6['org'] }}" --activationkey="{{ sat6['activation_key'] }}"
+#      when: "'subscription.rhsm.redhat.com' in bootstrap.stdout"
+#
+#    - name: "Reboot."
+#      shell: |
+#        shutdown -r +1 || true
+#      become: true
+#      args:
+#        executable: /bin/bash
+#
+#    - name: "Wait 5 to 11 mins for host to reboot"
+#      wait_for:
+#        port: 22
+#        host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+#        #search_regex: OpenSSH
+#        delay: 120
+#        timeout: 660
+#      delegate_to: localhost
+#      become: false
+#
+#    - name: "Oscap profile config complete"
+#      file:
+#        path: /root/.setup/oscap-configed
+#        state: touch
+#        mode: 0444
+#  when: oscapsetup.stdout == "false"
+#
+#- name: "Tower Inventory Setup check"
+#  shell: |
+#    if [ -e "/root/.setup/tower-configed" ]
+#    then
+#      echo "true"
+#    else
+#      echo "false"
+#    fi
+#  register: towersetup
+#  become: true
+#
+#- name: "Block add to Ansible Tower inventory"
+#  block:
+#    - name: "Get host id to add to the 'capsules' Group Inventory"
+#      uri:
+#        url: "https://{{ default_tower_server }}/api/v2/hosts/?name={{ inventory_hostname }}"
+#        validate_certs: no
+#        method: GET
+#        user: admin
+#        password: redhat
+#        force_basic_auth: yes
+#        status_code: [200,202,204]
+#        body_format: json
+#      register: hostidcheck
+#
+#    - name: "Set the host_id fact"
+#      set_fact:
+#        sat_host_id: "{{ hostidcheck.json.results[0].id }}"
+#
+#    - name: "Add host to the 'capsules' Group Inventory"
+#      uri:
+#        url: "https://{{ default_tower_server }}/api/v2/groups/{{ capsules_inventory_group }}/hosts/"
+#        validate_certs: no
+#        method: POST
+#        body: >
+#          {
+#             "id": {{ sat_host_id }}
+#          }
+#        user: admin
+#        password: redhat
+#        force_basic_auth: yes
+#        status_code: [201,202,204]
+#        body_format: json
+#
+#    - name: "tower config complete"
+#      file:
+#        path: /root/.setup/tower-configed
+#        state: touch
+#        mode: 0444
+#  when: towersetup.stdout == "false"

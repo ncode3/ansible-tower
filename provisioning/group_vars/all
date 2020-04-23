@@ -19,7 +19,6 @@ enabled_svcs: ['sshd','network','rsyslog']
 disabled_svcs: ['NetworkManager']
 ## ansible api server
 host_config_server: tower.maskedadmins.com
-host_config_key: firstboot
 ## redhat insights job id
 redhat_insights_key: 990c2493aefba904a89081496fc0319b
 redhat_insights_jobid: 117
