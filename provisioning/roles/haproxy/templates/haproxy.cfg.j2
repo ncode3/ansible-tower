@@ -54,6 +54,7 @@ defaults
 {% for service in haproxy_services %}
 frontend {{ service.name }}
    bind *:{{ service.port }}
+	 log global
    mode {{ service.mode }}
    option               tcplog
    default_backend proxy-{{ service.name }}
