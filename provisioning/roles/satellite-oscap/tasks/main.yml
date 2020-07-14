@@ -71,12 +71,88 @@
         foreman-rake foreman_openscap:bulk_upload:default
       become: true
     
-#    - name: "Grab certs from the sat server"
-#      get_url:
-#        url: "http://{{ sat6_server }}/pub/{{ shorthostname}}.{{ dns_domain }}-certs.tar"
-#        dest: "/root/{{ shorthostname}}.{{ dns_domain }}-certs.tar"
-#      become: yes
-#
+    - name: "Install the Ansible System Roles"
+      shell: |
+        satellite-maintain packages install -y rhel-system-roles
+      become: true
+
+    # https://nvd.nist.gov/ncp/checklist/909
+    - name: "Grab Openscap guides from the Redhat CDN"
+      unarchive:
+        src: "https://access.redhat.com/sites/default/files/attachments/{{ item }}"
+        dest: "/tmp"
+      remote_src: yes
+      become: yes
+      loop:
+      - scap-security-guide-0.1.50-scap-1.3-rhel8.zip
+      - scap-security-guide-0.1.50-scap-1.3-rhel7.zip
+
+    # org is hardcoded as an exercise for the reader to correct
+    - name: "Upload the Openscap xml files to create the scans"
+      shell: |
+        hammer scap-content create --location-id 2 --organization-id 1 --title "{{ item.title }}" --scap-file /tmp/{{ item.file }}
+      become: yes
+     loop:
+     - title: RHEL 8 SCAP ds-1.2
+       file: ssg-rhel8-ds-1.2.xml
+     - title: RHEL 7 SCAP ds-1.2
+       file: ssg-rhel7-ds-1.2.xml
+
+    - name: "Install the foreman scap client role"
+      shell: |
+        ansible-galaxy -p /etc/ansible/roles install theforeman.foreman_scap_client
+      become: yes
+
+    - name: "Install the ansible roles to remediate PCI DSS"
+      shell: |
+        ansible-galaxy -p /etc/ansible/roles install {{ item }}
+      become: yes
+     loop:
+     - redhatofficial.rhel8_pci_dss
+     - redhatofficial.rhel7_pci_dss
+
+    - name: "Install the ansible roles to remediate Health Insurance Portability and Accountability Act (HIPAA)"
+      shell: |
+        ansible-galaxy -p /etc/ansible/roles install {{ item }}
+      become: yes
+     loop:
+     - redhatofficial.rhel8_hipaa
+     - redhatofficial.rhel7_hipaa
+
+    - name: "Install the ansible roles to remediate FBI Criminal Justice Information Services (FBI CJIS)"
+      shell: |
+        ansible-galaxy -p /etc/ansible/roles install {{ item }}
+      become: yes
+     loop:
+     - redhatofficial.rhel8_cjis
+     - redhatofficial.rhel7_cjis
+
+    - name: "Install the ansible roles to remediate NIST 800-171 (Controlled Unclassified Information)"
+      shell: |
+        ansible-galaxy -p /etc/ansible/roles install {{ item }}
+      become: yes
+     loop:
+     - redhatofficial.rhel8_cui
+     - redhatofficial.rhel7_cui
+
+    - name: "Install the ansible roles to remediate NIST National Checklist for RHEL 7.x/8.x"
+      shell: |
+        ansible-galaxy -p /etc/ansible/roles install {{ item }}
+      become: yes
+     loop:
+     - redhatofficial.rhel8_ospp
+     - redhatofficial.rhel7_ospp
+
+    - name: "Import the ansible roles into Satellite"
+      shell: |
+        hammer ansible roles import --location-id 2 --organization-id 1 --proxy-id 1
+      become: yes
+
+    - name: "Import the ansible variables into Satellite"
+      shell: |
+        hammer ansible variables import --location-id 2 --organization-id 1 --proxy-id 1
+      become: yes
+
 #    - name: "Set the oauth facts"
 #      set_fact:
 #        oauth_consumer_key: "{{ item.split('\"')[1] }}"

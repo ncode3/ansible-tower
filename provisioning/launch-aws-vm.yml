@@ -13,7 +13,8 @@
     #   include_role:
     #     name: "{{ ansible_local['awsroles']['default']['role'] }}"
     #   when: ansible_local['awsroles'] is defined
-    awsrole: satellite-capsule
+    default_tower_server: 10.0.0.179
+    awsrole: ansible-tower
     # the public key for cloud-user user
     #cloud_user_pub_key: "rsa ..."
     # the root user password
@@ -22,18 +23,19 @@
     aws_assign_public_ip: yes
     aws_volume_size: 150
     aws_security_group_name: "Redhat_Lab-sg-ansible"
-    aws_security_group_allow_cidr: "173.15.218.96/29"
+    #aws_security_group_allow_cidr: "173.15.218.96/29"
+    aws_security_group_allow_cidr: "0.0.0.0/0"
     aws_region: us-east-1
     aws_number_of_vms: 1
     aws_vpc_id: vpc-0494b7798600fd4de
     # RHEL 7
-    #aws_image_ami: ami-029c0fbe456d58bd1
+    aws_image_ami: ami-029c0fbe456d58bd1
     # RHEL 8
-    aws_image_ami: ami-098bb5d92c8886ca1
+    #aws_image_ami: ami-098bb5d92c8886ca1
     #aws_instance_type: t3.medium
-    aws_instance_type: m4.large
+    aws_instance_type: m4.xlarge
     aws_instance_tags:
-      Name: RHEL Ansible Demo VM
+      Name: RHEL Ansible Tower
     aws_instance_private_tags:
       Name: Private RHEL Ansible Demo VM
     aws_instance_public_tags:
