@@ -292,3 +292,5 @@
 
   when: firstbootcheck.stdout == "false"
 
+- name: "Include oscap-config"
+  include: "oscap-client.yml"
