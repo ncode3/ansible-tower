@@ -10,7 +10,8 @@ redhat_packages: ['puppet','nspr','deltarpm','bash-completion','vim-enhanced','n
 centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
 enabled_svcs: ['sshd','rsyslog']
-disabled_svcs: ['NetworkManager']
+disabled_svcs: ['']
+#disabled_svcs: ['NetworkManager']
 rh_satellite_url: https://subscription.rhn.redhat.com
 rh_satellite_org: None
 rh_satellite_user: !vault |
