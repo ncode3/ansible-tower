@@ -120,7 +120,7 @@
         state: present
         tags:
           DNS: "{{awsshortname.stdout}}.{{ dns_domain }}"
-#      delegate_to: localhost
+      delegate_to: localhost
       become: no
       when: "ansible_system_vendor | regex_search('EC2') "
 
