@@ -68,7 +68,8 @@ rh_subscription_pool_physical_ids: !vault |
 sat6:
   #url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
   #url: "sat6.dev.maskedadmins.com"
-  url: "10.0.0.208"
+  ip: "10.0.0.208"
+  url: "ip-10-0-0-208.dev.maskedadmins.com"
   user: "admin"
   pass: "redhat123"
   #org: redhatlab

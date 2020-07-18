@@ -18,6 +18,7 @@
         echo "${hostname}" > /etc/hostname
         hostnamectl set-hostname ${hostname}
         grep "{{ ansible_default_ipv4['address'] }}" /etc/hosts || echo "{{ ansible_default_ipv4['address'] }} ${hostname} ${shortname}" >> /etc/hosts
+        grep "{{ sat6['url'] }}" /etc/hosts || echo "{{ sat6['ip'] }} {{ sat6['url'] }}" >> /etc/hosts
         #service network restart
       become: true
       args:
