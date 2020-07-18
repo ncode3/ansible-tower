@@ -93,7 +93,7 @@
       shell: |
         satellite-maintain packages install -y rhel-system-roles
       become: true
-      when: 'rhel-system-roles' not in rolecheck.stdout
+      when: "'rhel-system-roles' not in rolecheck.stdout"
 
     # https://nvd.nist.gov/ncp/checklist/909
     - name: "Grab Openscap guides from the Redhat CDN"
