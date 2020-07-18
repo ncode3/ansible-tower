@@ -112,13 +112,13 @@
     # org is hardcoded as an exercise for the reader to correct
     - name: "Upload the Openscap xml files to create the scans"
       shell: |
-        hammer scap-content create --location-id 2 --organization-id 1 --title "{{ item.title }}" --scap-file /tmp/{{ item.file }}
+        hammer scap-content create --location-id 2 --organization-id 1 --title "{{ item.title }}" --scap-file {{ item.file }}
       become: yes
       loop:
       - title: RHEL 8 SCAP ds-1.2
-        file: ssg-rhel8-ds-1.2.xml
+        file: /tmp/scap-security-guide-0.1.50-scap-1.3-rhel8/ssg-rhel8-ds-1.2.xml
       - title: RHEL 7 SCAP ds-1.2
-        file: ssg-rhel7-ds-1.2.xml
+        file: /tmp/scap-security-guide-0.1.50-scap-1.3-rhel7/ssg-rhel7-ds-1.2.xml
 
     - name: "Install the foreman scap client role"
       shell: |
