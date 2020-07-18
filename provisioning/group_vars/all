@@ -4,14 +4,20 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
-default_tower_server: tower.maskedadmins.com
+default_tower_server: 54.163.87.221
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
 osp10_controller: 10.55.102.159
 osp10_computes: "10.55.102.159"
 ntp_server: "10.55.102.5"
 dhcp_server: "{{ ntp_server }}"
-ansible_uri_creds: "admin:redhat"
+ansible_uri_creds: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          64316537663962336264633766383864643763613832373236353532386230333661333637623762
+          3638383138313630383134633163346138653537373963650a616464363766623533376231613630
+          34336566346264613964353332376438353461343139623032653432623032653732343539646432
+          3862303731346564610a343034383539373361303465303536626632626461643666643035363337
+          3161
 redhat_packages: ['nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
 fedora_packages: "deltarpm bash-completion ntp ntpdate git wget rsyslog bind-utils"
