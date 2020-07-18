@@ -20,7 +20,9 @@
   
     - name: "Enable satellite tools repos"
       shell: |
-        subscription-manager repos --enable rhel-7-server-satellite-tools-{{ satellite_version }}-rpms
+        subscription-manager repos \
+        --enable rhel-7-server-satellite-tools-{{ satellite_version }}-rpms \
+        --enable=rhel-7-server-extras-rpms
       become: true
 
     - name: "Installing oscap rpms"
@@ -64,6 +66,8 @@
         oscap xccdf generate guide \
         --profile xccdf_org.ssgproject.content_profile_standard \
         /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml > /var/www/html/pub/rhel7-security-profile.html
+      args:
+        creates: /var/www/html/pub/rhel7-security-profile.html
       become: true
     
     - name: "Generate html with the RHEL 8 Standard Security Profile info"
@@ -71,6 +75,8 @@
         oscap xccdf generate guide \
         --profile xccdf_org.ssgproject.content_profile_pci-dss \
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml > /var/www/html/pub/rhel8-security-profile.html
+      args:
+        creates: /var/www/html/pub/rhel8-security-profile.html
       become: true
 
     - name: "Configure Satellite to use the security profiles"
