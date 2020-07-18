@@ -25,7 +25,7 @@
 
     - name: "Installing oscap rpms"
       yum:
-        name: ['oscap-scanner','scap-workbench','scap-security-guide']
+        name: ['openscap-scanner','scap-workbench','scap-security-guide']
         state: latest
       become: true
 
