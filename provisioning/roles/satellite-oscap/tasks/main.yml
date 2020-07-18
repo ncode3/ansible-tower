@@ -81,7 +81,10 @@
 
     - name: "Configure Satellite to use the security profiles"
       shell: |
-        foreman-rake foreman_openscap:bulk_upload:default
+        foreman-rake foreman_openscap:bulk_upload:default && \
+        touch /opt/.foremanrake
+      args:
+        creates: /opt/.foremanrake
       become: true
     
     - name: "Do we have to install rpms check"
