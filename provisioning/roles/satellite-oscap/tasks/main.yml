@@ -84,10 +84,16 @@
         foreman-rake foreman_openscap:bulk_upload:default
       become: true
     
+    - name: "Do we have to install rpms check"
+      shell: "rpm -qa rhel-system-roles"
+      ignore_errors: yes
+      register: rolecheck
+
     - name: "Install the Ansible System Roles"
       shell: |
         satellite-maintain packages install -y rhel-system-roles
       become: true
+      when: 'rhel-system-roles' not in rolecheck.stdout
 
     # https://nvd.nist.gov/ncp/checklist/909
     - name: "Grab Openscap guides from the Redhat CDN"
