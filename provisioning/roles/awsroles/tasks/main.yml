@@ -1,6 +1,6 @@
 ---
 - name: "Include roles for AWS servers"
   include_role:
-    name: "{{ item }}"
+    name: "roles/{{ item }}"
   loop: "{{ ansible_local['awsroles']['default']['role'].split(',') }}"
   when: ansible_local['awsroles'] is defined
