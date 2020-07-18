@@ -257,14 +257,14 @@
       args:
         creates: /opt/.firstboot
 
-    - name: "Run yum update. Please wait. SSH to Host and tail /tmp/tower.output for status"
-      shell: |
-        exec &> >(tee -a /tmp/tower.output)
-        yum -y update
-      become: true
-      args:
-        executable: /bin/bash
-        creates: /opt/.firstboot
+#    - name: "Run yum update. Please wait. SSH to Host and tail /tmp/tower.output for status"
+#      shell: |
+#        exec &> >(tee -a /tmp/tower.output)
+#        yum -y update
+#      become: true
+#      args:
+#        executable: /bin/bash
+#        creates: /opt/.firstboot
 
     - name: "first boot complete"
       file:
