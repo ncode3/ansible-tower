@@ -125,7 +125,6 @@
         tags:
           DNS: "{{awsshortname.stdout}}.{{ dns_domain }}"
       delegate_to: localhost
-
       when: "ansible_system_vendor | regex_search('EC2') "
 
     - name: "Updating MOTD"
