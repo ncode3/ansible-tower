@@ -151,10 +151,10 @@ sat6_enabled_repos:
     product: "Red Hat Ansible Engine"
   - name: "Red Hat Satellite Maintenance 6 for RHEL 7 Server (RPMs)"
     product: "Red Hat Enterprise Linux Server"
-  - name: "Red Hat Satellite Capsule 6.6 for RHEL 7 Server (RPMs)"
+  - name: "Red Hat Satellite Capsule 6.7 for RHEL 7 Server (RPMs)"
     product: "Red Hat Satellite Capsule"
 sat6_enabled_repos_tools:
-  - name: "Red Hat Satellite Tools 6.6 (for RHEL 7 Server) (RPMs)"
+  - name: "Red Hat Satellite Tools 6.7 (for RHEL 7 Server) (RPMs)"
     product: "Red Hat Enterprise Linux Server"
   - name: "Red Hat Enterprise Linux 7 Server - Extras (RPMs)"
     product: "Red Hat Enterprise Linux Server"

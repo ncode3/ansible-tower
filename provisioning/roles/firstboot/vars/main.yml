@@ -4,7 +4,7 @@ host_config_server: "{{ default_tower_server }}"
 tower_server: "{{ default_tower_server }}"
 redhat_insights_key: ""
 redhat_insights_jobid: ""
-rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-satellite-tools-6.6-rpms']
+rh_enabled_repos: ['rhel-7-server-optional-rpms','rhel-7-server-rpms','rhel-7-server-extras-rpms','rhel-7-server-rh-common-rpms','rhel-7-server-satellite-tools-6.7-rpms']
 rh_disabled_repos: ['*']
 redhat_packages: ['puppet','nspr','deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils','nfs-utils','openscap-scanner']
 centos_packages: ['deltarpm','bash-completion','vim-enhanced','ntp','ntpdate','git','wget','bind-utils']
