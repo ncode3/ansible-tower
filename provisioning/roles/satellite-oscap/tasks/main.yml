@@ -69,7 +69,7 @@
     - name: "Generate html with the RHEL 8 Standard Security Profile info"
       shell: |
         oscap xccdf generate guide \
-        --profile xccdf_org.ssgproject.content_profile_standard \
+        --profile xccdf_org.ssgproject.content_profile_pci-dss \
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml > /var/www/html/pub/rhel8-security-profile.html
       become: true
 
