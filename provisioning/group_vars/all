@@ -4,7 +4,7 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
-default_tower_server: 54.163.87.221
+default_tower_server: 10.0.0.179
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
 osp10_controller: 10.55.102.159
