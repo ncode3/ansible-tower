@@ -134,7 +134,7 @@
               permissions: '0444'
               content: |
                 [default]
-                role=[{{ awsrole }}]
+                role={{ awsrole }}
             - path: /tmp/firstboot.sh
               permissions: '0755'
               owner: root:root
