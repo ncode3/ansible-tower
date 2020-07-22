@@ -14,7 +14,10 @@
     #     name: "{{ ansible_local['awsroles']['default']['role'] }}"
     #   when: ansible_local['awsroles'] is defined
     default_tower_server: 10.0.0.179
-    awsrole: ansible-tower
+    awsroles:
+      - section: default
+        key: role
+        value: ansible-tower
     # the public key for cloud-user user
     #cloud_user_pub_key: "rsa ..."
     # the root user password
@@ -133,8 +136,12 @@
             - path: /etc/ansible/facts.d/awsroles.fact
               permissions: '0444'
               content: |
-                [default]
-                role={{ awsrole }}
+                {% for awsrole in awsroles %}
+                {
+                [{{ awsrole.section }}]
+                {{ awsrole.key }}={{ awsrole.value }}
+                }
+                {% endfor %}
             - path: /tmp/firstboot.sh
               permissions: '0755'
               owner: root:root
