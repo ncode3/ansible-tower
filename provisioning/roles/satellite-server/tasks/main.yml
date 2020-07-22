@@ -141,15 +141,6 @@
     - name: "Restart puppetmaster"
       shell: systemctl restart puppetserver
 
-    - name: "Copy over manifest"
-      #template:
-      copy:
-          dest: /tmp/manifest.zip
-          #src: "satellite/{{ sat6_manifest }}"
-          src: "/opt/satellite/{{ sat6_manifest }}"
-          owner: root
-          group: root
-          mode: 0644
 
 #    - name: "Open firewall port for external access to Satellite at sat6.dev.maskedadmins.com:8448"
 #      ignore_errors: yes
@@ -357,6 +348,16 @@
   always:
     - name: "Subnet section complete"
       debug:  msg="Looks like we are done with subnet and domain section"
+
+- name: "Copy over manifest"
+  #template:
+  copy:
+      dest: /tmp/manifest.zip
+      #src: "satellite/{{ sat6_manifest }}"
+      src: "/opt/satellite/{{ sat6_manifest }}"
+      owner: root
+      group: root
+      mode: 0644
 
 - name: "Provisioning Satellite 6 - upload and refresh manifest"
   shell: |
