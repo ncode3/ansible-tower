@@ -1,6 +1,6 @@
 ---
-capsule_loadbalancer_fqdn: lb-capsule.dev.maskedadmins.com
-sat6_server: sat6.dev.maskedadmins.com
+capsule_loadbalancer_fqdn: lb-capsule.prod.maskedadmins.com
+sat6_server: ip-11-22-33-102.dev.maskedadmins.com
 satellite_version: 6.7
 capsules_inventory_group: 81
 rh_satellite_user: !vault |
