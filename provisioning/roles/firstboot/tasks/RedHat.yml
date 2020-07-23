@@ -33,28 +33,28 @@
       shell: |
         curl -s http://169.254.169.254/2019-10-01/meta-data/instance-id
       register: instanceid
-      when: "ansible_system_vendor | regex_search('EC2') "
+      when: "ansible_system_vendor | regex_search('EC2') or ansible_system_vendor | regex_search('Xen')"
 
     - name: "AWS: get region id"
       shell: |
         curl -s http://169.254.169.254/2019-10-01/meta-data/placement/availability-zone
       register: regionid
-      when: "ansible_system_vendor | regex_search('EC2') "
+      when: "ansible_system_vendor | regex_search('EC2') or ansible_system_vendor | regex_search('Xen')"
 
     - name: "Check for hosts not in aws"
       set_fact:
-        in_aws: "{{ ansible_system_vendor | regex_search('EC2') }}"
+        in_aws: "{{ ansible_system_vendor | regex_search('EC2') }} or ansible_system_vendor | regex_search('Xen')"
 
     - name: "Get the aws short hostname"
       shell: |
         hostname --short  
       register: awsshortname
-      when: "ansible_system_vendor | regex_search('EC2') "
+      when: "ansible_system_vendor | regex_search('EC2') or ansible_system_vendor | regex_search('Xen')"
 
     - name: "Set ntp server"
       set_fact:
         ntp_server: "0.rhel.pool.ntp.org"
-      when: "ansible_system_vendor | regex_search('EC2') "
+      when: "ansible_system_vendor | regex_search('EC2') or ansible_system_vendor | regex_search('Xen')"
 
     - name: "Set ntp to true"
       shell: |
@@ -112,7 +112,7 @@
     - name: "Run the AWS dns helper"
       shell: |
         /usr/sbin/ifup-local
-      when: "ansible_system_vendor | regex_search('EC2') "
+      when: "ansible_system_vendor | regex_search('EC2') or ansible_system_vendor | regex_search('Xen')"
 
 #    - name: "AWS: Tag the instance with DNS"
 #      ec2_tag:
