@@ -1,5 +1,5 @@
 ---
-dns_domain: "dev.maskedadmins.com"
+dns_domain: "prod.maskedadmins.com"
 host_config_server: "{{ default_tower_server }}"
 tower_server: "{{ default_tower_server }}"
 redhat_insights_key: ""
@@ -65,6 +65,12 @@ rh_subscription_pool_physical_ids: !vault |
 #          3566353339613962330a613732333834666563353238376237613761386138326239336537633334
 #          36343237326539656333383637303631663761623739386466386337346665633435333236363465
 #          3236386162383030373130383966376532336532653165373736
+sat6_org: "Redhat_Lab"
+sat6_env: "production"
+sat6_loc: "RTO AWS Location"
+#sat6_loc: "Private_Cloud"
+sat6_actkey: "Redhat_Lab-{{ sat6_actkey }}-key"
+sat6_hostgroup: "RHEL_7_x86_64_Hostgroup for prod.maskedadmins.com RedHat 7.7"
 sat6:
   #url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
   #url: "sat6.dev.maskedadmins.com"
@@ -72,8 +78,8 @@ sat6:
   url: "ip-11-22-33-102.dev.maskedadmins.com"
   user: "admin"
   pass: "redhat123"
-  org: "Redhat_Lab"
-  hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.8"
-  location: "Private_Cloud"
-  environment: "development"
-  activation_key: "Redhat_Lab-development-key"
+  org: "{{ sat6_org }}"
+  hostgroup: "{{ sat6_hostgroup }}"
+  location: "{{ sat6_loc }}"
+  environment: "{{ sat6_env }}"
+  activation_key: "{{ sat6_org }}-{{ sat6_actkey }}-key"
