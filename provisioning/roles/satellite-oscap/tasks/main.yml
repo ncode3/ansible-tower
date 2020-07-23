@@ -187,6 +187,8 @@
       shell: |
         hammer capsule update --id {{ proxyid.stdout }} --location-id {{ locid.stdout }} && \
         touch /root/.setup/step29
+      delegate_to: "{{ sat6_server }}"
+      become: yes
       args:
         creates: /root/.setup/step29
 
