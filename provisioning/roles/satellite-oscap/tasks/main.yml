@@ -86,6 +86,7 @@
       args:
         creates: /opt/.foremanrake
       become: true
+      delegate_to: "{{ sat6_server }}"
     
     - name: "Do we have to install rpms check"
       shell: "rpm -qa rhel-system-roles"
@@ -167,12 +168,12 @@
 
     - name: "Import the ansible roles into Satellite"
       shell: |
-        hammer ansible roles import --location-id 2 --organization-id 1 --proxy-id 1
+        hammer ansible roles import --location-id 2 --organization-id 1 --proxy-id 2
       become: yes
 
     - name: "Import the ansible variables into Satellite"
       shell: |
-        hammer ansible variables import --location-id 2 --organization-id 1 --proxy-id 1
+        hammer ansible variables import --location-id 2 --organization-id 1 --proxy-id 2
       become: yes
 
 #    - name: "Set the oauth facts"

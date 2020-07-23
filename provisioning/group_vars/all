@@ -4,6 +4,7 @@
 ## then enter the same passphrase as in ansible tower credentials
 ##
 ## general settings
+sat6_server: 11.22.33.102
 default_tower_server: 11.22.33.77
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
