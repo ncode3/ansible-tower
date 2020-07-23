@@ -179,11 +179,13 @@
     - name: "Import the ansible roles into Satellite"
       shell: |
         hammer ansible roles import --location-id 3 --organization-id 1 --proxy-id {{ proxyid.stdout }}
+      delegate_to: "{{ sat6_server }}"
       become: yes
 
     - name: "Import the ansible variables into Satellite"
       shell: |
         hammer ansible variables import --location-id 3 --organization-id 1 --proxy-id {{ proxyid.stdout }}
+      delegate_to: "{{ sat6_server }}"
       become: yes
 
 #    - name: "Set the oauth facts"
