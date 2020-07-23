@@ -125,9 +125,9 @@
               lock-passwd: false
               expire: false
           ssh_pwauth: true
-          chpasswd:
-            list: |
-              root:{{ root_password }}
+          #chpasswd:
+          #  list: |
+          #    root:{{ root_password }}
           write_files:
             - path: /etc/sudoers.d/999-cloud-user
               permissions: '0440'
