@@ -137,10 +137,10 @@
               permissions: '0444'
               content: |
                 {% for awsrole in awsroles %}
-                {
                 [{{ awsrole.section }}]
-                {{ awsrole.key }}={{ awsrole.value }}
-                }
+                {% for key in awsrole.keys %}
+                {{ key.name }}={{ key.value }}
+                {% endfor %}
                 {% endfor %}
             - path: /tmp/firstboot.sh
               permissions: '0755'
