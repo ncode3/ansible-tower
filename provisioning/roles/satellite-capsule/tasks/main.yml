@@ -244,7 +244,7 @@
              "id": {{ sat_host_id }}
           }
         user: admin
-        password: redhat
+        password: "{{ ipmi_pass }}"
         force_basic_auth: yes
         status_code: [201,202,204]
         body_format: json
