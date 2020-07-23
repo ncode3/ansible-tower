@@ -140,8 +140,8 @@
                 [{{ awsrole.section }}]
                 {% for var in awsrole.vars %}
                 {{ var.name }}={{ var.value }}
-                {% endfor %}
-                {% endfor %}
+                {% endfor %}{% endfor %}
+
             - path: /tmp/firstboot.sh
               permissions: '0755'
               owner: root:root
