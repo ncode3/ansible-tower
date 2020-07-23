@@ -69,7 +69,6 @@ sat6_org: "Redhat_Lab"
 sat6_env: "production"
 sat6_loc: "RTO AWS Location"
 #sat6_loc: "Private_Cloud"
-sat6_actkey: "Redhat_Lab-{{ sat6_actkey }}-key"
 sat6_hostgroup: "RHEL_7_x86_64_Hostgroup for prod.maskedadmins.com RedHat 7.7"
 sat6:
   #url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
@@ -82,4 +81,4 @@ sat6:
   hostgroup: "{{ sat6_hostgroup }}"
   location: "{{ sat6_loc }}"
   environment: "{{ sat6_env }}"
-  activation_key: "{{ sat6_org }}-{{ sat6_actkey }}-key"
+  activation_key: "{{ sat6_org }}-{{ sat6_env }}-key"
