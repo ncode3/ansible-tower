@@ -1,6 +1,6 @@
 ---
 - name: Publish and Promote Content Views
-  hosts: satellite*:sat6*:10.0.0.208
+  hosts: satellite*:sat6*:11.22.33.102
   gather_facts: no
   become: yes
   vars_files:
