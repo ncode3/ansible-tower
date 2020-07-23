@@ -68,12 +68,11 @@ rh_subscription_pool_physical_ids: !vault |
 sat6:
   #url: "satellite-6-demo-in-osp8.stack.maskedadmins.com"
   #url: "sat6.dev.maskedadmins.com"
-  ip: "10.0.0.208"
-  url: "ip-10-0-0-208.dev.maskedadmins.com"
+  ip: "11.22.33.102"
+  url: "ip-11-22-33-102.dev.maskedadmins.com"
   user: "admin"
   pass: "redhat123"
-  #org: redhatlab
-  org: Redhat_Lab
+  org: "Redhat_Lab"
   hostgroup: "RHEL_7_x86_64_Hostgroup for dev.maskedadmins.com RedHat 7.8"
   location: "Private_Cloud"
   environment: "development"
