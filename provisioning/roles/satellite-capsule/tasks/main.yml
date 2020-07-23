@@ -110,7 +110,7 @@
         --foreman-proxy-cname {{ capsule_loadbalancer_fqdn }}
       become: true
       register: certoutput
-      delegate_to: sat6
+      delegate_to: satellite-server
       # logically I want this, but if it already exists
       # this task will not run, breaking the playbook
       #args:
@@ -120,7 +120,7 @@
       shell: |
         restorecon /var/www/html/pub/{{ shorthostname}}.{{ dns_domain }}-certs.tar
       become: true
-      delegate_to: sat6
+      delegate_to: satellite-server
     
     - name: "Grab certs from the sat server"
       get_url:
