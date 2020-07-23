@@ -5,6 +5,7 @@
 ##
 ## general settings
 sat6_server: 11.22.33.102
+sat6_default_location: "RTO AWS Location"
 default_tower_server: 11.22.33.77
 dns_domain: dev.maskedadmins.com
 osp8_controller: 10.55.2.155
