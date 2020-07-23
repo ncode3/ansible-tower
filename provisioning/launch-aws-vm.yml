@@ -50,7 +50,7 @@
     host_config_jobid: "14"
     # update the tower/awx inventory after launching
     tower_inventory_ids:
-      - 29
+      - 35
   environment:
     # these can be ansible tower/awx credentials
     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
@@ -169,18 +169,18 @@
            # this is post configuration job template
            - /tmp/firstboot.sh
 
-#    - name: Update the AWS Inventory
-#      uri:
-#        url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
-#        validate_certs: no
-#        method: POST
-#        user: admin
-#        password: redhat
-#        force_basic_auth: yes
-#        status_code: [201,202]
-#        body_format: json
-#      with_items:
-#        - "{{ tower_inventory_ids }}"
+    - name: Update the AWS Inventory
+      uri:
+        url: https://{{ default_tower_server }}/api/v2/inventory_sources/{{ item }}/update/
+        validate_certs: no
+        method: POST
+        user: admin
+        password: "{{ ipmi_pass }}"
+        force_basic_auth: yes
+        status_code: [201,202]
+        body_format: json
+      with_items:
+        - "{{ tower_inventory_ids }}"
 
 #    - name: launch an ec2 instance in a public vpc
 #      when: aws_vpc_subnet_publicid is defined
