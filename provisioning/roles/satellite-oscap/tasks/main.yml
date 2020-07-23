@@ -183,14 +183,6 @@
       - redhatofficial.rhel8_ospp
       - redhatofficial.rhel7_ospp
 
-    - name: "Set Capsule to proper location"
-      shell: |
-        hammer capsule update --id {{ proxyid.stdout }} --location-id {{ locid.stdout }} && \
-        touch /root/.setup/step29proxyid{{ proxyid.stdout }}
-      delegate_to: "{{ sat6_server }}"
-      become: yes
-      args:
-        creates: "/root/.setup/step29proxyid{{ proxyid.stdout }}"
 
     - name: "Import the ansible roles into Satellite"
       shell: |

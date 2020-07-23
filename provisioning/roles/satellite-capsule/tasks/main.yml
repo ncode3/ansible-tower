@@ -158,7 +158,10 @@
                     --puppet-ca-server                         "{{ shorthostname}}.{{ dns_domain }}" \
                     --foreman-proxy-puppetca                   "true" \
                     --puppet-server-ca                         "true" \
-                    --enable-foreman-proxy-plugin-remote-execution-ssh
+                    --enable-foreman-proxy-plugin-remote-execution-ssh \
+                    --enable-foreman-proxy-plugin-ansible \
+                    --enable-foreman-proxy-plugin-openscap
+
 
     - name: "make sure we are registered to the satellite server"
       shell:
