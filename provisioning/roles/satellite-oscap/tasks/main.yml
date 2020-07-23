@@ -60,6 +60,7 @@
     - name: "Save the proxy id for the capsule"
       shell: |
         hammer --csv capsule list | grep {{ inventory_hostname }} | cut -f1 -d,
+      delegate_to: "{{ sat6_server }}"
       register: proxyid
 
     - name: "Output the RHEL 7 Standard Security Profile info"
