@@ -3,8 +3,8 @@
   hosts: localhost
   gather_facts: no
   environment:
-    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
-    AWS_SECRET_KEY: "{{ AWS_SECRET_KEY }}"
+    AWS_ACCESS_KEY_ID: "{{ TFOUND_AWS_ACCESS_KEY_ID }}"
+    AWS_SECRET_KEY: "{{ TFOUND_AWS_SECRET_KEY }}"
   vars:
     public_ip: "1.1.1.1,2.2.2.2,3.3.3.3"
     fqdn: "host.foo.com"
