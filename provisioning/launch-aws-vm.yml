@@ -138,8 +138,8 @@
               content: |
                 {% for awsrole in awsroles %}
                 [{{ awsrole.section }}]
-                {% for vars in awsrole.keys %}
-                {{ vars.name }}={{ vars.value }}
+                {% for var in awsrole.vars %}
+                {{ var.name }}={{ var.value }}
                 {% endfor %}
                 {% endfor %}
             - path: /tmp/firstboot.sh
