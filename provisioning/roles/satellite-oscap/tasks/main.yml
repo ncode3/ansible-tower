@@ -57,6 +57,11 @@
         oscap info /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
       register: profileinfo
     
+    - name: "Save the proxy id for the capsule"
+      shell: |
+        hammer --csv capsule list | grep {{ inventory_host }} | cut -f1 -d,
+      register: proxyid
+
     - name: "Output the RHEL 7 Standard Security Profile info"
       debug:
         var: profileinfo.stdout
@@ -106,6 +111,7 @@
         dest: "/tmp"
         remote_src: yes
       become: yes
+      delegate_to: "{{ sat6_server }}"
       loop:
       - scap-security-guide-0.1.50-scap-1.3-rhel8.zip
       - scap-security-guide-0.1.50-scap-1.3-rhel7.zip
@@ -113,8 +119,12 @@
     # org is hardcoded as an exercise for the reader to correct
     - name: "Upload the Openscap xml files to create the scans"
       shell: |
-        hammer scap-content create --location-id 2 --organization-id 1 --title "{{ item.title }}" --scap-file {{ item.file }}
+        hammer scap-content create --location-id 2 --organization-id 1 --title "{{ item.title }}" --scap-file {{ item.file }} && \
+        touch /opt/.scapuploaded
       become: yes
+      delegate_to: "{{ sat6_server }}"
+      args:
+        creates: /opt/.scapuploaded
       loop:
       - title: RHEL 8 SCAP ds-1.2
         file: /tmp/scap-security-guide-0.1.50-scap-1.3-rhel8/ssg-rhel8-ds-1.2.xml
@@ -168,12 +178,12 @@
 
     - name: "Import the ansible roles into Satellite"
       shell: |
-        hammer ansible roles import --location-id 2 --organization-id 1 --proxy-id 2
+        hammer ansible roles import --location-id 3 --organization-id 1 --proxy-id {{ proxyid.stdout }}
       become: yes
 
     - name: "Import the ansible variables into Satellite"
       shell: |
-        hammer ansible variables import --location-id 2 --organization-id 1 --proxy-id 2
+        hammer ansible variables import --location-id 3 --organization-id 1 --proxy-id {{ proxyid.stdout }}
       become: yes
 
 #    - name: "Set the oauth facts"
